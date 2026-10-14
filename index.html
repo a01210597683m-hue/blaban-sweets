@@ -325,30 +325,32 @@ function renderPaymentDetails(){
  if(!select||!box)return;
  const method=storePaymentMethods.find(x=>String(x.key||x.label)===select.value);
  if(!method){box.style.display="none";box.innerHTML="";return}
- const label=String(method.label||method.key||"").trim();
- const norm=label.toLowerCase();
+ const label=String(method.label||method.key||"").trim(),norm=label.toLowerCase();
  const card=/visa|master|بطاق|فيزا|ائتمان|خصم|credit|debit/.test(norm);
  const insta=/insta|انستا|إنستا|انستاباي/.test(norm);
  const wallet=/محفظ|wallet|فودافون كاش|اتصالات كاش|اورنج كاش|أورنج كاش|we pay/.test(norm);
  const transfer=/تحويل|بنكي|bank/.test(norm);
- let html='<div style="font-weight:800;color:#075cae;margin-bottom:8px">تفاصيل '+esc(label)+'</div>';
  const configured=[method.instructions,method.details,method.account_name,method.account_number,method.phone,method.address].filter(Boolean);
+ let html='<div style="font-weight:800;color:#075cae;margin-bottom:8px">تفاصيل '+esc(label)+'</div>';
  if(configured.length)html+='<div style="padding:10px;border-radius:10px;background:#eaf6ff;margin-bottom:10px;line-height:1.8">'+configured.map(esc).join("<br>")+'</div>';
- if(card){
-   html+='<p style="margin:0 0 10px;line-height:1.7">لأمانك، بيانات البطاقة تُدخل فقط داخل صفحة دفع إلكترونية آمنة تابعة لمزوّد الدفع. لا تكتبي رقم البطاقة أو رمز الأمان أو OTP هنا.</p>';
+ if(insta){
+   const target=method.payment_url||method.url||method.link||method.phone||method.account_number||method.account_name||"";
+   if(target&&/^https:\/\//i.test(String(target)))html+='<a class="btn" href="'+esc(target)+'" target="_blank" rel="noopener noreferrer">فتح رابط إنستاباي</a>';
+   else if(target)html+='<div style="padding:10px;background:#eaf6ff;border-radius:10px;margin-bottom:10px">رقم/بيانات إنستاباي للتحويل: <strong>'+esc(target)+'</strong></div>';
+   else html+='<p style="color:#9a5a00">أضيفي رابط إنستاباي أو رقم الهاتف في إعدادات طريقة الدفع ليظهر هنا.</p>';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentSender">اسم صاحب حساب إنستاباي <span style="color:#b42318">*</span></label><input id="paymentSender" required maxlength="100" autocomplete="name" placeholder="الاسم المسجل بالحساب" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+ }else if(card){
+   html+='<p style="margin:0 0 10px;line-height:1.7">أكملي بيانات البطاقة فقط في صفحة دفع آمنة تابعة لمزوّد الدفع. لا تدخلي الرقم السري أو رمز الأمان أو OTP داخل المتجر.</p>';
    if(storeVisaPaymentUrl&&/^https:\/\//i.test(storeVisaPaymentUrl))html+='<a class="btn" href="'+esc(storeVisaPaymentUrl)+'" target="_blank" rel="noopener noreferrer">الانتقال لصفحة الدفع الآمنة</a>';
-   else html+='<p style="margin:0;color:#9a5a00">الدفع بالبطاقة يحتاج ربط بوابة دفع آمنة من إعدادات المتجر قبل تحصيل المبلغ إلكترونيًا.</p>';
- }else if(insta){
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentSender">اسم صاحب حساب إنستاباي (اختياري)</label><input id="paymentSender" maxlength="100" autocomplete="name" placeholder="الاسم المسجل بالحساب" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري، بعد الدفع)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   else html+='<p style="color:#9a5a00">يلزم إعداد رابط بوابة دفع آمنة قبل تحصيل البطاقة إلكترونيًا.</p>';
  }else if(wallet){
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentWalletPhone">رقم المحفظة المستخدمة (اختياري)</label><input id="paymentWalletPhone" inputmode="tel" maxlength="30" autocomplete="tel" placeholder="رقم الموبايل المرتبط بالمحفظة" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري، بعد الدفع)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentWalletPhone">رقم المحفظة المستخدمة <span style="color:#b42318">*</span></label><input id="paymentWalletPhone" required inputmode="tel" maxlength="30" autocomplete="tel" placeholder="رقم الموبايل المرتبط بالمحفظة" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
  }else if(transfer){
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري، بعد الدفع)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentSender">اسم صاحب الحساب <span style="color:#b42318">*</span></label><input id="paymentSender" required maxlength="100" autocomplete="name" placeholder="اسم صاحب الحساب" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
  }else{
-   html+='<p style="margin:0;line-height:1.7">هيتم تأكيد الطلب واختيار/تأكيد تفاصيل الدفع مع المتجر حسب الطريقة المتاحة.</p>';
+   html+='<p style="margin:0;line-height:1.7">هيتم تأكيد الطلب وتفاصيل الدفع مع المتجر حسب الطريقة المتاحة.</p>';
  }
+ if(insta||wallet||transfer)html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري)</label><input id="paymentReference" maxlength="100" placeholder="اكتبيه لو التحويل تم بالفعل" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
  box.innerHTML=html;box.style.display="block";
 }
 document.getElementById("orderPaymentMethod")?.addEventListener("change",renderPaymentDetails);
