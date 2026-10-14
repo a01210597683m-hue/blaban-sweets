@@ -29,6 +29,28 @@ th{background:#f3faff}.tiny{border-radius:10px}.hint{border-radius:14px}
 .side #adminLogoMark.logo{width:min(100%,205px);height:76px;border-radius:18px;padding:5px;font-size:1.7rem}
 .side #adminBrandName{font-size:1.05rem}
 .login-card #loginLogoMark.logo{width:170px;height:66px;border-radius:17px;flex:0 0 auto}
+
+/* Mobile admin: full-width brand banner; navigation/settings sit below it */
+@media(max-width:760px){
+ .shell{display:flex;flex-direction:column}
+ .side{width:100%;padding:0;gap:0;display:flex;flex-direction:column;background:#fff;color:var(--ink)}
+ .side .brand{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;background:#0066c8}
+ .side #adminLogoMark.logo{display:block;width:100%;height:auto;aspect-ratio:3/1;max-height:none;min-height:150px;padding:0;margin:0;border:0;border-radius:0;background:#0066c8;box-shadow:none;overflow:hidden}
+ .side #adminLogoMark.logo img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;border-radius:0!important;display:block}
+ .side #adminBrandName{display:block;color:#fff;text-align:right;padding:9px 18px 0;font-size:1.35rem}
+ .side .brand small{display:block;color:#d8efff;text-align:right;padding:0 18px 14px;font-size:.82rem}
+ .side .nav{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:10px;background:#fff;border-bottom:1px solid #d8edff;scrollbar-width:thin}
+ .side .nav button{flex:0 0 auto;white-space:nowrap;color:#0066c8;background:#eef8ff;padding:10px 13px;border-radius:13px;font-size:.9rem}
+ .side .nav button.active,.side .nav button:hover{background:#0066c8;color:#fff}
+ .side .side-note{display:none}
+ .main{width:100%;min-width:0}
+ .top{height:auto;min-height:72px;padding:12px 16px;flex-wrap:wrap}
+ .content{padding:18px 14px}
+}
+@media(min-width:761px){
+ .side #adminLogoMark.logo{width:100%;height:auto;aspect-ratio:3/1;min-height:110px;max-height:155px;padding:0;overflow:hidden;border-radius:17px}
+ .side #adminLogoMark.logo img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:inherit!important}
+}
 </style>
 </head>
 <body>
