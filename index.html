@@ -96,6 +96,91 @@ header .head-icon{color:#fff!important}
  header .head-actions{order:1!important;position:absolute!important;right:8px!important;top:8px!important;padding:0!important;background:#0066c8aa!important;border-radius:14px!important}
  header .head-icon{width:34px!important;height:36px!important;font-size:1.15rem!important}
 }
+
+/* Reference-inspired BLABAN-SWEETS storefront: glossy blue header, airy white canvas, rounded cards */
+:root{--navy:#0066c8;--blue:#0785ed;--sky:#e7f6ff;--pink:#dff4ff;--cream:#fbfdff;--ink:#123c70;--muted:#68809b;--line:#d9edfb;--gold:#ffd96a}
+body{background:linear-gradient(180deg,#f5fbff 0%,#fff 48%,#f4faff 100%);color:var(--ink)}
+header{position:relative;top:auto;background:#0066c8!important;border:0!important;box-shadow:0 8px 25px #0066c81c!important;overflow:hidden}
+header .top{width:100%!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0 0 12px!important;display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;gap:0!important}
+header .brand.brand-center{order:0!important;display:flex!important;flex:0 0 100%!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#0066c8!important;box-shadow:none!important;overflow:hidden!important;gap:0!important}
+header .brand.brand-center #storeLogo.logo{display:block!important;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:3/1!important;max-height:360px!important;min-height:0!important;margin:0!important;padding:0!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:0!important;background:#0066c8!important;box-shadow:none!important}
+header .brand.brand-center #logoFallback.logo,header .brand.brand-center .brand-copy{display:none!important}
+header .nav.nav-start{order:1!important;display:flex!important;flex:1 1 auto!important;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;padding:8px 12px 0!important;gap:clamp(12px,3vw,30px)!important;color:white!important}
+header .nav.nav-start a{color:#fff!important;font-weight:800!important}
+header .nav.nav-start a:hover{color:#d9f5ff!important}
+header .head-actions{order:2!important;flex:0 0 auto!important;justify-content:center!important;padding:8px 12px 0!important}
+header .head-icon{color:#fff!important;border:1px solid #ffffff55!important;background:#ffffff18!important;border-radius:14px!important}
+.hero{padding:22px 0 24px!important}
+.hero-card{grid-template-columns:1fr 1fr!important;min-height:365px!important;gap:26px!important;padding:clamp(20px,3vw,42px)!important;border:1px solid #d6efff!important;border-radius:30px!important;background:linear-gradient(125deg,#dff4ff 0%,#fff 54%,#e9f8ff 100%)!important;box-shadow:0 12px 35px #0066c810!important}
+.hero-photo{transform:none!important;inset:5px!important;border:5px solid #fff!important;border-radius:26px!important;box-shadow:0 12px 30px #0066c820!important;background:#e8f7ff!important}
+.hero-photo img{object-fit:cover!important}
+.hero h1{color:#0066c8!important}
+.hero h1 em{color:#0785ed!important}
+.hero p{color:#54718e!important}
+.pill{border-color:#cbeaff!important;background:#ffffffd9!important;color:#0066c8!important}
+.dot{background:#0785ed!important}
+.btn{background:linear-gradient(110deg,#0066c8,#0785ed)!important;border-radius:999px!important;box-shadow:0 5px 14px #0066c81c!important}
+.btn.pink,.btn.pale{background:#e6f6ff!important;color:#0066c8!important;box-shadow:none!important}
+.hero-slogan{color:#0872ce!important}
+.quick-categories{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:13px!important;margin-top:0!important;margin-bottom:22px!important}
+.quick-categories a{min-width:0!important;min-height:115px!important;border:1px solid #d9efff!important;border-radius:24px!important;background:linear-gradient(180deg,#f0faff,#fff)!important;box-shadow:0 6px 18px #0066c80a!important;color:#0066c8!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;text-align:center!important;padding:12px 6px!important}
+.quick-categories a span{display:grid!important;place-items:center!important;width:54px!important;height:54px!important;border-radius:50%!important;background:#e1f4ff!important;font-size:1.65rem!important}
+.quick-categories a b{font-size:.82rem!important;font-weight:900!important}
+.quick-categories a.quick-cart{background:linear-gradient(140deg,#0785ed,#0066c8)!important;color:#fff!important}
+.quick-categories a.quick-cart span{background:#ffffff24!important}
+.section{padding:25px 0!important}
+.section-title{margin-bottom:18px!important}
+.section-title h2{color:#0066c8!important;font-weight:900!important}
+.eyebrow{color:#0785ed!important}
+.categories{gap:15px!important}
+.category{border:1px solid #d8edff!important;border-radius:22px!important;background:#fff!important;box-shadow:0 7px 20px #0066c80b!important}
+.category-img{background:#eaf7ff!important}
+.category-info h3{color:#0066c8!important}
+.product-price{color:#0066c8!important}
+.empty{border-color:#d9edfb!important;background:#fff!important}
+.story{border:1px solid #d8edff!important;background:linear-gradient(120deg,#e8f7ff,#fff)!important;box-shadow:0 8px 24px #0066c809!important}
+.story-photo{border:4px solid #fff!important;box-shadow:0 7px 20px #0066c81a!important}
+.story-copy h2{color:#0066c8!important}
+.benefit{border-color:#d9edfb!important;border-radius:22px!important;box-shadow:0 6px 18px #0066c808!important}
+.benefit-icon,.benefit:nth-child(2) .benefit-icon,.benefit:nth-child(3) .benefit-icon{background:#e2f5ff!important;color:#0066c8!important}
+.cta{background:linear-gradient(120deg,#0066c8,#0785ed)!important;border-radius:28px!important;box-shadow:0 12px 30px #0066c820!important}
+.contact-panels{gap:15px!important}
+.contact-card{border:1px solid #d8edff!important;border-radius:24px!important;box-shadow:0 8px 22px #0066c80b!important}
+.whatsapp-card{background:linear-gradient(140deg,#0785ed,#0066c8)!important}
+footer{background:linear-gradient(115deg,#0066c8,#034d9e)!important;border-radius:38px 38px 0 0!important}
+.footer-slogan{font-weight:900!important}
+@media(max-width:850px){
+ .hero-card{grid-template-columns:1fr!important;gap:10px!important;padding:20px!important}
+ .hero-visual{min-height:260px!important}
+ .hero-copy{text-align:center!important}
+ .hero-links{justify-content:center!important}
+ .quick-categories{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .categories{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .benefits{grid-template-columns:1fr!important}
+}
+@media(max-width:600px){
+ header .top{padding-bottom:8px!important}
+ header .brand.brand-center #storeLogo.logo{aspect-ratio:3/1!important;max-height:230px!important}
+ header .nav.nav-start{order:2!important;flex:0 0 100%!important;justify-content:space-evenly!important;gap:8px!important;padding:8px 9px 0!important;font-size:.82rem!important}
+ header .head-actions{order:1!important;position:absolute!important;right:8px!important;top:8px!important;padding:0!important;background:#0066c8aa!important;border-radius:14px!important}
+ header .head-icon{width:34px!important;height:36px!important;font-size:1.1rem!important}
+ .hero{padding:12px 0 18px!important}
+ .hero-card{border-radius:22px!important;padding:14px!important}
+ .hero-visual{min-height:205px!important}
+ .hero h1{font-size:2rem!important}
+ .quick-categories{gap:8px!important;margin-bottom:12px!important}
+ .quick-categories a{min-height:96px!important;border-radius:17px!important;padding:8px 3px!important}
+ .quick-categories a span{width:43px!important;height:43px!important;font-size:1.35rem!important}
+ .quick-categories a b{font-size:.7rem!important}
+ .section{padding:17px 0!important}
+ .categories{gap:9px!important}
+ .category{border-radius:17px!important}
+ .category-img{height:132px!important}
+ .category-info{padding:10px!important}
+ .contact-panels{grid-template-columns:1fr!important}
+ footer{border-radius:25px 25px 0 0!important}
+}
+
 </style>
 </head>
 <body>
