@@ -182,70 +182,7 @@ footer{background:linear-gradient(115deg,#0066c8,#034d9e)!important;border-radiu
 }
 
 
-/* Reference layout refinements: compact blue nav, wide promo hero, clean product catalog */
-body{background:#f7fcff!important;color:#123c70!important}
-header{background:#0066c8!important;overflow:visible!important}
-header .top{max-width:none!important;width:100%!important;padding:0 3%!important;min-height:94px!important;gap:18px!important;display:flex!important;align-items:center!important;justify-content:space-between!important}
-header .brand.brand-center{order:2!important;flex:0 1 auto!important;width:auto!important;max-width:260px!important;height:auto!important;margin:0!important;padding:0!important;background:transparent!important;overflow:visible!important}
-header .brand.brand-center #storeLogo.logo{width:clamp(150px,18vw,250px)!important;max-width:100%!important;height:86px!important;aspect-ratio:auto!important;max-height:none!important;object-fit:contain!important;padding:3px!important;border:2px solid #9ceaff!important;border-radius:20px!important;background:#fff!important;box-shadow:0 5px 18px #002b6b40!important}
-header .brand.brand-center #logoFallback.logo{display:flex!important;width:clamp(150px,18vw,250px)!important;height:75px!important;align-items:center!important;justify-content:center!important}
-header .brand.brand-center .brand-copy{display:none!important}
-header .nav.nav-start{order:3!important;display:flex!important;flex:1 1 auto!important;justify-content:flex-end!important;align-items:center!important;gap:clamp(10px,2vw,26px)!important;padding:0!important;flex-wrap:wrap!important}
-header .nav.nav-start a{color:#fff!important;font-weight:850!important}
-header .head-actions{order:1!important;display:flex!important;gap:8px!important;padding:0!important}
-header .head-icon{color:#fff!important;border:1px solid #ffffff35!important;background:#ffffff12!important;border-radius:13px!important}
-.hero{padding:14px 0 20px!important}
-.hero-card{position:relative!important;grid-template-columns:1fr 1fr!important;gap:22px!important;min-height:300px!important;padding:24px!important;border:1px solid #d8efff!important;border-radius:0 0 28px 28px!important;background:linear-gradient(115deg,#dff5ff,#fff 55%,#dff5ff)!important;box-shadow:0 8px 22px #0066c80c!important}
-.hero-visual{min-height:260px!important}
-.hero-photo{inset:0!important;transform:none!important;border:4px solid #fff!important;border-radius:24px!important;background:#e5f6ff!important;box-shadow:0 9px 25px #0066c81c!important}
-.hero-photo img{object-fit:cover!important}
-.hero-copy{text-align:right!important}
-.hero h1{color:#0066c8!important;font-weight:950!important}
-.hero h1 em{color:#0785ed!important}
-.hero p{color:#54718e!important}
-.hero-slogan{color:#0872ce!important}
-.quick-categories{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;margin:0 auto 18px!important}
-.quick-categories a{min-width:0!important;min-height:104px!important;border:1px solid #d7edfc!important;border-radius:22px!important;background:linear-gradient(180deg,#eaf7ff,#fff)!important;box-shadow:0 5px 15px #0066c80b!important;color:#0066c8!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;text-align:center!important;padding:10px 4px!important}
-.quick-categories a span{display:grid!important;place-items:center!important;width:48px!important;height:48px!important;border-radius:50%!important;background:#dff3ff!important;font-size:1.55rem!important}
-.quick-categories a b{font-size:.8rem!important;font-weight:900!important}
-.quick-categories a.quick-cart{background:linear-gradient(140deg,#0785ed,#0066c8)!important;color:#fff!important}
-.quick-categories a.quick-cart span{background:#ffffff25!important}
-.section{padding:22px 0!important}
-.section-title{margin-bottom:18px!important}
-.section-title h2{color:#0066c8!important;font-weight:950!important}
-.categories{gap:13px!important}
-.category{border:1px solid #d7edfc!important;border-radius:18px!important;background:#fff!important;box-shadow:0 5px 17px #0066c80d!important;overflow:hidden!important}
-.category-img{background:#e9f7ff!important}
-.category-info h3{color:#0066c8!important}
-.product-price{color:#0066c8!important}
-.btn{background:linear-gradient(110deg,#0066c8,#0785ed)!important;border-radius:999px!important;box-shadow:0 5px 13px #0066c81c!important}
-.btn.pink,.btn.pale{background:#e6f6ff!important;color:#0066c8!important;box-shadow:none!important}
-.story{border:1px solid #d7edfc!important;background:linear-gradient(120deg,#e8f7ff,#fff)!important;box-shadow:0 8px 24px #0066c809!important;border-radius:24px!important}
-.benefit,.contact-card{border:1px solid #d7edfc!important;border-radius:22px!important;box-shadow:0 6px 18px #0066c809!important}
-.benefit-icon{background:#e2f5ff!important;color:#0066c8!important}
-.whatsapp-card,.cta{background:linear-gradient(120deg,#0066c8,#0785ed)!important;border-radius:24px!important}
-footer{background:linear-gradient(115deg,#0066c8,#034d9e)!important;border-radius:35px 35px 0 0!important}
-@media(max-width:850px){
- header .top{padding:10px 12px!important;min-height:0!important;flex-wrap:wrap!important;gap:10px!important}
- header .brand.brand-center{order:1!important;flex:1 1 auto!important;display:flex!important;justify-content:center!important}
- header .brand.brand-center #storeLogo.logo{height:70px!important;width:min(55vw,220px)!important}
- header .head-actions{order:0!important}
- header .nav.nav-start{order:2!important;flex:0 0 100%!important;justify-content:space-evenly!important;gap:9px!important;font-size:.82rem!important}
- .hero{padding:10px 0 15px!important}
- .hero-card{grid-template-columns:1fr!important;gap:14px!important;padding:14px!important;border-radius:0 0 22px 22px!important}
- .hero-visual{min-height:215px!important}
- .hero-copy{text-align:center!important}
- .hero-links{justify-content:center!important}
- .quick-categories{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
- .quick-categories a{min-height:92px!important;border-radius:17px!important}
- .quick-categories a span{width:42px!important;height:42px!important;font-size:1.3rem!important}
- .quick-categories a b{font-size:.7rem!important}
- .categories{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
- .category-img{height:132px!important}
- .category-info{padding:10px!important}
- .contact-panels{grid-template-columns:1fr!important}
- footer{border-radius:24px 24px 0 0!important}
-}
+
 
 </style>
 </head>
