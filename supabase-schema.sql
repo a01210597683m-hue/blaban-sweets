@@ -11,6 +11,7 @@ create table if not exists public.products (
   description text,
   price numeric(10,2) not null check (price >= 0),
   image_url text,
+  parent_product_id uuid references public.products(id) on delete cascade,
   is_available boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
