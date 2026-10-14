@@ -340,12 +340,12 @@ function renderPaymentDetails(){
    else html+='<p style="margin:0;color:#9a5a00">الدفع بالبطاقة يحتاج ربط بوابة دفع آمنة من إعدادات المتجر قبل تحصيل المبلغ إلكترونيًا.</p>';
  }else if(insta){
    html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentSender">اسم صاحب حساب إنستاباي (اختياري)</label><input id="paymentSender" maxlength="100" autocomplete="name" placeholder="الاسم المسجل بالحساب" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (لو تم التحويل)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري، بعد الدفع)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
  }else if(wallet){
    html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentWalletPhone">رقم المحفظة المستخدمة (اختياري)</label><input id="paymentWalletPhone" inputmode="tel" maxlength="30" autocomplete="tel" placeholder="رقم الموبايل المرتبط بالمحفظة" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (لو تم التحويل)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري، بعد الدفع)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
  }else if(transfer){
-   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (لو تم التحويل)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (اختياري، بعد الدفع)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
  }else{
    html+='<p style="margin:0;line-height:1.7">هيتم تأكيد الطلب واختيار/تأكيد تفاصيل الدفع مع المتجر حسب الطريقة المتاحة.</p>';
  }
