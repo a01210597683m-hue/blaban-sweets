@@ -67,3 +67,36 @@ for each row execute function public.touch_updated_at();
 -- مهم: هذا مخطط بداية آمن نسبيًا، وليس إعدادًا مكتملًا للإنتاج.
 -- قبل تفعيل لوحة الإدارة نضيف جدول admin_users وسياسات RLS مرتبطة به،
 -- ثم ننشئ حساب الإدارة ونتأكد أن العميل لا يستطيع تعديل الأسعار أو قراءة بيانات الآخرين.
+
+-- إعدادات قابلة للتحرير من لوحة الإدارة وتُعرض في واجهة المتجر.
+create table if not exists public.store_settings (
+  id integer primary key check (id = 1),
+  store_name_ar text not null default 'حلو ب-لبن',
+  store_name_en text not null default 'Blaban-sweets',
+  tagline text not null default 'مع حلو ب-لبن حلى أيامك',
+  logo_url text,
+  primary_color text not null default '#153b74' check (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+  accent_color text not null default '#ffdfeb' check (accent_color ~ '^#[0-9A-Fa-f]{6}$'),
+  hero_image_url text,
+  hero_title text not null default 'كل يوم محتاج حاجة حلوة',
+  hero_description text not null default 'من أول معلقة لآخر لقمة… خلي للحلاوة مكان في يومك.',
+  story_title text not null default 'حلى أيامك، على طريقتك',
+  story_description text not null default 'اكتشف عالم حلو ب-لبن.',
+  cta_title text not null default 'جاهزين نخلي التجربة أحلى؟',
+  cta_description text not null default 'خلي للحلاوة مكان في يومك.',
+  updated_at timestamptz not null default now()
+);
+alter table public.store_settings enable row level security;
+drop policy if exists "Public can read store settings" on public.store_settings;
+create policy "Public can read store settings" on public.store_settings
+for select to anon, authenticated using (true);
+drop policy if exists "Store admin can insert settings" on public.store_settings;
+create policy "Store admin can insert settings" on public.store_settings
+for insert to authenticated
+with check ((auth.jwt() ->> 'email') = 'blabansweets339@gmail.com');
+drop policy if exists "Store admin can update settings" on public.store_settings;
+create policy "Store admin can update settings" on public.store_settings
+for update to authenticated
+using ((auth.jwt() ->> 'email') = 'blabansweets339@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'blabansweets339@gmail.com');
+insert into public.store_settings (id) values (1) on conflict (id) do nothing;
