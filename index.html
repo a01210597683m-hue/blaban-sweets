@@ -319,6 +319,40 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&detailModal.classLi
 document.getElementById("orderPaymentMethod").addEventListener("change",()=>{const chosen=storePaymentMethods.find(x=>String(x.key||x.label)===document.getElementById("orderPaymentMethod").value);const box=document.getElementById("paymentMethodDetails");const paymentUrl=safeExternalUrl(chosen?.url);if(!chosen||(!chosen.details&&!paymentUrl)){box.style.display="none";box.textContent="";return}box.style.display="block";box.innerHTML=(chosen.details?'<div style="white-space:pre-wrap">'+esc(chosen.details)+'</div>':"")+(paymentUrl?'<p style="margin:8px 0 0"><a class="btn" href="'+esc(paymentUrl)+'" target="_blank" rel="noopener noreferrer">فتح رابط الدفع الآمن ↗</a></p>':"");});
 document.getElementById("orderPaymentMethod").addEventListener("change",()=>{const chosen=storePaymentMethods.find(x=>String(x.key||x.label)===document.getElementById("orderPaymentMethod").value);const box=document.getElementById("paymentMethodDetails");if(!chosen||(!chosen.details&&!chosen.url)){box.style.display="none";box.innerHTML="";return}box.style.display="block";box.innerHTML=(chosen.details?'<div style="white-space:pre-wrap">'+esc(chosen.details)+'</div>':"")+(chosen.url?'<p style="margin:8px 0 0"><a class="btn" href="'+esc(chosen.url)+'" target="_blank" rel="noopener">فتح رابط الدفع الآمن ↗</a></p>':"");});
 document.getElementById("cartSummary").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(r)orderCart.delete(String(r.dataset.remove));if(q){const id=String(q.dataset.qty),n=(orderCart.get(id)||0)+Number(q.dataset.delta);if(n<1)orderCart.delete(id);else orderCart.set(id,Math.min(20,n));}renderOrderCart();});
+
+function renderPaymentDetails(){
+ const select=document.getElementById("orderPaymentMethod"),box=document.getElementById("paymentMethodDetails");
+ if(!select||!box)return;
+ const method=storePaymentMethods.find(x=>String(x.key||x.label)===select.value);
+ if(!method){box.style.display="none";box.innerHTML="";return}
+ const label=String(method.label||method.key||"").trim();
+ const norm=label.toLowerCase();
+ const card=/visa|master|بطاق|فيزا|ائتمان|خصم|credit|debit/.test(norm);
+ const insta=/insta|انستا|إنستا|انستاباي/.test(norm);
+ const wallet=/محفظ|wallet|فودافون كاش|اتصالات كاش|اورنج كاش|أورنج كاش|we pay/.test(norm);
+ const transfer=/تحويل|بنكي|bank/.test(norm);
+ let html='<div style="font-weight:800;color:#075cae;margin-bottom:8px">تفاصيل '+esc(label)+'</div>';
+ const configured=[method.instructions,method.details,method.account_name,method.account_number,method.phone,method.address].filter(Boolean);
+ if(configured.length)html+='<div style="padding:10px;border-radius:10px;background:#eaf6ff;margin-bottom:10px;line-height:1.8">'+configured.map(esc).join("<br>")+'</div>';
+ if(card){
+   html+='<p style="margin:0 0 10px;line-height:1.7">لأمانك، بيانات البطاقة تُدخل فقط داخل صفحة دفع إلكترونية آمنة تابعة لمزوّد الدفع. لا تكتبي رقم البطاقة أو رمز الأمان أو OTP هنا.</p>';
+   if(storeVisaPaymentUrl&&/^https:\/\//i.test(storeVisaPaymentUrl))html+='<a class="btn" href="'+esc(storeVisaPaymentUrl)+'" target="_blank" rel="noopener noreferrer">الانتقال لصفحة الدفع الآمنة</a>';
+   else html+='<p style="margin:0;color:#9a5a00">الدفع بالبطاقة يحتاج ربط بوابة دفع آمنة من إعدادات المتجر قبل تحصيل المبلغ إلكترونيًا.</p>';
+ }else if(insta){
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentSender">اسم صاحب حساب إنستاباي (اختياري)</label><input id="paymentSender" maxlength="100" autocomplete="name" placeholder="الاسم المسجل بالحساب" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (لو تم التحويل)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+ }else if(wallet){
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentWalletPhone">رقم المحفظة المستخدمة (اختياري)</label><input id="paymentWalletPhone" inputmode="tel" maxlength="30" autocomplete="tel" placeholder="رقم الموبايل المرتبط بالمحفظة" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (لو تم التحويل)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+ }else if(transfer){
+   html+='<label style="display:block;font-weight:700;margin:8px 0 4px" for="paymentReference">رقم مرجع التحويل (لو تم التحويل)</label><input id="paymentReference" maxlength="100" placeholder="رقم العملية / المرجع" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px;background:white">';
+ }else{
+   html+='<p style="margin:0;line-height:1.7">هيتم تأكيد الطلب واختيار/تأكيد تفاصيل الدفع مع المتجر حسب الطريقة المتاحة.</p>';
+ }
+ box.innerHTML=html;box.style.display="block";
+}
+document.getElementById("orderPaymentMethod")?.addEventListener("change",renderPaymentDetails);
+
 document.getElementById("checkoutForm").addEventListener("submit",async e=>{
  e.preventDefault();const statusEl=document.getElementById("orderStatus"),btn=document.getElementById("submitOrder");
  if(!orderCart.size){statusEl.textContent="اختاري منتجًا واحدًا على الأقل من المنيو.";return}
@@ -328,7 +362,7 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
  try{
   const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
   const client=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  const {data,error}=await client.rpc("create_store_order",{p_customer_name:document.getElementById("orderName").value.trim(),p_customer_phone:document.getElementById("orderPhone").value.trim(),p_delivery_address:document.getElementById("orderAddress").value.trim(),p_notes:("طريقة الدفع: "+(storePaymentMethods.find(x=>String(x.key||x.label)===document.getElementById("orderPaymentMethod").value)?.label||document.getElementById("orderPaymentMethod").value)+(document.getElementById("orderNotes").value.trim()?" | ملاحظات: "+document.getElementById("orderNotes").value.trim():"")).slice(0,1000),p_items:[...orderCart.entries()].map(([id,quantity])=>({id,quantity})),p_delivery_zone_id:selectedZone.id,p_branch_id:document.getElementById("orderBranch").value||null});
+  const {data,error}=await client.rpc("create_store_order",{p_customer_name:document.getElementById("orderName").value.trim(),p_customer_phone:document.getElementById("orderPhone").value.trim(),p_delivery_address:document.getElementById("orderAddress").value.trim(),p_notes:("طريقة الدفع: "+(storePaymentMethods.find(x=>String(x.key||x.label)===document.getElementById("orderPaymentMethod").value)?.label||document.getElementById("orderPaymentMethod").value)+(()=>{const d=[];const sender=document.getElementById("paymentSender")?.value.trim();const wallet=document.getElementById("paymentWalletPhone")?.value.trim();const ref=document.getElementById("paymentReference")?.value.trim();if(sender)d.push("اسم حساب الدفع: "+sender);if(wallet)d.push("رقم المحفظة: "+wallet);if(ref)d.push("مرجع التحويل: "+ref);return d.length?" | "+d.join(" | "):""})()+(document.getElementById("orderNotes").value.trim()?" | ملاحظات: "+document.getElementById("orderNotes").value.trim():"")).slice(0,1000),p_items:[...orderCart.entries()].map(([id,quantity])=>({id,quantity})),p_delivery_zone_id:selectedZone.id,p_branch_id:document.getElementById("orderBranch").value||null});
   if(error)throw error;
   const summary=(data.items||[]).map(x=>x.name+" × "+x.quantity+" = "+money(x.subtotal)).join("\n");
   const message="طلب جديد من حلو ب لبن "+data.order_number+"\n"+summary+"\nقيمة المنتجات: "+money(data.subtotal_amount)+"\nالتوصيل: "+money(data.delivery_fee)+"\nالإجمالي شامل التوصيل: "+money(data.total_amount)+"\nالاسم: "+document.getElementById("orderName").value.trim()+"\nالهاتف: "+document.getElementById("orderPhone").value.trim()+"\nالعنوان: "+document.getElementById("orderAddress").value.trim()+"\nملاحظات: "+(document.getElementById("orderNotes").value.trim()||"لا يوجد");
