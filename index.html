@@ -77,6 +77,25 @@ footer .foot{position:relative;z-index:1}footer .foot small,footer .foot-links{c
 .product-modal-panel{background:#fbfdff}.detail-selected{background:#e4f5ff}
 @media(max-width:850px){.top{grid-template-columns:1fr auto;min-height:88px}.nav-start{display:none}.brand-center{grid-column:1;grid-row:1;justify-self:start;min-width:0;padding:4px 7px}.head-actions{grid-column:2;grid-row:1}.quick-categories{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-card{grid-template-columns:1fr 1fr}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.contact-panels{grid-template-columns:1fr}.contact-card{min-height:140px}}
 @media(max-width:520px){.top{min-height:76px;gap:7px}.brand-center{height:60px;border-radius:17px;border-width:2px}#storeLogo.logo,#logoFallback.logo{width:145px;height:51px;font-size:1.35rem}.head-actions{gap:3px}.head-icon{width:31px;height:36px;font-size:1.3rem}.hero{padding-bottom:14px}.hero-card{grid-template-columns:1fr;padding:18px 16px 25px;border-radius:0 0 28px 28px;gap:8px}.hero-visual{min-height:205px;order:0}.hero-photo{inset:3px;border-radius:22px}.hero-copy{padding:8px 3px;text-align:center}.hero h1{font-size:2.2rem}.hero p{font-size:.94rem;margin-bottom:15px}.hero-links{justify-content:center}.hero-slogan{margin-top:9px}.quick-categories{gap:8px;margin:8px auto 20px}.quick-categories a{min-height:95px;border-radius:18px;padding:9px 4px}.quick-categories span{font-size:1.6rem}.quick-categories b{font-size:.74rem}.section{padding:20px 0}.categories{gap:10px}.category-img{height:140px}.category-info{padding:10px}.category-info h3{font-size:.94rem}.category-info p{font-size:.78rem}.product-price{font-size:.95rem}.contact-panels{gap:12px}.contact-card{padding:17px 12px;border-radius:21px}footer{border-radius:30px 30px 0 0}.footer-slogan{font-size:1.2rem}}
+
+/* Store header: uploaded wide artwork spans the full top; navigation is below */
+header{background:#0066c8!important;border:0!important;box-shadow:0 7px 24px #004b9c20!important}
+header .top{width:100%!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0 0 10px!important;display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;gap:0!important}
+header .brand.brand-center{order:0!important;display:flex!important;flex:0 0 100%!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:0!important;height:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#0066c8!important;box-shadow:none!important;overflow:hidden!important;gap:0!important}
+header .brand.brand-center #storeLogo.logo{display:block;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:3/1!important;min-height:0!important;max-height:360px!important;margin:0!important;padding:0!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:0!important;background:#0066c8!important;box-shadow:none!important}
+header .brand.brand-center #logoFallback.logo{display:none!important}
+header .brand.brand-center .brand-copy{display:none!important}
+header .nav.nav-start{order:1!important;display:flex!important;flex:1 1 auto!important;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;padding:8px 10px 0!important;gap:clamp(12px,3vw,30px)!important}
+header .head-actions{order:2!important;flex:0 0 auto!important;justify-content:center!important;padding:8px 12px 0!important}
+header .nav.nav-start a{color:#fff!important}
+header .head-icon{color:#fff!important}
+@media(max-width:600px){
+ header .top{padding-bottom:8px!important}
+ header .brand.brand-center #storeLogo.logo{aspect-ratio:3/1!important;max-height:220px!important}
+ header .nav.nav-start{order:2!important;flex:0 0 100%!important;justify-content:space-evenly!important;gap:8px!important;padding:7px 9px 0!important;font-size:.83rem!important}
+ header .head-actions{order:1!important;position:absolute!important;right:8px!important;top:8px!important;padding:0!important;background:#0066c8aa!important;border-radius:14px!important}
+ header .head-icon{width:34px!important;height:36px!important;font-size:1.15rem!important}
+}
 </style>
 </head>
 <body>
