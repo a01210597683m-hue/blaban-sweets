@@ -157,7 +157,19 @@ from pg_proc p
 join pg_namespace n on n.oid = p.pronamespace
 where n.nspname = 'public' and p.proname = 'create_store_order';
 
--- CHECK 3: list policies after hardening for a quick verification.
+-- CHECK 3: storage bucket visibility and upload policies (read-only audit).
+-- Upload policies are deliberately not overwritten here because a Supabase project
+-- may contain unrelated buckets; review any broad policies before launch.
+select id as bucket_id, name, public as publicly_readable
+from storage.buckets
+where id = 'product-images';
+
+select schemaname, tablename, policyname, roles, cmd, qual, with_check
+from pg_policies
+where schemaname = 'storage' and tablename = 'objects'
+order by policyname;
+
+-- CHECK 4: list policies after hardening for a quick verification.
 select schemaname, tablename, policyname, roles, cmd, qual, with_check
 from pg_policies
 where schemaname = 'public'
