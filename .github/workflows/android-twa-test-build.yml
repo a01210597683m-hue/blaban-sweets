@@ -72,6 +72,9 @@ jobs:
           TEST_KEY_PASSWORD="$(openssl rand -hex 16)"
           export TEST_KEY_PASSWORD
           mkdir -p android-twa
+          # Pre-create the disposable keystore at Bubblewrap's default path so init skips
+          # its fragile interactive certificate/keytool prompts entirely.
+          keytool -genkeypair -v -keystore android-twa/android.keystore -storepass "$TEST_KEY_PASSWORD" -alias android -keypass "$TEST_KEY_PASSWORD" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=BLABAN-SWEETS, OU=Apps, O=BLABAN-SWEETS, C=EG" -storetype JKS
           cat > /tmp/init-bubblewrap.exp <<'EXPECT'
           set timeout 180
           # Fail immediately on a prompt mismatch. Expect otherwise returns "timeout" and the
@@ -119,20 +122,6 @@ jobs:
           send "\r"
           expect -nocase -re {\?[^\n]{0,40}Key name:}
           send "android\r"
-          expect -nocase -re {\?[^\n]{0,40}Do you want to create one now\?}
-          send "\r"
-          expect -nocase -re {\?[^\n]{0,40}First and Last names}
-          send "BLABAN-SWEETS\r"
-          expect -nocase -re {\?[^\n]{0,40}Organizational Unit}
-          send "Apps\r"
-          expect -nocase -re {\?[^\n]{0,40}Organization}
-          send "BLABAN-SWEETS\r"
-          expect -nocase -re {\?[^\n]{0,40}Country \(2 letter code\)}
-          send "EG\r"
-          expect -nocase -re {\?[^\n]{0,40}Password for the Key Store:}
-          send "$pass\r"
-          expect -nocase -re {\?[^\n]{0,40}Password for the Key:}
-          send "$pass\r"
           expect eof
           catch wait result
           exit [lindex $result 3]
