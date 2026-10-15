@@ -3,6 +3,7 @@ name: Android TWA preflight
 on:
   push:
     branches:
+      - main
       - android-twa-scaffold
     paths:
       - '.github/workflows/android-twa-preflight.yml'
