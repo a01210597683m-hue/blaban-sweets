@@ -67,7 +67,23 @@ jobs:
           test -n "${ANDROID_HOME:-}"
           mkdir -p "$HOME/.bubblewrap"
           node -e 'const fs=require("node:fs"); fs.writeFileSync(process.env.HOME+"/.bubblewrap/config.json", JSON.stringify({jdkPath:process.env.JAVA_HOME,androidSdkPath:process.env.ANDROID_HOME},null,2)+"\n")'
-          npx --yes @bubblewrap/cli doctor
+          # Retry transient npm registry/network failures before failing the preflight.
+          doctor_ok=false
+          for attempt in 1 2 3; do
+            echo "Bubblewrap doctor attempt $attempt/3"
+            if npx --yes --fetch-retries=3 --fetch-timeout=60000 @bubblewrap/cli doctor; then
+              doctor_ok=true
+              break
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Bubblewrap doctor did not complete; retrying after a short wait."
+              sleep 15
+            fi
+          done
+          if [ "$doctor_ok" != true ]; then
+            echo "::error::Bubblewrap doctor failed after 3 attempts. Check npm registry/network logs."
+            exit 1
+          fi
 
       - name: Verify isolated preview manifest is reachable and has expected basics
         shell: bash
