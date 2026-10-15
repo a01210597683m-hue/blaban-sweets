@@ -83,55 +83,55 @@ jobs:
 
           # Answer each prompt in order. Do not use a catch-all matcher: Inquirer redraws
           # old prompts in the terminal and broad matchers can send an answer to the wrong field.
-          expect -nocase -re {\?[^[:newline:]]{0,40}Domain:}
+          expect -nocase -re {\?[^\n]{0,40}Domain:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}URL path:}
+          expect -nocase -re {\?[^\n]{0,40}URL path:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Application name:}
+          expect -nocase -re {\?[^\n]{0,40}Application name:}
           send "BLABAN-SWEETS\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Short name:}
+          expect -nocase -re {\?[^\n]{0,40}Short name:}
           send "BLABAN\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Application ID:}
+          expect -nocase -re {\?[^\n]{0,40}Application ID:}
           send "com.blabansweets.app\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Starting version code for the new app version:}
+          expect -nocase -re {\?[^\n]{0,40}Starting version code for the new app version:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Display mode:}
+          expect -nocase -re {\?[^\n]{0,40}Display mode:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Orientation:}
+          expect -nocase -re {\?[^\n]{0,40}Orientation:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Status bar color:}
+          expect -nocase -re {\?[^\n]{0,40}Status bar color:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Splash screen color:}
+          expect -nocase -re {\?[^\n]{0,40}Splash screen color:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Icon URL:}
+          expect -nocase -re {\?[^\n]{0,40}Icon URL:}
           send "$icon\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Maskable icon URL:}
+          expect -nocase -re {\?[^\n]{0,40}Maskable icon URL:}
           send "$icon\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Include app shortcuts\?}
+          expect -nocase -re {\?[^\n]{0,40}Include app shortcuts\?}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Monochrome icon URL:}
+          expect -nocase -re {\?[^\n]{0,40}Monochrome icon URL:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Include support for Play Billing\?}
+          expect -nocase -re {\?[^\n]{0,40}Include support for Play Billing\?}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Request geolocation permission\?}
+          expect -nocase -re {\?[^\n]{0,40}Request geolocation permission\?}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Key store location:}
+          expect -nocase -re {\?[^\n]{0,40}Key store location:}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Key name:}
+          expect -nocase -re {\?[^\n]{0,40}Key name:}
           send "android\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Do you want to create one now\?}
+          expect -nocase -re {\?[^\n]{0,40}Do you want to create one now\?}
           send "\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}First and Last names}
+          expect -nocase -re {\?[^\n]{0,40}First and Last names}
           send "BLABAN-SWEETS\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Organizational Unit}
+          expect -nocase -re {\?[^\n]{0,40}Organizational Unit}
           send "Apps\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Organization}
+          expect -nocase -re {\?[^\n]{0,40}Organization}
           send "BLABAN-SWEETS\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Country \(2 letter code\)}
+          expect -nocase -re {\?[^\n]{0,40}Country \(2 letter code\)}
           send "EG\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Password for the Key Store:}
+          expect -nocase -re {\?[^\n]{0,40}Password for the Key Store:}
           send "$pass\r"
-          expect -nocase -re {\?[^[:newline:]]{0,40}Password for the Key:}
+          expect -nocase -re {\?[^\n]{0,40}Password for the Key:}
           send "$pass\r"
           expect eof
           catch wait result
