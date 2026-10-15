@@ -1,0 +1,113 @@
+name: Android TWA preflight
+
+on:
+  push:
+    branches:
+      - android-twa-scaffold
+    paths:
+      - '.github/workflows/android-twa-preflight.yml'
+      - 'ANDROID-TWA-BUILD.md'
+      - 'manifest.webmanifest'
+      - 'icons/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-twa-preflight-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pwa-preflight:
+    name: Check isolated preview PWA readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out this branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up JDK 17 for non-interactive Bubblewrap validation
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Configure Bubblewrap without interactive prompts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${JAVA_HOME:-}"
+          test -n "${ANDROID_HOME:-}"
+          mkdir -p "$HOME/.bubblewrap"
+          node -e 'const fs=require("node:fs"); fs.writeFileSync(process.env.HOME+"/.bubblewrap/config.json", JSON.stringify({jdkPath:process.env.JAVA_HOME,androidSdkPath:process.env.ANDROID_HOME},null,2)+"\\n")'
+          npx --yes @bubblewrap/cli doctor
+
+      - name: Verify isolated preview manifest is reachable and has expected basics
+        shell: bash
+        run: |
+          node <<'NODE'
+          const url = 'https://android-twa-scaffold.blaban-sweets.pages.dev/manifest.webmanifest';
+          const expectedName = 'BLABAN-SWEETS | حلو ب لبن';
+          const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+          (async () => {
+            let response;
+            let lastError;
+            for (let attempt = 1; attempt <= 12; attempt++) {
+              try {
+                response = await fetch(url, { redirect: 'follow' });
+                console.log('Attempt', attempt, 'HTTP', response.status, 'content-type', response.headers.get('content-type'));
+                if (response.ok) break;
+              } catch (error) {
+                lastError = error;
+              }
+              await sleep(5000);
+            }
+            if (!response || !response.ok) throw new Error(`Preview manifest unavailable after retries: ${lastError || response?.status}`);
+            console.log('Manifest URL after redirects:', response.url);
+            const body = await response.text();
+            if (!/json/i.test(response.headers.get('content-type') || '') && !body.trimStart().startsWith('{')) {
+              throw new Error('Preview manifest URL returned HTML or another non-JSON response.');
+            }
+            const manifest = JSON.parse(body);
+            const errors = [];
+            if (manifest.name !== expectedName) errors.push(`Unexpected name: ${manifest.name}`);
+            if (manifest.start_url !== '/') errors.push(`Unexpected start_url: ${manifest.start_url}`);
+            if (manifest.scope !== '/') errors.push(`Unexpected scope: ${manifest.scope}`);
+            if (manifest.dir !== 'rtl') errors.push(`Expected dir=rtl, got: ${manifest.dir}`);
+            if (manifest.display !== 'standalone') errors.push(`Expected display=standalone, got: ${manifest.display}`);
+            if (!Array.isArray(manifest.icons) || !manifest.icons.some(i => i.sizes === '192x192') || !manifest.icons.some(i => i.sizes === '512x512')) {
+              errors.push('Manifest must include 192x192 and 512x512 icons');
+            }
+            if (errors.length) {
+              console.error(errors.join('\\n'));
+              process.exit(1);
+            }
+            console.log('Preview manifest basics passed. NOTE: this is a preview origin, not the final Play Store origin.');
+          })().catch(e => { console.error(e); process.exit(1); });
+          NODE
+
+      - name: Run Bubblewrap PWA validation against isolated preview
+        shell: bash
+        run: |
+          set -o pipefail
+          npx --yes @bubblewrap/cli validate --url=https://android-twa-scaffold.blaban-sweets.pages.dev 2>&1 | tee bubblewrap-validation.log
+
+      - name: Upload preflight report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-twa-preflight-report
+          path: bubblewrap-validation.log
+          if-no-files-found: warn
+          retention-days: 7

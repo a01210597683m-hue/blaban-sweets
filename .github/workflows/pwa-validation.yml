@@ -1,0 +1,102 @@
+name: Validate BLABAN-SWEETS PWA assets
+
+on:
+  push:
+    branches:
+      - android-play-prep
+      - pwa-safe-main
+  pull_request:
+    branches:
+      - feature/pwa-app-foundation
+      - main
+    paths:
+      - "manifest.webmanifest"
+      - "sw.js"
+      - "icons/**"
+      - "index.html"
+      - "admin.html"
+      - "_headers"
+      - "ANDROID-PLAY-READINESS.md"
+      - ".github/workflows/pwa-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-pwa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate app manifest, PNG icons, and customer/admin separation
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
+          if (manifest.name !== 'BLABAN-SWEETS | حلو ب لبن') {
+            throw new Error('Unexpected app name in manifest');
+          }
+          if (manifest.display !== 'standalone') {
+            throw new Error('Manifest display must be standalone');
+          }
+          if (manifest.start_url !== '/' || manifest.scope !== '/') {
+            throw new Error('Customer app must launch at the storefront root');
+          }
+          if ((manifest.shortcuts || []).some(item => /admin|إدارة/i.test(String(item.url) + ' ' + String(item.name)))) {
+            throw new Error('Admin route must not be exposed as a customer app shortcut');
+          }
+          for (const expected of [
+            { path: 'icons/blaban-icon-192.png', size: 192 },
+            { path: 'icons/blaban-icon-512.png', size: 512 },
+          ]) {
+            const icon = manifest.icons.find(item => item.src === '/' + expected.path);
+            if (!icon || icon.sizes !== expected.size + 'x' + expected.size || icon.type !== 'image/png') {
+              throw new Error('Missing or incorrectly declared icon: ' + expected.path);
+            }
+            const bytes = fs.readFileSync(expected.path);
+            const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+            if (bytes.length < 24 || !bytes.subarray(0, 8).equals(signature)) {
+              throw new Error('Invalid PNG file: ' + expected.path);
+            }
+            const width = bytes.readUInt32BE(16);
+            const height = bytes.readUInt32BE(20);
+            if (width !== expected.size || height !== expected.size) {
+              throw new Error('Unexpected dimensions for ' + expected.path + ': ' + width + 'x' + height);
+            }
+          }
+          const sw = fs.readFileSync('sw.js', 'utf8');
+          for (const path of [
+            '/icons/blaban-icon-192.png',
+            '/icons/blaban-icon-512.png',
+          ]) {
+            if (!sw.includes(path)) throw new Error('Service worker does not cache ' + path);
+          }
+          if (!/url\.pathname\s*===\s*["']\/admin\.html["']/.test(sw)) {
+            throw new Error('Service worker must explicitly bypass the admin route');
+          }
+          if (!/if\s*\(url\.pathname\s*!==\s*["']\/["']\)\s*return/.test(sw)) {
+            throw new Error('Service worker must only cache the storefront navigation shell');
+          }
+          const storefront = fs.readFileSync('index.html', 'utf8');
+          const admin = fs.readFileSync('admin.html', 'utf8');
+          if (!/rpc\(["']create_store_order["']/.test(storefront)) {
+            throw new Error('Checkout must submit orders through the validated create_store_order RPC');
+          }
+          const rpcStart = storefront.indexOf('rpc("create_store_order"');
+          const rpcEnd = rpcStart >= 0 ? storefront.indexOf('});', rpcStart) : -1;
+          if (rpcStart < 0 || rpcEnd < 0) {
+            throw new Error('Could not verify create_store_order arguments in checkout');
+          }
+          const rpcCall = storefront.slice(rpcStart, rpcEnd);
+          if (/p_(?:price|subtotal|total_amount|delivery_fee)\s*:/.test(rpcCall)) {
+            throw new Error('Checkout must not send client-calculated prices or totals to the order RPC');
+          }
+          if (!/admin_users/.test(admin) || !/signOut/.test(admin)) {
+            throw new Error('Admin UI must check admin membership and reject non-admin sessions');
+          }
+          if (/(?:service[_-]?role[_-]?key|sb_secret_[A-Za-z0-9_-]{16,})/i.test(storefront + admin)) {
+            throw new Error('Secret/service-role credentials must never be embedded in browser HTML');
+          }
+          console.log('PWA assets, checkout RPC boundary, no client price submission, and admin separation validated.');
+          NODE

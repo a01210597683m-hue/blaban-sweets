@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#153b74">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/icons/blaban-icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
  <meta name="google-site-verification" content="jSYA1EoFHLDIAUue3qkAmjle8t8wkJsBg6YDsC7N_vk" />
 <meta name="description" content="حلو ب لبن — مع حلو ب لبن / حلى أيامك">
 <title>حلو ب لبن | مع حلو ب لبن / حلى أيامك</title>
@@ -440,5 +445,12 @@ document.addEventListener("keydown",event=>{
 });
 
 showProducts();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
 </script>
 </body></html>
