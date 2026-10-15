@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: android-twa-test-build-prompt-diagnostic
+  group: android-twa-test-build-prompt-match-v2
   cancel-in-progress: true
 
 jobs:
