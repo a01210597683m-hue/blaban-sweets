@@ -3,6 +3,7 @@ name: Validate BLABAN-SWEETS PWA assets
 on:
   push:
     branches:
+      - main
       - android-play-prep
       - pwa-safe-main
   pull_request:
