@@ -81,7 +81,7 @@ jobs:
           # script would keep sending answers into the wrong prompts, corrupting the setup.
           expect_before timeout { puts stderr "ERROR: Timed out waiting for the expected Bubblewrap prompt; aborting safely."; exit 124 }
           set pass $env(TEST_KEY_PASSWORD)
-          set icon "https://raw.githubusercontent.com/mirnaselect-droid/blaban-sweets/android-twa-test-build/icons/blaban-icon-512.png"
+          set icon "https://blaban-sweets.pages.dev/icons/blaban-icon-512.png"
           spawn npx --yes @bubblewrap/cli init --manifest=https://blaban-sweets.pages.dev/manifest.webmanifest --directory=android-twa
 
           # Answer each prompt in order. Do not use a catch-all matcher: Inquirer redraws
