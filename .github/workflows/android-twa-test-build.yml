@@ -74,7 +74,7 @@ jobs:
           mkdir -p android-twa
           # Pre-create the disposable keystore at Bubblewrap's default path so init skips
           # its fragile interactive certificate/keytool prompts entirely.
-          keytool -genkeypair -v -keystore android-twa/android.keystore -storepass "$TEST_KEY_PASSWORD" -alias android -keypass "$TEST_KEY_PASSWORD" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=BLABAN-SWEETS, OU=Apps, O=BLABAN-SWEETS, C=EG" -storetype JKS
+          keytool -genkeypair -v -keystore android-twa/android-keystore -storepass "$TEST_KEY_PASSWORD" -alias android -keypass "$TEST_KEY_PASSWORD" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=BLABAN-SWEETS, OU=Apps, O=BLABAN-SWEETS, C=EG" -storetype JKS
           cat > /tmp/init-bubblewrap.exp <<'EXPECT'
           set timeout 180
           # Fail immediately on a prompt mismatch. Expect otherwise returns "timeout" and the
