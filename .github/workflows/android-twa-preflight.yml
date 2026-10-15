@@ -51,10 +51,13 @@ jobs:
           test -x "$SDKMANAGER"
           echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
-          echo "$(dirname "$SDKMANAGER")" >> "$GITHUB_PATH"
+          SDKMANAGER_DIR="$(dirname "$SDKMANAGER")"
+          echo "$SDKMANAGER_DIR" >> "$GITHUB_PATH"
           LICENSE_ACCEPTANCES="$(printf 'y\\n%.0s' {1..100})"
           "$SDKMANAGER" --licenses <<< "$LICENSE_ACCEPTANCES" >/dev/null
-          "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;36.1.0"
+          # Bubblewrap expects sdkmanager at $ANDROID_HOME/bin/sdkmanager on modern SDK layouts.
+          if [ ! -e "$SDK_ROOT/bin" ]; then ln -s "$SDKMANAGER_DIR" "$SDK_ROOT/bin"; fi
 
       - name: Configure Bubblewrap without interactive prompts
         shell: bash
