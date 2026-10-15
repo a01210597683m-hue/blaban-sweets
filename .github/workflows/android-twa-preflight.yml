@@ -116,8 +116,26 @@ jobs:
       - name: Run Bubblewrap PWA validation against isolated preview
         shell: bash
         run: |
-          set -o pipefail
-          npx --yes @bubblewrap/cli validate --url=https://android-twa-scaffold.blaban-sweets.pages.dev 2>&1 | tee bubblewrap-validation.log
+          set -uo pipefail
+          : > bubblewrap-validation.log
+          for attempt in 1 2 3; do
+            echo "Bubblewrap validation attempt $attempt/3" | tee -a bubblewrap-validation.log
+            if npx --yes @bubblewrap/cli validate --url=https://android-twa-scaffold.blaban-sweets.pages.dev 2>&1 | tee /tmp/bubblewrap-validation-attempt.log | tee -a bubblewrap-validation.log; then
+              exit 0
+            fi
+            if grep -Eqi 'status 429|HTTP 429|Too Many Requests' /tmp/bubblewrap-validation-attempt.log; then
+              if [ "$attempt" -lt 3 ]; then
+                echo "Google PageSpeed rate-limited this attempt; waiting 30 seconds before retry." | tee -a bubblewrap-validation.log
+                sleep 30
+                continue
+              fi
+              echo "PageSpeed remained rate-limited after 3 attempts." | tee -a bubblewrap-validation.log
+              exit 1
+            fi
+            echo "Bubblewrap validation failed for a reason other than rate limiting; not retrying automatically." | tee -a bubblewrap-validation.log
+            exit 1
+          done
+          exit 1
 
       - name: Upload preflight report
         if: always()
