@@ -321,10 +321,9 @@ function selectedDeliveryZone(){return deliveryZones.find(z=>String(z.id)===Stri
 function renderBranchOptions(){
  const select=document.getElementById("orderBranch");
  if(!select)return;
- const zone=selectedDeliveryZone();
- const city=String(zone?.city||"").trim().toLocaleLowerCase();
- const matches=city?storeBranches.filter(b=>String(b.city||"").trim().toLocaleLowerCase()===city):[];
- select.innerHTML='<option value="">بدون تحديد فرع</option>'+matches.map(b=>'<option value="'+esc(b.id)+'">'+esc([b.name,b.city,b.area].filter(Boolean).join(" - "))+'</option>').join("");
+ // Branch assignment is optional; show every active branch even when its city
+ // differs from the delivery-zone city, so the customer can select the responsible branch.
+ select.innerHTML='<option value="">بدون تحديد فرع</option>'+storeBranches.map(b=>'<option value="'+esc(b.id)+'">'+esc([b.name,b.city,b.area].filter(Boolean).join(" - "))+'</option>').join("");
 }
 
 async function showProducts(){try{const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await loadStoreSettings(sb);await loadDeliveryOptions(sb);const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});if(error)throw error;availableProducts=data||[];const mainProducts=availableProducts.filter(p=>!p.parent_product_id);if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';return}grid.innerHTML=mainProducts.map(p=>{const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));const chosen=variants[0]||p;const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));return '<article class="category product-card" role="button" tabindex="0" data-open-product="'+esc(p.id)+'"><div class="category-img"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt="'+esc(p.name)+'"></div><div class="category-info"><h3>'+esc(p.name)+'</h3>'+(p.description?'<p>'+esc(p.description)+'</p>':'')+'<span class="product-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><button type="button" class="btn" data-open-product="'+esc(p.id)+'" style="width:100%;margin-top:12px">عرض التفاصيل والأصناف ←</button></div></article>'}).join("");}catch(e){grid.innerHTML='<div class="empty">مش قادرين نحمل المنيو دلوقتي. حاولي تحديث الصفحة بعد شوية.</div>';console.error(e)}}
