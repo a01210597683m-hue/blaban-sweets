@@ -114,6 +114,7 @@ jobs:
           NODE
 
       - name: Run Bubblewrap PWA validation against isolated preview
+        id: bubblewrap_validation
         shell: bash
         run: |
           set -uo pipefail
@@ -121,6 +122,8 @@ jobs:
           for attempt in 1 2 3; do
             echo "Bubblewrap validation attempt $attempt/3" | tee -a bubblewrap-validation.log
             if npx --yes @bubblewrap/cli validate --url=https://android-twa-scaffold.blaban-sweets.pages.dev 2>&1 | tee /tmp/bubblewrap-validation-attempt.log | tee -a bubblewrap-validation.log; then
+              echo "status=passed" >> "$GITHUB_OUTPUT"
+              echo "Bubblewrap validation completed successfully." | tee -a bubblewrap-validation.log
               exit 0
             fi
             if grep -Eqi 'status 429|HTTP 429|Too Many Requests' /tmp/bubblewrap-validation-attempt.log; then
@@ -130,13 +133,44 @@ jobs:
                 continue
               fi
               echo "PageSpeed remained rate-limited after 3 attempts; SDK and manifest checks passed, but the external PageSpeed-based validation could not complete." | tee -a bubblewrap-validation.log
+              echo "status=unverified_rate_limited" >> "$GITHUB_OUTPUT"
               echo "::warning::Google PageSpeed returned HTTP 429 after 3 attempts. Android SDK setup and manifest checks passed, but Bubblewrap's PageSpeed-based validation remains unverified."
               exit 0
             fi
+            echo "status=failed" >> "$GITHUB_OUTPUT"
             echo "Bubblewrap validation failed for a reason other than rate limiting; not retrying automatically." | tee -a bubblewrap-validation.log
             exit 1
           done
           exit 1
+
+      - name: Summarize Android TWA preflight result
+        if: always()
+        shell: bash
+        env:
+          VALIDATION_OUTCOME: ${{ steps.bubblewrap_validation.outcome }}
+          VALIDATION_STATUS: ${{ steps.bubblewrap_validation.outputs.status }}
+        run: |
+          {
+            echo "## Android TWA preflight result"
+            echo
+            echo "- Android SDK setup and preview manifest checks are separate from Bubblewrap/PageSpeed validation."
+            case "$VALIDATION_STATUS" in
+              passed)
+                echo "- **Bubblewrap validation:** passed."
+                ;;
+              unverified_rate_limited)
+                echo "- **Bubblewrap validation:** unverified — Google PageSpeed returned HTTP 429 after retries. This is not a full validation pass."
+                ;;
+              failed)
+                echo "- **Bubblewrap validation:** failed. Review the workflow logs."
+                ;;
+              *)
+                echo "- **Bubblewrap validation:** outcome was \`$VALIDATION_OUTCOME\`; inspect logs for details."
+                ;;
+            esac
+            echo
+            echo "This workflow is a preflight check only. It does not build or sign an APK/AAB and does not publish to Google Play."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload preflight report
         if: always()
