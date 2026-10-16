@@ -499,8 +499,66 @@ body{font-family:var(--store-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 .tracking-refresh-note{margin-top:12px;color:#8496a7;font-size:.75rem}
 @media(max-width:700px){#orderTrackingForm{grid-template-columns:minmax(0,1fr);gap:10px}#trackOrderBtn{width:100%}#orderTracking .tracking-head{align-items:flex-start;padding:19px 16px}#orderTracking .tracking-head-icon{width:42px;height:42px;flex-basis:42px;border-radius:14px}#orderTrackingResult{padding:15px;margin:0 12px 12px}.tracking-result-top{gap:9px}}
 @media(prefers-reduced-motion:reduce){#orderTrackingForm input{transition:none}}
+
+/* Required customer-only authentication gate; intentionally independent of admin auth storage. */
+body.customer-auth-required{overflow:hidden!important}
+#customerAuthGate{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:18px;background:linear-gradient(135deg,rgba(0,48,105,.88),rgba(0,102,200,.84) 52%,rgba(204,75,130,.82));backdrop-filter:blur(12px);overflow-y:auto}
+#customerAuthGate[hidden]{display:none!important}
+.customer-auth-card{width:min(100%,460px);margin:auto;padding:clamp(22px,5vw,36px);border-radius:28px;background:#fff;box-shadow:0 24px 90px #001d4d55;color:#17345b;text-align:right}
+.customer-auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.customer-auth-brand-mark{display:grid;place-items:center;width:54px;height:54px;flex:0 0 54px;border-radius:18px;background:linear-gradient(145deg,#0066c8,#0787ef);color:#fff;font-size:1.6rem;font-weight:900}
+.customer-auth-brand h1{font-size:1.28rem;margin:0;color:#063d78}
+.customer-auth-brand p{margin:4px 0 0;color:#6b7e96;font-size:.85rem}
+.customer-auth-card h2{margin:0 0 7px;font-size:1.45rem;color:#153e70}
+.customer-auth-intro{margin:0 0 20px;color:#687992;line-height:1.8;font-size:.93rem}
+.customer-auth-field{display:grid;gap:7px;margin:12px 0}
+.customer-auth-field label{font-size:.88rem;font-weight:800;color:#27466d}
+.customer-auth-field input{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid #d7e4f2;border-radius:13px;background:#fbfdff;color:#153e70;font:inherit;outline:none}
+.customer-auth-field input:focus{border-color:#0787ef;box-shadow:0 0 0 3px #0787ef20}
+#customerAuthSubmit{width:100%;border:0;border-radius:13px;padding:14px;background:linear-gradient(110deg,#0066c8,#0787ef);color:white;font:inherit;font-weight:900;cursor:pointer;margin-top:7px}
+#customerAuthSubmit:disabled{opacity:.65;cursor:wait}
+.customer-auth-separator{display:flex;align-items:center;gap:12px;color:#8a9bb0;font-size:.8rem;margin:17px 0}
+.customer-auth-separator:before,.customer-auth-separator:after{content:"";height:1px;background:#e2eaf3;flex:1}
+.customer-auth-social{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.customer-auth-social button{display:flex;align-items:center;justify-content:center;gap:9px;padding:12px 8px;border:1px solid #dce6f1;border-radius:13px;background:white;color:#203d61;font:inherit;font-weight:800;cursor:pointer}
+.customer-auth-social button:hover{background:#f3f8ff;border-color:#a9d5ff}
+.customer-auth-social .google-g{font-size:1.12rem;font-weight:900;color:#4285f4}
+.customer-auth-social .facebook-f{font-size:1.2rem;font-weight:900;color:#1877f2}
+.customer-auth-switch{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:17px 0 0;color:#657891;font-size:.88rem}
+.customer-auth-link{border:0;padding:0;background:transparent;color:#0066c8;font:inherit;font-weight:900;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#customerAuthMessage{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:#eef7ff;color:#174e82;font-size:.86rem;line-height:1.7}
+#customerAuthMessage:empty{display:none}
+#customerAccountPill{position:fixed;z-index:5000;left:14px;bottom:14px;display:flex;align-items:center;gap:9px;max-width:calc(100vw - 28px);padding:9px 12px;border:1px solid #d8e8f8;border-radius:999px;background:#fff;color:#17406e;box-shadow:0 8px 28px #163b681c;font-size:.83rem}
+#customerAccountPill[hidden]{display:none!important}
+#customerAccountName{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800}
+#customerSignOut{border:0;border-radius:999px;padding:7px 10px;background:#fff0f4;color:#ad315e;font:inherit;font-weight:800;cursor:pointer}
+@media(max-width:420px){.customer-auth-social{grid-template-columns:1fr}.customer-auth-card{border-radius:23px}#customerAccountPill{left:8px;bottom:8px}#customerAccountName{max-width:105px}}
 </style></head>
-<body>
+<body class="customer-auth-required">
+
+<div id="customerAuthGate" role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
+ <section class="customer-auth-card">
+  <div class="customer-auth-brand"><div class="customer-auth-brand-mark">B</div><div><h1>BLABAN-SWEETS</h1><p>حلاوة تبدأ بحسابك 💗</p></div></div>
+  <h2 id="customerAuthTitle">أهلًا بيكي في متجرنا</h2>
+  <p class="customer-auth-intro">سجّلي دخولك أو أنشئي حسابًا جديدًا عشان تدخلي المتجر وتكمّلي طلباتك بكل سهولة.</p>
+  <form id="customerAuthForm" novalidate>
+   <div class="customer-auth-field" id="customerNameField" hidden><label for="customerFullName">الاسم</label><input id="customerFullName" autocomplete="name" maxlength="100" placeholder="اكتبي اسمك"></div>
+   <div class="customer-auth-field"><label for="customerEmail">البريد الإلكتروني</label><input id="customerEmail" type="email" autocomplete="email" required maxlength="254" placeholder="name@example.com"></div>
+   <div class="customer-auth-field" id="customerPasswordField"><label for="customerPassword">كلمة المرور</label><input id="customerPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 أحرف على الأقل"></div>
+   <button id="customerAuthSubmit" type="submit">تسجيل الدخول</button>
+  </form>
+  <div class="customer-auth-separator">أو تابعي باستخدام</div>
+  <div class="customer-auth-social">
+   <button id="customerGoogleSignIn" type="button"><span class="google-g">G</span> Google</button>
+   <button id="customerFacebookSignIn" type="button"><span class="facebook-f">f</span> Facebook</button>
+  </div>
+  <p id="customerAuthMessage" role="status" aria-live="polite"></p>
+  <div class="customer-auth-switch"><span id="customerAuthSwitchText">لسه معندكيش حساب؟</span><button class="customer-auth-link" id="customerAuthSwitch" type="button">إنشاء حساب جديد</button></div>
+  <div class="customer-auth-switch"><button class="customer-auth-link" id="customerForgotPassword" type="button">نسيتِ كلمة المرور؟</button></div>
+ </section>
+</div>
+<div id="customerAccountPill" hidden><span aria-hidden="true">👤</span><span id="customerAccountName"></span><button id="customerSignOut" type="button">تسجيل الخروج</button></div>
+
 <header><div class="wrap top">
 <button class="menu-toggle" id="menuToggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="storeSideDrawer"><span></span><span></span><span></span></button>
 <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
@@ -788,6 +846,105 @@ document.getElementById("cart")?.addEventListener("click",event=>{if(event.targe
 document.querySelectorAll('a[href="#checkout"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();openCartModal();}));
 document.querySelector("#checkout .checkout-close")?.addEventListener("click",()=>{closeCheckoutModal();openCartModal();});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.getElementById("checkout")?.classList.contains("checkout-page-open")){closeCheckoutModal();openCartModal();return}if(event.key==="Escape"&&document.getElementById("cart")?.classList.contains("cart-page-open"))closeCartModal();});
+
+
+/* Customer storefront authentication uses a separate storage key from admin.html. */
+const CUSTOMER_AUTH_REDIRECT=window.location.origin+window.location.pathname;
+let customerAuthClient=null;
+let customerAuthMode="login";
+function customerAuthMessage(message){const el=document.getElementById("customerAuthMessage");if(el)el.textContent=message||""}
+function setCustomerAuthMode(mode){
+ customerAuthMode=mode;
+ const signup=mode==="signup",reset=mode==="reset";
+ document.getElementById("customerAuthTitle").textContent=signup?"إنشاء حساب جديد":reset?"استعادة كلمة المرور":"أهلًا بيكي في متجرنا";
+ document.querySelector(".customer-auth-intro").textContent=signup?"اعملي حسابك عشان تستمتعي بتجربة تسوّق أسهل.":reset?"اكتبي إيميلك وهنبعتلك رابط تعيين كلمة مرور جديدة.":"سجّلي دخولك أو أنشئي حسابًا جديدًا عشان تدخلي المتجر وتكمّلي طلباتك بكل سهولة.";
+ document.getElementById("customerNameField").hidden=!signup;
+ const pw=document.getElementById("customerPassword"),pwField=document.getElementById("customerPasswordField");
+ pwField.hidden=reset;pw.required=!reset;pw.autocomplete=signup?"new-password":"current-password";pw.minLength=signup?8:1;
+ document.getElementById("customerAuthSubmit").textContent=signup?"إنشاء الحساب":reset?"إرسال رابط الاستعادة":"تسجيل الدخول";
+ document.getElementById("customerAuthSwitchText").textContent=signup?"عندك حساب بالفعل؟":"لسه معندكيش حساب؟";
+ document.getElementById("customerAuthSwitch").textContent=signup?"تسجيل الدخول":"إنشاء حساب جديد";
+ document.getElementById("customerForgotPassword").hidden=signup||reset;
+ document.getElementById("customerAuthSwitch").hidden=reset;
+ customerAuthMessage("");
+}
+function openCustomerStore(user){
+ const gate=document.getElementById("customerAuthGate");
+ gate.hidden=true;document.body.classList.remove("customer-auth-required");
+ document.getElementById("customerAccountPill").hidden=false;
+ const name=user?.user_metadata?.full_name||user?.user_metadata?.name||user?.email||"حسابي";
+ document.getElementById("customerAccountName").textContent=name;
+}
+function closeCustomerStore(){
+ document.getElementById("customerAuthGate").hidden=false;
+ document.body.classList.add("customer-auth-required");
+ document.getElementById("customerAccountPill").hidden=true;
+ setCustomerAuthMode("login");
+}
+async function startCustomerAuth(){
+ try{
+  const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+  customerAuthClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{storageKey:"blaban-customer-auth-v1",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const {data,error}=await customerAuthClient.auth.getSession();
+  if(error)throw error;
+  if(data.session?.user)openCustomerStore(data.session.user);
+  customerAuthClient.auth.onAuthStateChange((event,session)=>{
+   if(session?.user)openCustomerStore(session.user);
+   else if(event==="SIGNED_OUT")closeCustomerStore();
+  });
+ }catch(error){customerAuthMessage("تعذر تهيئة تسجيل الدخول. اتأكدي من اتصال الإنترنت وحاولي تحديث الصفحة.");console.error("Customer auth initialization failed",error)}
+}
+document.getElementById("customerAuthForm").addEventListener("submit",async event=>{
+ event.preventDefault();if(!customerAuthClient){customerAuthMessage("ثواني بنجهّز تسجيل الدخول، حاولي مرة تانية.");return}
+ const email=document.getElementById("customerEmail").value.trim();
+ const password=document.getElementById("customerPassword").value;
+ const fullName=document.getElementById("customerFullName").value.trim();
+ const submit=document.getElementById("customerAuthSubmit");
+ submit.disabled=true;customerAuthMessage("جاري تنفيذ طلبك...");
+ try{
+  let result;
+  if(customerAuthMode==="signup"){
+   if(!fullName){customerAuthMessage("اكتبي اسمك الأول.");return}
+   if(password.length<8){customerAuthMessage("كلمة المرور لازم تكون 8 أحرف على الأقل.");return}
+   result=await customerAuthClient.auth.signUp({email,password,options:{emailRedirectTo:CUSTOMER_AUTH_REDIRECT,data:{full_name:fullName}}});
+   if(result.error)throw result.error;
+   if(result.data.session?.user){openCustomerStore(result.data.session.user);customerAuthMessage("");}
+   else customerAuthMessage("الحساب اتعمل بنجاح 💗 افتحي إيميلك واضغطي رابط تأكيد الحساب، وبعدها ارجعي للمتجر وسجّلي دخولك.");
+  }else if(customerAuthMode==="reset"){
+   result=await customerAuthClient.auth.resetPasswordForEmail(email,{redirectTo:CUSTOMER_AUTH_REDIRECT});
+   if(result.error)throw result.error;
+   customerAuthMessage("لو الإيميل مسجّل عندنا، هيوصلك رابط استعادة كلمة المرور. راجعي البريد الوارد والرسائل غير المرغوب فيها.");
+  }else{
+   result=await customerAuthClient.auth.signInWithPassword({email,password});
+   if(result.error)throw result.error;
+   openCustomerStore(result.data.user);customerAuthMessage("");
+  }
+ }catch(error){
+  const message=String(error?.message||"");
+  if(/Invalid login credentials/i.test(message))customerAuthMessage("الإيميل أو كلمة المرور مش صحيحة.");
+  else if(/Email not confirmed/i.test(message))customerAuthMessage("لازم تأكدي إيميلك الأول من الرسالة اللي وصلتك.");
+  else if(/already registered|already been registered/i.test(message))customerAuthMessage("الإيميل ده عليه حساب بالفعل. اختاري تسجيل الدخول.");
+  else if(/password should be at least|weak password/i.test(message))customerAuthMessage("اختاري كلمة مرور أقوى، 8 أحرف على الأقل.");
+  else customerAuthMessage("ماقدرناش نكمل العملية. "+(message||"حاولي تاني بعد شوية."));
+ }finally{submit.disabled=false}
+});
+document.getElementById("customerAuthSwitch").addEventListener("click",()=>setCustomerAuthMode(customerAuthMode==="signup"?"login":"signup"));
+document.getElementById("customerForgotPassword").addEventListener("click",()=>setCustomerAuthMode("reset"));
+async function customerSocialSignIn(provider){
+ if(!customerAuthClient){customerAuthMessage("ثواني بنجهّز تسجيل الدخول، حاولي مرة تانية.");return}
+ customerAuthMessage("جاري تحويلك إلى "+(provider==="google"?"Google":"Facebook")+"...");
+ const {error}=await customerAuthClient.auth.signInWithOAuth({provider,options:{redirectTo:CUSTOMER_AUTH_REDIRECT}});
+ if(error)customerAuthMessage(provider==="google"?"تعذر تسجيل الدخول بجوجل. قد يحتاج مزوّد Google إلى التفعيل في إعدادات المتجر. "+error.message:"تعذر تسجيل الدخول بفيسبوك. قد يحتاج مزوّد Facebook إلى التفعيل في إعدادات المتجر. "+error.message);
+}
+document.getElementById("customerGoogleSignIn").addEventListener("click",()=>customerSocialSignIn("google"));
+document.getElementById("customerFacebookSignIn").addEventListener("click",()=>customerSocialSignIn("facebook"));
+document.getElementById("customerSignOut").addEventListener("click",async()=>{
+ if(!customerAuthClient)return;
+ const button=document.getElementById("customerSignOut");button.disabled=true;
+ const {error}=await customerAuthClient.auth.signOut();button.disabled=false;
+ if(error)alert("تعذر تسجيل الخروج. حاولي مرة تانية.");else closeCustomerStore();
+});
+startCustomerAuth();
 
 showProducts();
 const storeSearchInput=document.getElementById("storeSearchInput");
