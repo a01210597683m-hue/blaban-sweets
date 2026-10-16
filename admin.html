@@ -220,6 +220,55 @@ body{font-family:var(--admin-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 }
 @media(prefers-reduced-motion:reduce){#app .view,#app .sales-chart .chart-bar,#app .new-orders-dot{animation:none!important}#app .stat,#app .nav button{transition:none!important}}
 </style>
+<style id="clean-admin-home">
+/* A calmer, separated home page: no cramped statistic tiles or side-by-side panels */
+#app .overview-view{display:flex;flex-direction:column;gap:22px;min-width:0}
+#app .overview-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:178px;padding:clamp(22px,4vw,38px);border:1px solid #d6e9fa;border-radius:26px;background:linear-gradient(115deg,#eef7ff 0%,#f8fbff 55%,#fff2f7 100%)}
+#app .overview-hero-copy{position:relative;z-index:1;min-width:0}
+#app .overview-eyebrow{display:inline-block;margin-bottom:8px;color:#5489b8;font-size:.72rem;font-weight:900;letter-spacing:.09em}
+#app .overview-hero h2{margin:0 0 8px;color:#244b70!important;font-size:clamp(1.3rem,2.5vw,1.9rem);line-height:1.5;overflow-wrap:anywhere}
+#app .overview-hero p{margin:0;color:#637d95;font-size:.96rem;max-width:570px}
+#app .overview-add{position:relative;z-index:2;flex:0 0 auto;box-shadow:0 8px 20px #4c8fcb26}
+#app .overview-hero-orb{position:absolute;z-index:-1;display:block;border-radius:50%;pointer-events:none}
+#app .overview-orb-one{width:180px;height:180px;left:8%;top:-90px;background:#7eb6e81f}
+#app .overview-orb-two{width:120px;height:120px;left:23%;bottom:-72px;background:#f3a1b833}
+#app .overview-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}
+#app .overview-section-heading h3{margin:0;color:#294c6b;font-size:1.12rem}
+#app .overview-section-heading p{margin:3px 0 0;color:#8193a5;font-size:.84rem}
+#app .overview-live{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;color:#6e879c;font-size:.78rem;background:#fff;border:1px solid #e5edf5;border-radius:999px;padding:7px 11px}
+#app .overview-live i{width:7px;height:7px;border-radius:50%;background:#7eb6e8;box-shadow:0 0 0 4px #e5f2fd}
+#app .overview-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 26px;background:#fff;border:1px solid #e5edf5;border-radius:22px;padding:4px clamp(14px,2.5vw,28px);box-shadow:0 8px 24px #24435f06}
+#app .overview-metric{display:flex;align-items:center;gap:14px;min-width:0;padding:17px 3px;border-bottom:1px solid #edf2f7}
+#app .overview-metric:nth-last-child(-n+2){border-bottom:0}
+#app .overview-metric-icon{display:flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;border-radius:15px;background:#eaf5ff;color:#4c8fcb;font-weight:900;font-size:1.05rem}
+#app .overview-metric.metric-pink .overview-metric-icon{background:#fff0f5;color:#db7394}
+#app .overview-metric-copy{display:flex;flex-direction:column;min-width:0;gap:2px}
+#app .overview-metric-copy small{color:#73889c;font-size:.84rem;line-height:1.5;overflow-wrap:anywhere}
+#app .overview-metric-copy strong{color:#2d4c68;font-size:clamp(1.1rem,2vw,1.45rem);line-height:1.4;font-weight:900;overflow-wrap:anywhere}
+#app .overview-lists{display:flex;flex-direction:column;gap:16px;min-width:0}
+#app .overview-list-panel{min-width:0;margin:0!important;padding:clamp(14px,2.5vw,22px)!important;border:1px solid #e5edf5!important;border-radius:22px!important;box-shadow:0 8px 24px #24435f06!important}
+#app .overview-list-panel .panel-head{gap:12px;flex-wrap:wrap}
+#app .overview-list-panel .panel-head h3{margin:0;color:#294c6b!important}
+#app .overview-list-panel .table-wrap{max-width:100%;overflow-x:auto}
+#app .overview-list-panel table{min-width:420px}
+@media(max-width:650px){
+ #app .overview-view{gap:16px}
+ #app .overview-hero{align-items:flex-start;flex-direction:column;gap:16px;min-height:0;padding:22px 18px;border-radius:21px}
+ #app .overview-hero h2{font-size:1.28rem}
+ #app .overview-hero p{font-size:.88rem}
+ #app .overview-add{width:100%;justify-content:center}
+ #app .overview-section-heading h3{font-size:1.02rem}
+ #app .overview-metrics{grid-template-columns:minmax(0,1fr);padding:3px 15px}
+ #app .overview-metric,#app .overview-metric:nth-last-child(-n+2){border-bottom:1px solid #edf2f7;padding:13px 1px}
+ #app .overview-metric:last-child{border-bottom:0}
+ #app .overview-metric-icon{flex-basis:40px;width:40px;height:40px;border-radius:13px}
+ #app .overview-metric-copy small{font-size:.81rem}
+ #app .overview-metric-copy strong{font-size:1.18rem}
+ #app .overview-live{font-size:.72rem;padding:6px 8px}
+ #app .overview-list-panel .panel-head{align-items:flex-start!important}
+}
+@media(prefers-reduced-motion:reduce){#app .overview-view{animation:none!important}}
+</style>
 </head>
 <body>
 <div id="login" class="login-wrap">
@@ -241,10 +290,19 @@ body{font-family:var(--admin-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 <div class="main"><header class="top"><div><h1 id="pageTitle">نظرة عامة</h1><small id="sessionEmail"></small></div><div class="top-actions"><a class="btn pale" href="./" target="_blank" rel="noopener">عرض المتجر ↗</a><button class="btn" id="logoutBtn">خروج</button></div></header>
 <main class="content">
 <div id="setupWarning" class="hint">لوحة الإدارة جاهزة كواجهة، لكن يلزم ربط قاعدة بيانات آمنة قبل حفظ المنتجات والطلبات. البيانات لن تُحفظ عبر الأجهزة بدون هذا الربط.</div>
-<section id="view-overview" class="view">
-<div class="welcome"><div><h2>أهلًا بيكي في إدارة حلو ب لبن</h2><p>من هنا هتقدري تديري تفاصيل متجرك من الموبايل أو الكمبيوتر.</p></div><button class="btn" id="addProductTop">＋ إضافة منتج</button></div>
-<div class="stats"><div class="stat"><i>▧</i><span>إجمالي المنتجات</span><strong id="statProducts">—</strong></div><div class="stat"><i>▤</i><span>إجمالي الطلبات</span><strong id="statOrders">—</strong></div><div class="stat"><i>◷</i><span>طلبات جديدة</span><strong id="statNew">—</strong></div><div class="stat"><i>✓</i><span>المنتجات المتاحة</span><strong id="statActive">—</strong></div><div class="stat"><i>د.ل</i><span>إجمالي المبيعات المسلّمة</span><strong id="statSales">—</strong></div><div class="stat"><i>♙</i><span>العملاء أصحاب الطلبات</span><strong id="statCustomers">—</strong></div></div>
-<div class="grid2"><div class="panel"><div class="panel-head"><h3>آخر الطلبات</h3><button class="tiny" data-goto="orders">كل الطلبات</button></div><div id="recentOrders" class="empty">سيظهر سجل الطلبات بعد ربط قاعدة البيانات.</div></div><div class="panel"><div class="panel-head"><h3>المنتجات</h3><button class="tiny" data-goto="products">إدارة المنتجات</button></div><div id="recentProducts" class="empty">أضيفي المنتجات المعتمدة بعد تفعيل قاعدة البيانات.</div></div></div>
+<section id="view-overview" class="view overview-view">
+<div class="overview-hero"><div class="overview-hero-copy"><span class="overview-eyebrow">BLABAN-SWEETS · DASHBOARD</span><h2>أهلًا بيكي في إدارة حلو ب لبن 💙</h2><p>كل اللي محتاجاه لمتابعة متجرك، مرتب وواضح في مكان واحد.</p></div><button class="btn overview-add" id="addProductTop">＋ إضافة منتج</button><span class="overview-hero-orb overview-orb-one"></span><span class="overview-hero-orb overview-orb-two"></span></div>
+<div class="overview-section-heading"><div><h3>ملخص المتجر</h3><p>نظرة سريعة على أهم الأرقام</p></div><span class="overview-live"><i></i> ملخص مباشر</span></div>
+<div class="overview-metrics">
+<div class="overview-metric metric-blue"><span class="overview-metric-icon">▧</span><span class="overview-metric-copy"><small>إجمالي المنتجات</small><strong id="statProducts">—</strong></span></div>
+<div class="overview-metric metric-pink"><span class="overview-metric-icon">▤</span><span class="overview-metric-copy"><small>إجمالي الطلبات</small><strong id="statOrders">—</strong></span></div>
+<div class="overview-metric metric-pink"><span class="overview-metric-icon">◷</span><span class="overview-metric-copy"><small>طلبات جديدة</small><strong id="statNew">—</strong></span></div>
+<div class="overview-metric metric-blue"><span class="overview-metric-icon">✓</span><span class="overview-metric-copy"><small>المنتجات المتاحة</small><strong id="statActive">—</strong></span></div>
+<div class="overview-metric metric-blue"><span class="overview-metric-icon">د.ل</span><span class="overview-metric-copy"><small>المبيعات المسلّمة</small><strong id="statSales">—</strong></span></div>
+<div class="overview-metric metric-pink"><span class="overview-metric-icon">♙</span><span class="overview-metric-copy"><small>العملاء أصحاب الطلبات</small><strong id="statCustomers">—</strong></span></div>
+</div>
+<div class="overview-section-heading overview-latest-heading"><div><h3>متابعة المتجر</h3><p>آخر المستجدات في الطلبات والمنتجات</p></div></div>
+<div class="overview-lists"><div class="panel overview-list-panel"><div class="panel-head"><h3>آخر الطلبات</h3><button class="tiny" data-goto="orders">عرض كل الطلبات ←</button></div><div id="recentOrders" class="empty">سيظهر سجل الطلبات بعد ربط قاعدة البيانات.</div></div><div class="panel overview-list-panel"><div class="panel-head"><h3>المنتجات</h3><button class="tiny" data-goto="products">إدارة المنتجات ←</button></div><div id="recentProducts" class="empty">أضيفي المنتجات المعتمدة بعد تفعيل قاعدة البيانات.</div></div></div>
 </section>
 <section id="view-sales" class="view hidden"><div class="welcome"><div><h2>المبيعات والطلبات</h2><p>تابعي حركة المبيعات وعدد الطلبات حسب اليوم أو الشهر أو السنة.</p></div><button class="btn pale" id="refreshSales" type="button">↻ تحديث البيانات</button></div><div class="sales-summary"><div class="sales-summary-item"><span>المبيعات المسلّمة في الفترة</span><strong id="salesPeriodTotal">—</strong></div><div class="sales-summary-item"><span>عدد الطلبات في الفترة</span><strong id="ordersPeriodTotal">—</strong></div></div><div class="panel sales-panel"><div class="panel-head sales-heading"><div><h3>تحليل الأداء</h3><p>الأزرق للمبيعات، والبينك لعدد الطلبات</p></div><div class="period-switch" role="group" aria-label="فترة الرسم البياني"><button type="button" data-sales-period="day">اليوم</button><button type="button" class="active" data-sales-period="month">الشهر</button><button type="button" data-sales-period="year">السنة</button></div></div><div id="salesChart" class="sales-chart" aria-live="polite"><div class="empty">سيظهر الرسم البياني بعد تحميل البيانات.</div></div><div class="chart-legend"><span><i class="legend-blue"></i>المبيعات المسلّمة</span><span><i class="legend-pink"></i>عدد الطلبات</span></div><p class="chart-note">المبيعات تُحسب من الطلبات التي حالتها «تم التسليم»، والطلبات تشمل جميع الحالات. البيانات تُقرأ من سجل الطلبات في المتجر.</p></div></section>
 <section id="view-products" class="view hidden">
