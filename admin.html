@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0759ad">
+<meta name="theme-color" content="#153b74">
 <title>إدارة متجر حلو ب لبن</title>
 <style>
 :root{--navy:#153b74;--blue:#2865a8;--pink:#f9dce8;--cream:#fffaf5;--ink:#1b2940;--muted:#778197;--line:#e5e9f1;--white:#fff;--green:#17865b;--red:#b7374b}
@@ -131,78 +131,17 @@ body{background:linear-gradient(180deg,#f1f9ff,#fff 45%,#f5fbff)!important;color
  #app .stat span{font-size:.78rem!important}
 }
 
-
-/* Safe visual polish based on approved blue-white reference; admin logic unchanged. */
-:root{--navy:#0066c8;--blue:#0785ed;--pink:#dff4ff;--cream:#fbfdff;--ink:#123c70;--muted:#68809b;--line:#d8edff}
-#app.shell{background:linear-gradient(180deg,#f2f9ff,#fff 44%,#f5fbff)!important}
-#app .side{background:linear-gradient(110deg,#0066c8,#087fdf)!important;box-shadow:0 8px 25px #0066c81a!important}
-#app .side .brand{background:linear-gradient(110deg,#0066c8,#087fdf)!important}
-#app .side #adminLogoMark.logo{border:0!important;box-shadow:none!important}
-#app .side .nav{background:#fff!important;border-bottom:1px solid #d8edff!important}
-#app .side .nav button{color:#0066c8!important;background:#eef8ff!important;border:1px solid #e0f1ff!important}
-#app .side .nav button.active,#app .side .nav button:hover{color:#fff!important;background:linear-gradient(110deg,#0066c8,#0785ed)!important;border-color:transparent!important}
-#app .top{background:linear-gradient(110deg,#0066c8,#087fdf)!important;color:#fff!important;border:0!important;box-shadow:0 6px 20px #0066c812!important}
-#app .top h1,#app .top small{color:#fff!important}
-#app .btn{background:linear-gradient(110deg,#0066c8,#0785ed)!important;border-radius:12px!important}
-#app .top .btn.pale{background:#fff!important;color:#0066c8!important}
-#app .content{max-width:1500px!important}
-#app .welcome h2,#app .panel h3{color:#0066c8!important}
-#app .stat,#app .panel{background:#fff!important;border:1px solid #d8edff!important;border-radius:18px!important;box-shadow:0 7px 22px #0066c80b!important}
-#app .stat i{background:#e4f5ff!important;color:#0066c8!important}
-#app th{background:#f0f9ff!important;color:#1763a8!important}
-#app .field input,#app .field select,#app .field textarea{border-color:#d8eaf8!important;border-radius:12px!important}
-#app .field input:focus,#app .field textarea:focus,#app .field select:focus{border-color:#0785ed!important;box-shadow:0 0 0 3px #d8edff!important}
-#login .login-card{border:1px solid #d8edff!important;box-shadow:0 18px 55px #0066c812!important}
-@media(max-width:760px){#app .top{background:linear-gradient(110deg,#0066c8,#087fdf)!important}#app .side .nav{background:#fff!important}}
-
 </style>
-<style id="reference-design-refinement">
-
-/* Design refinement: balanced dashboard hierarchy for desktop and mobile */
-:root{--navy:#0759ad;--blue:#087fe3;--pink:#e4f5ff;--cream:#f8fcff;--ink:#17385e;--muted:#66809b;--line:#d7eafa;--white:#fff}
-html,body{background:#f5faff!important}
-#app.shell{background:linear-gradient(180deg,#f2f9ff,#fff 52%,#f7fbff)!important}
-#app .side{background:linear-gradient(120deg,#0759ad,#087fe3)!important;border-bottom:4px solid #bce8ff!important}
-#app .side .brand{background:transparent!important}
-#app .side #adminLogoMark.logo{border:2px solid #d8f2ff!important;box-shadow:0 7px 20px #003d7a20!important}
-#app .side .brand small{color:#e1f4ff!important}
-#app .side .nav{background:transparent!important;border:0!important;box-shadow:none!important;padding:12px 18px!important;gap:8px!important}
-#app .side .nav button{background:#ffffff14!important;border:1px solid #ffffff2e!important;color:#fff!important;border-radius:13px!important;transition:background .2s,transform .2s!important}
-#app .side .nav button.active,#app .side .nav button:hover{background:#fff!important;border-color:#fff!important;color:#0759ad!important;transform:translateY(-1px)!important}
-#app .side .side-note{color:#e1f4ff!important}
-#app .top{background:linear-gradient(110deg,#0759ad,#087fe3)!important;border-bottom:4px solid #bce8ff!important}
-#app .top h1,#app .top small{color:#fff!important}
-#app .top .btn.pale{background:#fff!important;color:#0759ad!important;border:1px solid #d8f2ff!important}
-#app .content{max-width:1480px!important;padding:clamp(16px,2.5vw,32px)!important}
-#app .welcome{padding:20px 22px!important;border-radius:22px!important;border:1px solid #d7eafa!important;background:linear-gradient(110deg,#e7f5ff,#fff 70%)!important;margin-bottom:22px!important}
-#app .welcome h2,#app .panel h3{color:#0759ad!important}
-#app .stat,#app .panel,#login .login-card{border:1px solid #d7eafa!important;border-radius:20px!important;box-shadow:0 10px 28px #0759ad0c!important}
-#app .stat{position:relative!important;overflow:hidden!important;min-height:126px!important}
-#app .stat:after{content:"";position:absolute;left:-22px;bottom:-28px;width:90px;height:90px;border-radius:50%;background:#e5f4ff80!important;pointer-events:none}
-#app .stat i{position:relative;z-index:1;background:#e4f5ff!important;color:#0759ad!important;border-radius:13px!important}
-#app .stat strong{position:relative;z-index:1;color:#0759ad!important}
-#app .panel{padding:22px!important}
-#app .panel-head{padding-bottom:12px!important;border-bottom:1px solid #e6f2fc!important}
-#app th{background:#eef8ff!important;color:#0759ad!important}
-#app td{background:#fff!important}
-#app .tag{border-radius:999px!important}
-#app .field input,#app .field select,#app .field textarea{border:1px solid #d7eafa!important;border-radius:12px!important}
-#app .field input:focus,#app .field textarea:focus,#app .field select:focus{border-color:#0784e7!important;box-shadow:0 0 0 3px #d9efff!important}
-#app .hint{border-radius:14px!important}
-@media(max-width:760px){
- #app .side{padding-bottom:8px!important}
- #app .side .nav{padding:10px 12px!important;gap:7px!important}
- #app .side .nav button{padding:9px 12px!important;font-size:.84rem!important}
- #app .side #adminLogoMark.logo{aspect-ratio:4/1!important;max-height:180px!important}
- #app .content{padding:13px!important}
- #app .welcome{padding:16px!important}
- #app .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
- #app .stat{min-height:112px!important;padding:14px!important}
- #app .stat strong{font-size:1.45rem!important}
- #app .panel{padding:15px!important}
-}
-@media(max-width:390px){#app .stats{grid-template-columns:1fr!important}}
-
+<style id="design-controls-style">
+:root{--admin-primary:#153b74;--admin-accent:#ffdfeb;--admin-radius:20px;--admin-button-radius:14px}
+#app .side,#app .side .brand,#app .side #adminLogoMark.logo{background:var(--admin-primary)!important}
+#app .side .nav button.active,#app .side .nav button:hover{background:var(--admin-primary)!important;color:#fff!important}
+#app .top h1,#app .welcome h2,#app .panel h3,#app .stat strong{color:var(--admin-primary)!important}
+#app .btn{background:var(--admin-primary)!important;border-radius:var(--admin-button-radius)!important}
+#app .btn.pale,#app .stat i{background:var(--admin-accent)!important;color:var(--admin-primary)!important}
+#app .stat,#app .panel,#app .login-card{border-radius:var(--admin-radius)!important}
+#app .tiny{border-radius:var(--admin-button-radius)!important}
+html[data-admin-theme="rose"] #app .side .brand small{color:#ffe1ec!important}
 </style>
 </head>
 <body>
@@ -286,6 +225,10 @@ html,body{background:#f5faff!important}
 <div class="field"><label for="sLogoFile">اللوجو من الموبايل</label><input id="sLogoFile" type="file" accept="image/*"><small>اختاري صورة اللوجو من موبايلك مباشرة.</small><input id="sLogo" type="url" placeholder="رابط اللوجو (اختياري لو هترفعِي ملف)"><img id="sLogoPreview" alt="معاينة اللوجو" style="display:none;width:100px;height:100px;object-fit:contain;border:1px solid #e5e9f1;border-radius:12px;padding:6px;margin-top:8px"></div>
 <div class="field"><label for="sPrimary">اللون الأساسي (HEX)</label><input id="sPrimary" type="text" pattern="#[0-9A-Fa-f]{6}" value="#153b74" placeholder="#153b74"></div>
 <div class="field"><label for="sAccent">لون التمييز (HEX)</label><input id="sAccent" type="text" pattern="#[0-9A-Fa-f]{6}" value="#ffdfeb" placeholder="#ffdfeb"></div>
+<div class="field"><label for="designStoreLayout">شكل عرض المنتجات في المتجر</label><select id="designStoreLayout"><option value="classic">الشكل الحالي المتوازن</option><option value="compact">بطاقات أصغر ومنتجات أكثر</option><option value="large">بطاقات كبيرة وصور أوضح</option></select></div>
+<div class="field"><label for="designAdminTheme">لون لوحة الإدارة</label><select id="designAdminTheme"><option value="navy">كحلي كلاسيك</option><option value="blue">أزرق فاتح</option><option value="rose">وردي هادي</option></select></div>
+<div class="field"><label for="designCardRadius">استدارة البطاقات</label><input id="designCardRadius" type="range" min="8" max="30" step="2" value="20"><small>غيّري المؤشر للتحكم في استدارة البطاقات والأزرار.</small></div>
+<div class="field"><label for="designButtonStyle">شكل الأزرار</label><select id="designButtonStyle"><option value="rounded">مستديرة</option><option value="square">أقل استدارة</option></select></div>
 <div class="field"><label for="sHeroImageFile">صورة البانر من الموبايل</label><input id="sHeroImageFile" type="file" accept="image/*"><small>اختاري صورة البانر الرئيسية من جهازك.</small><input id="sHeroImage" type="url" placeholder="رابط صورة البانر (اختياري لو هترفعِي ملف)"><img id="sHeroPreview" alt="معاينة صورة البانر" style="display:none;width:100%;max-width:320px;max-height:150px;object-fit:cover;border:1px solid #e5e9f1;border-radius:12px;margin-top:8px"></div>
 <div class="field"><label for="sHeroTitle">عنوان البانر</label><input id="sHeroTitle" maxlength="220"></div>
 </div>
@@ -341,20 +284,29 @@ $("#refreshZonesBtn").onclick=loadZones;
 $("#zonesTable").addEventListener("click",async e=>{const edit=e.target.closest("[data-zone-edit]"),del=e.target.closest("[data-zone-delete]");if(edit){const z=zones.find(x=>String(x.id)===edit.dataset.zoneEdit);if(!z)return;$("#zoneId").value=z.id;$("#zoneName").value=z.name||"";$("#zoneGovernorate").value=z.governorate||"";$("#zoneCity").value=z.city||"";$("#zoneArea").value=z.area||"";$("#zoneFee").value=z.delivery_fee??0;$("#zoneMinimum").value=z.minimum_order??0;$("#zoneActive").checked=z.is_active!==false;$("#zoneFormTitle").textContent="تعديل منطقة التوصيل";$("#zoneFormPanel").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}if(del&&confirm("متأكدة إنك عايزة تحذفي منطقة التوصيل؟")){const {error}=await sb.from("delivery_zones").delete().eq("id",del.dataset.zoneDelete);if(error)alert("تعذر الحذف: "+error.message);else loadZones()}});
 $("#zoneForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("#zoneForm button[type=submit]");btn.disabled=true;status($("#zoneStatus"),"جارٍ حفظ المنطقة…");try{const id=$("#zoneId").value;const row={name:$("#zoneName").value.trim(),governorate:$("#zoneGovernorate").value.trim(),city:$("#zoneCity").value.trim(),area:$("#zoneArea").value.trim(),delivery_fee:Number($("#zoneFee").value),minimum_order:Number($("#zoneMinimum").value||0),is_active:$("#zoneActive").checked};const res=id?await sb.from("delivery_zones").update(row).eq("id",id):await sb.from("delivery_zones").insert(row);if(res.error)throw res.error;status($("#zoneStatus"),"اتحفظت منطقة التوصيل بنجاح.");$("#zoneFormPanel").classList.add("hidden");await loadZones()}catch(err){status($("#zoneStatus"),"تعذر الحفظ: "+err.message)}finally{btn.disabled=false}});
 
+
+const defaultDesignSettings={storeLayout:"classic",adminTheme:"navy",cardRadius:20,buttonStyle:"rounded"};
+const adminThemePalette={navy:{primary:"#153b74",accent:"#ffdfeb"},blue:{primary:"#0066c8",accent:"#dff4ff"},rose:{primary:"#a23b65",accent:"#ffe1ec"}};
+function normalizeDesignSettings(raw){let v=raw||{};if(typeof v==="string"){try{v=JSON.parse(v)}catch{v={}}}return {storeLayout:["classic","compact","large"].includes(v.storeLayout)?v.storeLayout:"classic",adminTheme:adminThemePalette[v.adminTheme]?v.adminTheme:"navy",cardRadius:Math.max(8,Math.min(30,Number(v.cardRadius)||20)),buttonStyle:v.buttonStyle==="square"?"square":"rounded"}}
+function collectDesignSettings(){return normalizeDesignSettings({storeLayout:$("#designStoreLayout").value,adminTheme:$("#designAdminTheme").value,cardRadius:Number($("#designCardRadius").value),buttonStyle:$("#designButtonStyle").value})}
+function applyAdminDesignSettings(raw){const d=normalizeDesignSettings(raw),p=adminThemePalette[d.adminTheme];document.documentElement.dataset.adminTheme=d.adminTheme;document.documentElement.style.setProperty("--admin-primary",p.primary);document.documentElement.style.setProperty("--admin-accent",p.accent);document.documentElement.style.setProperty("--admin-radius",d.cardRadius+"px");document.documentElement.style.setProperty("--admin-button-radius",d.buttonStyle==="square"?"8px":"14px");}
+function loadDesignSettingsForm(raw){const d=normalizeDesignSettings(raw);$("#designStoreLayout").value=d.storeLayout;$("#designAdminTheme").value=d.adminTheme;$("#designCardRadius").value=String(d.cardRadius);$("#designButtonStyle").value=d.buttonStyle;applyAdminDesignSettings(d);}
+for(const id of ["designStoreLayout","designAdminTheme","designCardRadius","designButtonStyle"]){$("#"+id).addEventListener("input",()=>applyAdminDesignSettings(collectDesignSettings()));}
+
 const settingFields={store_name_ar:"sNameAr",store_name_en:"sNameEn",tagline:"sTagline",whatsapp_number:"sWhatsapp",phone_number:"sPhone",phone_number_2:"sPhone2",whatsapp_url:"sWhatsappUrl",facebook_url:"sFacebook",tiktok_url:"sTiktok",payment_methods:"sPaymentMethods",logo_url:"sLogo",primary_color:"sPrimary",accent_color:"sAccent",hero_image_url:"sHeroImage",hero_title:"sHeroTitle",hero_description:"sHeroDescription",story_title:"sStoryTitle",story_description:"sStoryDescription",cta_title:"sCtaTitle",cta_description:"sCtaDescription"};
 const paymentDefinitions=[{"key":"instapay","label":"InstaPay"},{"key":"visa","label":"فيزا"},{"key":"debit_card","label":"بطاقة خصم"},{"key":"payment_card","label":"بطاقة دفع"},{"key":"credit_card","label":"بطاقة مشتريات / ائتمان"},{"key":"wallet","label":"محفظة إلكترونية"},{"key":"cash_on_delivery","label":"الدفع عند الاستلام"}];
 function renderPaymentSettings(raw,legacyVisaUrl){let parsed=null;try{parsed=JSON.parse(String(raw||""))}catch{}const saved=parsed&&Array.isArray(parsed.methods)?parsed.methods:null;const legacy=String(raw||"").split(/[،,\n]/).map(x=>x.trim()).filter(Boolean);for(const def of paymentDefinitions){const item=saved?saved.find(x=>x.key===def.key):null;const legacyEnabled=!saved&&legacy.some(x=>x.toLowerCase()===def.label.toLowerCase()||x.toLowerCase().includes(def.key));$("#pm_"+def.key+"_enabled").checked=item?item.enabled===true:(saved?false:(def.key==="cash_on_delivery"?!legacy.length:legacyEnabled));$("#pm_"+def.key+"_details").value=item?.details||"";$("#pm_"+def.key+"_url").value=item?.url||(def.key==="visa"?legacyVisaUrl||"":"");}}
 function collectPaymentSettings(){const methods=paymentDefinitions.map(def=>({key:def.key,label:def.label,enabled:$("#pm_"+def.key+"_enabled").checked,details:$("#pm_"+def.key+"_details").value.trim(),url:$("#pm_"+def.key+"_url").value.trim()}));$("#sPaymentMethods").value=JSON.stringify({version:1,methods});$("#sVisaPaymentUrl").value=methods.find(x=>x.key==="visa")?.url||"";return methods;}
 function setImagePreview(imgId,url){const img=$("#"+imgId);if(!img)return;if(url){img.src=url;img.style.display="block";}else{img.removeAttribute("src");img.style.display="none";}}
 function applyAdminBrand(){const name=normalizeBrandText($("#sNameAr")?.value.trim()||"حلو ب لبن");$("#adminBrandName").textContent=name;$("#loginBrandName").textContent=name;const logo=$("#sLogo")?.value.trim();for(const id of ["adminLogoMark","loginLogoMark"]){const mark=$("#"+id);if(!mark)continue;if(logo){mark.innerHTML="";const img=document.createElement("img");img.src=logo;img.alt="";img.style.cssText="width:100%;height:100%;object-fit:contain;border-radius:inherit";mark.appendChild(img);}else mark.textContent="ح";}}
-async function loadStoreSettingsForm(){if(!sb)return;status($("#storeSettingsStatus"),"جارٍ تحميل الإعدادات...");const {data,error}=await sb.from("store_settings").select("*").eq("id",1).maybeSingle();if(error){status($("#storeSettingsStatus"),"تعذر تحميل الإعدادات: "+error.message+" — تأكدي من تشغيل SQL الخاص بإعدادات المتجر.");return}for(const [key,id] of Object.entries(settingFields)){$("#"+id).value=normalizeBrandText(data?.[key]??($("#"+id).defaultValue||""))}renderPaymentSettings(data?.payment_methods,data?.visa_payment_url);setImagePreview("sLogoPreview",$("#sLogo").value);setImagePreview("sHeroPreview",$("#sHeroImage").value);applyAdminBrand();status($("#storeSettingsStatus"),data?"تم تحميل الإعدادات الحالية.":"لسه مفيش إعدادات محفوظة؛ تقدري تكتبيها وتحفظيها.");}
+async function loadStoreSettingsForm(){if(!sb)return;status($("#storeSettingsStatus"),"جارٍ تحميل الإعدادات...");const {data,error}=await sb.from("store_settings").select("*").eq("id",1).maybeSingle();if(error){status($("#storeSettingsStatus"),"تعذر تحميل الإعدادات: "+error.message+" — تأكدي من تشغيل SQL الخاص بإعدادات المتجر.");return}for(const [key,id] of Object.entries(settingFields)){$("#"+id).value=normalizeBrandText(data?.[key]??($("#"+id).defaultValue||""))}renderPaymentSettings(data?.payment_methods,data?.visa_payment_url);loadDesignSettingsForm(data?.design_settings);setImagePreview("sLogoPreview",$("#sLogo").value);setImagePreview("sHeroPreview",$("#sHeroImage").value);applyAdminBrand();status($("#storeSettingsStatus"),data?"تم تحميل الإعدادات الحالية.":"لسه مفيش إعدادات محفوظة؛ تقدري تكتبيها وتحفظيها.");}
 $("#sLogo").addEventListener("input",()=>{setImagePreview("sLogoPreview",$("#sLogo").value.trim());applyAdminBrand();});
 $("#sHeroImage").addEventListener("input",()=>setImagePreview("sHeroPreview",$("#sHeroImage").value.trim()));
 $("#sNameAr").addEventListener("input",applyAdminBrand);
 $("#sLogoFile").addEventListener("change",()=>{const f=$("#sLogoFile").files[0];if(f)setImagePreview("sLogoPreview",URL.createObjectURL(f));});
 $("#sHeroImageFile").addEventListener("change",()=>{const f=$("#sHeroImageFile").files[0];if(f)setImagePreview("sHeroPreview",URL.createObjectURL(f));});
 async function uploadStoreImage(inputId,folder){const file=$("#"+inputId).files[0];if(!file)return null;if(!file.type.startsWith("image/"))throw new Error("اختاري ملف صورة فقط.");if(file.size>5*1024*1024)throw new Error("حجم الصورة لازم يكون أقل من 5 ميجابايت.");const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const path="store-assets/"+folder+"-"+Date.now()+"-"+safeName;const {error}=await sb.storage.from("product-images").upload(path,file,{upsert:true,contentType:file.type});if(error)throw new Error("تعذر رفع الصورة: "+error.message);return sb.storage.from("product-images").getPublicUrl(path).data.publicUrl;}
-$("#storeSettingsForm").addEventListener("submit",async e=>{e.preventDefault();if(!sb){status($("#storeSettingsStatus"),"قاعدة البيانات غير متصلة.");return}const btn=$("#saveStoreSettings");btn.disabled=true;status($("#storeSettingsStatus"),"جارٍ حفظ الإعدادات...");try{const logoUrl=await uploadStoreImage("sLogoFile","logo");if(logoUrl)$("#sLogo").value=logoUrl;const heroUrl=await uploadStoreImage("sHeroImageFile","hero");if(heroUrl)$("#sHeroImage").value=heroUrl;const row={id:1};for(const [key,id] of Object.entries(settingFields)){const value=$("#"+id).value.trim();row[key]=(key==="hero_description"?(value||""):(value||null))}collectPaymentSettings();row.payment_methods=$("#sPaymentMethods").value;const {error}=await sb.from("store_settings").upsert(row,{onConflict:"id"});if(error)throw error;$("#sLogoFile").value="";$("#sHeroImageFile").value="";setImagePreview("sLogoPreview",$("#sLogo").value);setImagePreview("sHeroPreview",$("#sHeroImage").value);applyAdminBrand();status($("#storeSettingsStatus"),"اتحفظت الإعدادات والصور بنجاح.");}catch(err){status($("#storeSettingsStatus"),"تعذر الحفظ: "+err.message);}finally{btn.disabled=false}});
+$("#storeSettingsForm").addEventListener("submit",async e=>{e.preventDefault();if(!sb){status($("#storeSettingsStatus"),"قاعدة البيانات غير متصلة.");return}const btn=$("#saveStoreSettings");btn.disabled=true;status($("#storeSettingsStatus"),"جارٍ حفظ الإعدادات...");try{const logoUrl=await uploadStoreImage("sLogoFile","logo");if(logoUrl)$("#sLogo").value=logoUrl;const heroUrl=await uploadStoreImage("sHeroImageFile","hero");if(heroUrl)$("#sHeroImage").value=heroUrl;const row={id:1};for(const [key,id] of Object.entries(settingFields)){const value=$("#"+id).value.trim();row[key]=(key==="hero_description"?(value||""):(value||null))}collectPaymentSettings();row.payment_methods=$("#sPaymentMethods").value;row.design_settings=collectDesignSettings();const {error}=await sb.from("store_settings").upsert(row,{onConflict:"id"});if(error)throw error;$("#sLogoFile").value="";$("#sHeroImageFile").value="";setImagePreview("sLogoPreview",$("#sLogo").value);setImagePreview("sHeroPreview",$("#sHeroImage").value);applyAdminBrand();status($("#storeSettingsStatus"),"اتحفظت الإعدادات والصور بنجاح.");}catch(err){status($("#storeSettingsStatus"),"تعذر الحفظ: "+err.message);}finally{btn.disabled=false}});
 async function uploadProductImage(file){if(!file)return null;if(!file.type.startsWith("image/"))throw new Error("اختاري ملف صورة فقط.");if(file.size>5*1024*1024)throw new Error("حجم الصورة لازم يكون أقل من 5 ميجابايت.");const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const path="products/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+"-"+safeName;const {error}=await sb.storage.from("product-images").upload(path,file,{upsert:true,contentType:file.type});if(error)throw new Error("تعذر رفع الصورة: "+error.message);return sb.storage.from("product-images").getPublicUrl(path).data.publicUrl}
 function renderVariantRow(v={}){return "<div class='variant-row panel' style='padding:14px;background:#fbfcff' data-existing-id='"+esc(v.id||"")+"'><div class='panel-head'><strong>صنف</strong><button type='button' class='tiny del' data-remove-variant>حذف الصنف</button></div><div class='formgrid'><div class='field'><label>اسم الصنف *</label><input data-variant-name maxlength='120' required value='"+esc(v.name||"")+"' placeholder='مثال: كشري نوتيلا'></div><div class='field'><label>السعر بالدينار الليبي *</label><input data-variant-price type='number' min='0' step='0.01' required value='"+(v.price??"")+"' placeholder='مثال: 18'></div><div class='field'><label>صورة الصنف من الموبايل</label><input data-variant-file type='file' accept='image/*'><small>صورة مستقلة لهذا الصنف (حتى 5 ميجابايت).</small></div><div class='field'><label>رابط صورة الصنف</label><input data-variant-image type='url' value='"+esc(v.image_url||"")+"' placeholder='https://...'></div></div></div>"}
 function addVariantRow(v={}){$("#variantsList").insertAdjacentHTML("beforeend",renderVariantRow(v))}

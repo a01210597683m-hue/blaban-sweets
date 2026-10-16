@@ -74,8 +74,8 @@ jobs:
             const openStyles = (html.match(/<style\b/gi) || []).length;
             const closeStyles = (html.match(/<\/style>/gi) || []).length;
             if (openStyles !== closeStyles) fail(`${file}: unbalanced style tags (${openStyles}/${closeStyles})`);
-            if (!html.includes('id="reference-design-refinement"')) {
-              fail(`${file}: expected reference design refinement stylesheet not found`);
+            if (!html.includes('id="reference-design-refinement"') && !html.includes('id="design-controls-style"')) {
+              fail(`${file}: expected design refinement or design controls stylesheet not found`);
             }
             pass(`${file}: basic document and stylesheet checks`);
           }

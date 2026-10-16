@@ -9,8 +9,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f8fcff",
-  "theme_color": "#0759ad",
+  "background_color": "#fffaf4",
+  "theme_color": "#153b74",
   "icons": [
     {
       "src": "/icons/blaban-icon-192.png",
