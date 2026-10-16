@@ -193,28 +193,27 @@ footer{background:linear-gradient(115deg,#0066c8,#034d9e)!important;border-radiu
 
 
 
-/* App-like cart and checkout sheet */
-#checkout{display:none}
-#checkout.checkout-modal-open{display:block;position:fixed;inset:0;z-index:1000;width:100%;height:100dvh;max-height:100dvh;overflow-y:auto;overflow-x:hidden;margin:0;padding:22px max(14px,env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:rgba(8,28,58,.58);backdrop-filter:blur(7px);box-sizing:border-box}
-#checkout .checkout-app{position:relative;width:min(920px,100%);margin:0 auto;background:#f4faff;border:1px solid #d9ecfb;border-radius:26px;box-shadow:0 24px 80px #061d3e55;overflow:hidden}
+/* In-flow checkout page: menu -> cart -> customer details, without modal jumps */
+#checkout{display:none;scroll-margin-top:20px;padding:28px 0;background:transparent}
+#checkout.checkout-page-open{display:block;position:relative;inset:auto;z-index:auto;width:min(1180px,92%);height:auto;max-height:none;overflow:visible;margin:20px auto;padding:0;background:transparent;backdrop-filter:none;box-sizing:border-box}
+#checkout .checkout-app{position:relative;width:100%;max-width:none;margin:0 auto;background:#f4faff;border:1px solid #d9ecfb;border-radius:26px;box-shadow:0 12px 38px #061d3e12;overflow:hidden}
 #checkout .section-title{margin:0;padding:20px 24px;background:linear-gradient(120deg,#0864c6,#138be9);color:#fff;align-items:center}
 #checkout .section-title .eyebrow,#checkout .section-title h2,#checkout .section-title p{color:#fff}
 #checkout .section-title h2{margin:2px 0;font-size:clamp(1.25rem,3vw,1.8rem)}
 #checkout .section-title p{max-width:390px;font-size:.88rem;opacity:.9}
-#checkout .checkout-close{position:absolute;top:17px;left:17px;z-index:3;width:42px;height:42px;border:1px solid #ffffff80;border-radius:50%;background:#ffffff20;color:#fff;font-size:1.45rem;display:grid;place-items:center}
+#checkout .checkout-close{position:static;display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:42px;margin:12px 14px 0;padding:9px 15px;border:1px solid #cfe6fa;border-radius:999px;background:#fff;color:#075eae;font:inherit;font-weight:800;cursor:pointer}
 #checkout .story{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;margin:0;padding:16px;background:linear-gradient(145deg,#f0f9ff,#fff)}
 #checkout .story-copy{min-width:0!important;padding:18px!important;border:1px solid #dcecf8!important;border-radius:18px!important;box-shadow:0 7px 22px #0a5da40b}
 #checkout #cartSummary{background:#f8fcff;border:1px solid #e3f1fb;border-radius:14px;padding:12px}
 #checkout input,#checkout textarea,#checkout select{font:inherit;max-width:100%;box-sizing:border-box;outline:none;transition:border-color .2s,box-shadow .2s}
 #checkout input:focus,#checkout textarea:focus,#checkout select:focus{border-color:#1684dc!important;box-shadow:0 0 0 3px #1684dc20}
 #checkout #submitOrder{background:linear-gradient(100deg,#0765c8,#0b91e9);border-radius:13px;min-height:48px}
-body.checkout-lock{overflow:hidden}
 @media(max-width:700px){
- #checkout.checkout-modal-open{padding:10px 9px calc(10px + env(safe-area-inset-bottom))}
+ #checkout.checkout-page-open{width:calc(100% - 24px);padding:12px 0}
  #checkout .checkout-app{border-radius:20px}
- #checkout .section-title{display:block;padding:18px 58px 16px 16px}
+ #checkout .section-title{display:block;padding:18px 16px}
  #checkout .section-title p{margin:5px 0 0}
- #checkout .checkout-close{top:14px;left:12px;width:38px;height:38px}
+ #checkout .checkout-close{margin:10px 10px 0}
  #checkout .story{grid-template-columns:minmax(0,1fr)!important;padding:10px;gap:10px}
  #checkout .story-copy{padding:14px!important}
  #checkout form.story-copy{order:0}
@@ -483,7 +482,7 @@ body{font-family:var(--store-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 <div class="store-search-wrap"><label for="storeSearchInput">ابحثي في المنيو</label><div class="store-search-box"><span aria-hidden="true">⌕</span><input id="storeSearchInput" type="search" placeholder="اكتبي اسم المنتج اللي بتدوري عليه..." autocomplete="off" aria-label="البحث عن منتج"><button type="button" id="storeSearchClear" aria-label="مسح البحث" hidden>×</button></div><p id="storeSearchEmpty" hidden>ملقيناش منتج بالاسم ده. جرّبي كلمة تانية.</p></div><div class="categories product-circles" id="productsGrid"><div class="empty">جارٍ تحميل المنتجات...</div></div><section id="productDetailsModal" class="product-page" aria-hidden="true" aria-labelledby="detailProductTitle"><div class="product-page-inner"><button type="button" class="detail-close" data-detail-close aria-label="الرجوع للمنتجات">← رجوع للمنتجات</button><div class="detail-layout"><div class="detail-main-image"><img id="detailProductImage" src="" alt=""></div><div class="detail-content"><span class="eyebrow">تفاصيل المنتج</span><h2 id="detailProductTitle"></h2><p id="detailProductDescription"></p><h3 id="detailVariantsHeading">اختاري الصنف</h3><p class="product-page-hint">اختاري أي صنف من الصور، وضيفي أكتر من صنف من نفس المنتج من غير ما تخرجي من الصفحة.</p><div id="detailVariantList"></div><div class="detail-selected"><div><small>الصنف المحدد</small><strong id="detailSelectedName"></strong><b id="detailSelectedPrice"></b></div><div class="detail-quantity"><button type="button" data-detail-qty="-1" aria-label="تقليل الكمية">−</button><strong id="detailQty">1</strong><button type="button" data-detail-qty="1" aria-label="زيادة الكمية">+</button></div></div><button type="button" id="detailAddToCart" class="btn" style="width:100%;margin-top:16px">إضافة الصنف للسلة +</button><p id="detailAddedFeedback" class="detail-added-feedback" aria-live="polite"></p><button type="button" class="btn pale" data-open-cart-from-product style="width:100%;margin-top:8px">عرض سلة المشتريات (<span id="detailCartCount">0</span>)</button></div></div></div></section><p class="notice" id="productsNotice">الأسعار المعروضة بالدينار الليبي (د.ل).</p></section>
 <section class="cart-modal cart-page" id="cart" aria-hidden="true"><div class="cart-app"><button type="button" class="btn pale cart-close" aria-label="الرجوع للمنيو">← الرجوع للمنيو</button><div class="section-title"><div><span class="eyebrow">كل اختياراتك في مكان واحد</span><h2>سلة المشتريات</h2></div><p>راجعي صور الأصناف والكميات، وعدّلي اختياراتك قبل إتمام الطلب.</p></div><div class="cart-body"><div id="cartSummary" class="empty">لسه ما ضفتيش منتجات للسلة.</div><button type="button" class="btn cart-continue" id="continueToCheckout">تمام، متابعة لإدخال البيانات والدفع ←</button><p class="cart-note">بيانات العميل والدفع هتظهر في الخطوة التالية فقط.</p><button type="button" class="btn pale" data-back-to-products style="width:100%;margin-top:10px">الرجوع للمنيو واختيار أصناف تانية</button></div></div></section>
 <section class="section wrap" id="checkout" aria-hidden="true">
-<div class="checkout-app"><button type="button" class="checkout-close" aria-label="إغلاق نافذة الطلب" title="إغلاق">×</button>
+<div class="checkout-app"><button type="button" class="checkout-close btn pale" aria-label="الرجوع إلى سلة المشتريات">← الرجوع للسلة</button>
 <div class="section-title"><div><span class="eyebrow">طلبك في خطوات بسيطة</span><h2>إدخال البيانات والدفع</h2></div><p>بعد ما تخلصي اختياراتك من المنيو، اكتبي بياناتك وراجعي السعر النهائي هنا.</p></div>
 <div class="checkout-summary-strip"><div class="checkout-summary-copy"><strong>حساب السعر</strong><div id="checkoutOrderReview"></div></div><button type="button" class="btn pale" id="backToCart">تعديل المشتريات</button></div>
 <form id="checkoutForm" class="checkout-form-card">
@@ -669,18 +668,16 @@ function closeCartModal(){const section=document.getElementById("cart");if(!sect
 function openCheckoutModal(){
  const section=document.getElementById("checkout");
  if(!section)return;
- section.classList.add("checkout-modal-open");
+ section.classList.add("checkout-page-open");
  section.setAttribute("aria-hidden","false");
- document.body.classList.add("checkout-lock");
- const close=section.querySelector(".checkout-close");
- if(close)close.focus({preventScroll:true});
+ renderCheckoutOrderReview();
+ section.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function closeCheckoutModal(){
  const section=document.getElementById("checkout");
  if(!section)return;
- section.classList.remove("checkout-modal-open");
+ section.classList.remove("checkout-page-open");
  section.setAttribute("aria-hidden","true");
- document.body.classList.remove("checkout-lock");
 }
 document.querySelectorAll('a[href="#cart"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();openCartModal();}));
 document.getElementById("continueToCheckout")?.addEventListener("click",()=>{if(!orderCart.size){const host=document.getElementById("cartSummary");host?.scrollIntoView({behavior:"smooth",block:"center"});return}closeCartModal();openCheckoutModal();renderCheckoutOrderReview();});
@@ -688,11 +685,8 @@ document.getElementById("backToCart")?.addEventListener("click",()=>{closeChecko
 document.querySelector("#cart .cart-close")?.addEventListener("click",closeCartModal);document.querySelector("#cart [data-back-to-products]")?.addEventListener("click",closeCartModal);
 document.getElementById("cart")?.addEventListener("click",event=>{if(event.target===event.currentTarget)closeCartModal();});
 document.querySelectorAll('a[href="#checkout"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();openCartModal();}));
-document.querySelector("#checkout .checkout-close")?.addEventListener("click",closeCheckoutModal);
-document.getElementById("checkout")?.addEventListener("click",event=>{
- if(event.target===event.currentTarget)closeCheckoutModal();
-});
-document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.getElementById("checkout")?.classList.contains("checkout-modal-open"))closeCheckoutModal();if(event.key==="Escape"&&document.getElementById("cart")?.classList.contains("cart-page-open"))closeCartModal();});
+document.querySelector("#checkout .checkout-close")?.addEventListener("click",()=>{closeCheckoutModal();openCartModal();});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.getElementById("checkout")?.classList.contains("checkout-page-open")){closeCheckoutModal();openCartModal();return}if(event.key==="Escape"&&document.getElementById("cart")?.classList.contains("cart-page-open"))closeCartModal();});
 
 showProducts();
 const storeSearchInput=document.getElementById("storeSearchInput");
