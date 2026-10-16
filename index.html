@@ -4,9 +4,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap">
 <meta name="theme-color" content="#0066c8">
-<link rel="manifest" href="manifest.webmanifest?v=8">
-<link rel="icon" type="image/svg+xml" href="icons/blaban-icon.svg?v=8">
-<link rel="apple-touch-icon" href="icons/blaban-icon.svg?v=8">
+<link rel="manifest" href="manifest.webmanifest?v=9">
+<link rel="icon" type="image/svg+xml" href="icons/blaban-icon.svg?v=9">
+<link rel="apple-touch-icon" href="icons/blaban-icon.svg?v=9">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -385,6 +385,25 @@ body{font-family:var(--store-arabic-font),Tahoma,Arial,sans-serif}
 .store-search-result:hover,.store-search-result:focus-visible{border-color:#0787ef;background:#f1f9ff;outline:2px solid #0787ef33}
 .store-search-hint{margin:10px 2px 0;color:#68809b;font-size:.85rem}
 @media(max-width:850px){.story{grid-template-columns:1fr}.story-photo{max-width:100%}}
+<style>
+:root{--store-arabic-font:"Cairo";--store-english-font:"Poppins"}
+body{font-family:var(--store-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
+#storeNameEn,.brand-en,[lang="en"],:lang(en),input[type="email"],input[type="url"],input[type="tel"]{font-family:var(--store-english-font,Poppins),Arial,sans-serif}
+.cart-modal{display:none}
+.cart-modal.cart-modal-open{display:block;position:fixed;inset:0;z-index:1002;width:100%;height:100dvh;max-height:100dvh;overflow:auto;padding:22px max(14px,env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:rgba(8,28,58,.58);backdrop-filter:blur(7px);box-sizing:border-box}
+.cart-app{position:relative;width:min(760px,100%);margin:0 auto;background:#f4faff;border:1px solid #d9ecfb;border-radius:26px;box-shadow:0 24px 80px #061d3e55;overflow:hidden}
+.cart-app>.section-title{margin:0;padding:20px 24px;background:linear-gradient(120deg,#0864c6,#138be9);color:#fff;align-items:center}
+.cart-app .section-title h2,.cart-app .section-title .eyebrow,.cart-app .section-title p{color:#fff}
+.cart-close{position:sticky;float:left;top:10px;z-index:3;margin:10px 10px -50px 10px}
+.cart-body{padding:20px;max-height:calc(100dvh - 180px);overflow:auto}
+.cart-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid #deebf7}
+.cart-item-main{min-width:0;display:grid;gap:5px}.cart-item-main>strong{color:#15375a}.cart-item-main>small{color:#627993}
+.cart-variant-label{display:grid;gap:4px;color:#637c96;font-size:.83rem}.cart-variant-label select{max-width:min(280px,60vw);padding:8px;border:1px solid #cfe2f4;border-radius:10px;background:#fff;color:#15375a;font:inherit}
+.cart-item-actions{display:grid;justify-items:end;gap:7px;flex-shrink:0}.cart-qty{display:flex;align-items:center;gap:9px}.cart-qty button{width:31px;height:31px;border:1px solid #cfe2f4;border-radius:10px;background:#fff;color:#075cae;font-size:1.1rem}.cart-remove{border:0;background:transparent;color:#c13f53;font:inherit;font-size:.86rem}
+.cart-total{display:grid;gap:10px;margin-top:18px;padding:15px;border-radius:16px;background:#fff;border:1px solid #dcecf8}.cart-total>div,.review-total{display:flex;justify-content:space-between;gap:10px}.cart-grand-total,.review-total.grand{padding-top:10px;border-top:1px solid #dcecf8;font-size:1.08rem;color:#075cae}.cart-note{color:#687f97;font-size:.88rem}.cart-continue{width:100%;margin-top:16px}.review-line{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #e5eef7}.review-total{padding-top:9px}.cart-minimum{color:#b7374b}
+.product-card .category-img,.category .category-img{padding:4px!important;border-radius:16px!important;overflow:hidden!important}
+.product-card .category-img img,.category .category-img img{border-radius:12px!important;max-width:100%;max-height:100%;object-fit:cover}
+@media(max-width:600px){.cart-modal.cart-modal-open{padding:10px 8px calc(12px + env(safe-area-inset-bottom))}.cart-app{border-radius:20px}.cart-app>.section-title{padding:18px 16px}.cart-body{padding:14px}.cart-item{align-items:flex-start;gap:8px}.cart-variant-label select{max-width:55vw}}
 </style>
 </head>
 <body>
@@ -396,26 +415,24 @@ body{font-family:var(--store-arabic-font),Tahoma,Arial,sans-serif}
   <nav class="nav nav-start drawer-nav"><a href="#home">الرئيسية</a><a href="#categories">المنتجات</a><a href="#checkout">المشتريات</a><a href="#story">من نحن</a></nav>
 </aside>
 <a class="brand brand-center" href="#home" aria-label="BLABAN-SWEETS الرئيسية"><img id="storeLogo" class="logo" src="" alt="لوجو حلو ب لبن" style="object-fit:contain;display:none;background:white"><span id="logoFallback" class="logo">حلو ب لبن</span><span class="brand-copy"><span id="storeNameAr">حلو ب لبن</span><small id="storeTagline">مع حلو ب لبن / حلى أيامك</small><small id="storeNameEn">BLABAN-SWEETS</small></span></a>
-<div class="head-actions"><a class="head-icon" href="#checkout" aria-label="السلة والمشتريات">🛒<span class="cart-count" id="cartCount">0</span></a><a class="head-icon" href="#contact" aria-label="تواصل معنا">♧</a><button class="head-icon store-search-trigger" id="storeSearchTrigger" type="button" aria-label="فتح البحث عن المنتجات" aria-haspopup="dialog" aria-controls="storeSearchModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button></div>
+<div class="head-actions"><a class="head-icon" href="#cart" aria-label="سلة المشتريات">🛒<span class="cart-count" id="cartCount">0</span></a><a class="head-icon" href="#contact" aria-label="تواصل معنا">♧</a><button class="head-icon store-search-trigger" id="storeSearchTrigger" type="button" aria-label="فتح البحث عن المنتجات" aria-haspopup="dialog" aria-controls="storeSearchModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button></div>
 </div></header>
 <main id="home">
 <section class="hero"><div class="wrap"><div class="hero-card">
 <div class="hero-visual"><div class="hero-photo"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=90" alt="حلويات ومشروبات من حلو ب لبن"></div><div class="float-badge">حلى<br>أيامك ♡</div></div>
-<div class="hero-copy"><span class="pill"><span class="dot"></span> أهلاً بيكي في عالم حلو ب لبن</span><h1 id="heroTitle">مع حلو ب لبن<br><em>حلى أيامك</em></h1><p id="heroDescription">اختاري حلاوتك المفضلة، من أكواب الحلويات إلى العصائر والمشروبات الباردة والسخنة.</p><div class="hero-links"><a class="btn" href="#categories">اكتشفي المنيو <span>←</span></a><a class="btn pink" href="#checkout">السلة والمشتريات</a></div><div class="hero-slogan">♡ حلاوة كل يوم تبدأ من هنا ♡</div><div class="hero-slogan-media" id="heroSloganMedia" hidden><img id="heroSloganImage" alt="صورة إضافية لشعار حلو ب لبن"><span>حلى أيامك، على طريقتك</span></div></div>
+<div class="hero-copy"><span class="pill"><span class="dot"></span> أهلاً بيكي في عالم حلو ب لبن</span><h1 id="heroTitle">مع حلو ب لبن<br><em>حلى أيامك</em></h1><p id="heroDescription">اختاري حلاوتك المفضلة، من أكواب الحلويات إلى العصائر والمشروبات الباردة والسخنة.</p><div class="hero-links"><a class="btn" href="#categories">اكتشفي المنيو <span>←</span></a><a class="btn pink" href="#cart">السلة والمشتريات</a></div><div class="hero-slogan">♡ حلاوة كل يوم تبدأ من هنا ♡</div><div class="hero-slogan-media" id="heroSloganMedia" hidden><img id="heroSloganImage" alt="صورة إضافية لشعار حلو ب لبن"><span>حلى أيامك، على طريقتك</span></div></div>
 </div></div></section>
 <section class="quick-categories wrap" aria-label="أقسام المتجر">
-<a href="#categories"><span>🥤</span><b>عصائر طبيعية</b></a><a href="#categories"><span>🧋</span><b>مشروبات باردة</b></a><a href="#categories"><span>☕</span><b>مشروبات ساخنة</b></a><a href="#categories"><span>🍰</span><b>حلويات ومقبلات</b></a><a href="#categories"><span>🍨</span><b>أكواب الحلويات</b></a><a class="quick-cart" href="#checkout"><span>🛒</span><b>السلة والمشتريات</b></a>
+<a href="#categories"><span>🥤</span><b>عصائر طبيعية</b></a><a href="#categories"><span>🧋</span><b>مشروبات باردة</b></a><a href="#categories"><span>☕</span><b>مشروبات ساخنة</b></a><a href="#categories"><span>🍰</span><b>حلويات ومقبلات</b></a><a href="#categories"><span>🍨</span><b>أكواب الحلويات</b></a>
 </section>
 <section class="section wrap" id="categories"><div class="section-title"><div><span class="eyebrow">اختار مزاجك</span><h2>إيه نفسك فيه النهارده؟</h2></div><p>أقسام استرشادية — الأصناف والأسعار الرسمية هتضاف بعد اعتمادها.</p></div>
 <div class="store-search-wrap"><label for="storeSearchInput">ابحثي في المنيو</label><div class="store-search-box"><span aria-hidden="true">⌕</span><input id="storeSearchInput" type="search" placeholder="اكتبي اسم المنتج اللي بتدوري عليه..." autocomplete="off" aria-label="البحث عن منتج"><button type="button" id="storeSearchClear" aria-label="مسح البحث" hidden>×</button></div><p id="storeSearchEmpty" hidden>ملقيناش منتج بالاسم ده. جرّبي كلمة تانية.</p></div><div class="categories" id="productsGrid"><div class="empty">جارٍ تحميل المنتجات...</div></div><p class="notice" id="productsNotice">الأسعار المعروضة بالدينار الليبي (د.ل).</p></section>
+<section class="cart-modal" id="cart" aria-hidden="true"><div class="cart-app"><button type="button" class="checkout-close cart-close" aria-label="إغلاق سلة المشتريات">×</button><div class="section-title"><div><span class="eyebrow">كل اختياراتك في مكان واحد</span><h2>سلة المشتريات</h2></div><p>راجعي الأصناف والكميات، واحذفي أو بدّلي أي صنف قبل إدخال بياناتك.</p></div><div class="cart-body"><div id="cartSummary" class="empty">لسه ما ضفتيش منتجات للسلة.</div><button type="button" class="btn cart-continue" id="continueToCheckout">متابعة وإدخال بيانات التوصيل ←</button><p class="cart-note">بيانات العميل والتوصيل مش هتظهر غير لما تضغطي متابعة.</p></div></div></section>
 <section class="section wrap" id="checkout" aria-hidden="true">
 <div class="checkout-app"><button type="button" class="checkout-close" aria-label="إغلاق نافذة الطلب" title="إغلاق">×</button>
 <div class="section-title"><div><span class="eyebrow">طلبك في خطوات بسيطة</span><h2>جهّزي طلبك</h2></div><p>اختاري المنتجات، اكتبي بيانات التواصل والعنوان، وهنحسب الإجمالي من الأسعار المحفوظة.</p></div>
-<div class="story" style="grid-template-columns:1fr 1fr;margin-top:0">
-<div class="story-copy" style="padding:10px">
-<h3 style="color:var(--navy);margin-top:0">ملخص الطلب</h3>
-<div id="cartSummary" class="empty">اختاري منتجًا من المنيو لإضافته لطلبك.</div>
-</div>
+<div class="story" style="grid-template-columns:1fr 1.2fr;margin-top:0">
+<div class="story-copy" style="padding:16px;background:#fff"><h3 style="color:var(--navy);margin-top:0">مراجعة المشتريات</h3><div id="checkoutOrderReview"></div><button type="button" class="btn pale" id="backToCart" style="width:100%;margin-top:12px">الرجوع للسلة وتعديل الأصناف</button></div>
 <form id="checkoutForm" class="story-copy" style="background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px">
 <h3 style="color:var(--navy);margin-top:0">بيانات العميل</h3>
 <label style="display:block;font-weight:700;margin:10px 0 4px" for="orderName">الاسم *</label><input id="orderName" required maxlength="120" autocomplete="name" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px">
@@ -509,19 +526,21 @@ async function showProducts(){try{const {createClient}=await import("https://cdn
 const orderCart=new Map();
 let availableProducts=[];
 function renderOrderCart(){
- const count=[...orderCart.values()].reduce((a,b)=>a+b,0);const badge=document.getElementById("cartCount");if(badge)badge.textContent=count;
- const el=document.getElementById("cartSummary");
- if(!orderCart.size){el.className="empty";el.textContent="اختاري منتجًا من المنيو لإضافته لطلبك.";return}
- el.className="";
- let total=0;
- el.innerHTML=[...orderCart.entries()].map(([id,q])=>{const p=availableProducts.find(x=>String(x.id)===id);if(!p)return "";const sub=Number(p.price)*q;total+=sub;return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)"><div><strong>'+esc(p.name)+'</strong><div style="color:var(--muted);font-size:.85rem">'+money(p.price)+' × '+q+'</div></div><div style="display:flex;align-items:center;gap:6px"><button type="button" class="tiny" data-qty="'+esc(id)+'" data-delta="-1">−</button><b>'+q+'</b><button type="button" class="tiny" data-qty="'+esc(id)+'" data-delta="1">+</button><button type="button" class="tiny del" data-remove="'+esc(id)+'">حذف</button></div></div>'}).join("");const zone=selectedDeliveryZone(),fee=zone?Number(zone.delivery_fee||0):0,minimum=zone?Number(zone.minimum_order||0):0;const belowMinimum=zone&&total<minimum;el.innerHTML+='<div style="padding-top:12px;display:grid;gap:7px"><div style="display:flex;justify-content:space-between"><span>قيمة المنتجات</span><strong>'+money(total)+'</strong></div><div style="display:flex;justify-content:space-between"><span>رسوم التوصيل</span><strong>'+money(fee)+'</strong></div><div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--line);font-size:1.1rem"><strong>الإجمالي شامل التوصيل</strong><strong>'+money(total+fee)+'</strong></div>'+(zone&&minimum>0?'<small style="color:'+(belowMinimum?'#b7374b':'#778197')+'">الحد الأدنى للطلب في هذه المنطقة: '+money(minimum)+(belowMinimum?' — زوّدي قيمة المنتجات لإكمال الطلب.':'')+'</small>':'')+'</div>';
+ const count=[...orderCart.values()].reduce((a,b)=>a+b,0),badge=document.getElementById("cartCount");if(badge)badge.textContent=count;
+ const el=document.getElementById("cartSummary");if(!el)return;
+ if(!orderCart.size){el.className="empty";el.textContent="لسه ما ضفتيش منتجات للسلة. ارجعي للمنيو واختاري اللي يعجبك.";renderCheckoutOrderReview();return}
+ el.className="";let total=0;
+ el.innerHTML=[...orderCart.entries()].map(([id,q])=>{const p=availableProducts.find(x=>String(x.id)===id);if(!p)return "";total+=Number(p.price)*q;const parentId=p.parent_product_id||p.id;const variants=availableProducts.filter(x=>String(x.parent_product_id)===String(parentId));const picker=variants.length?'<label class="cart-variant-label">الصنف <select data-swap-item="'+esc(id)+'">'+variants.map(v=>'<option value="'+esc(v.id)+'" '+(String(v.id)===id?"selected":"")+'>'+esc(v.name)+' — '+money(v.price)+'</option>').join("")+'</select></label>':"";return '<div class="cart-item"><div class="cart-item-main"><strong>'+esc(p.name)+'</strong><small>'+money(p.price)+' للوحدة</small>'+picker+'</div><div class="cart-item-actions"><div class="cart-qty"><button type="button" aria-label="تقليل الكمية" data-qty="'+esc(id)+'" data-delta="-1">−</button><b>'+q+'</b><button type="button" aria-label="زيادة الكمية" data-qty="'+esc(id)+'" data-delta="1">+</button></div><button type="button" class="cart-remove" data-remove="'+esc(id)+'">حذف</button></div></div>'}).join("");
+ const zone=selectedDeliveryZone(),fee=zone?Number(zone.delivery_fee||0):0,minimum=zone?Number(zone.minimum_order||0):0,belowMinimum=zone&&total<minimum;
+ el.innerHTML+='<div class="cart-total"><div><span>إجمالي المنتجات</span><strong>'+money(total)+'</strong></div>'+(zone?'<div><span>رسوم التوصيل</span><strong>'+money(fee)+'</strong></div>':'<small>رسوم التوصيل هتتحسب بعد اختيار منطقة التوصيل في الخطوة التالية.</small>')+'<div class="cart-grand-total"><span>'+(zone?"الإجمالي شامل التوصيل":"الإجمالي الحالي")+'</span><strong>'+money(total+fee)+'</strong></div>'+(zone&&minimum>0?'<small class="cart-minimum">'+(belowMinimum?"الحد الأدنى للطلب في المنطقة دي "+money(minimum)+" — زوّدي المشتريات للمتابعة.":"الحد الأدنى للطلب: "+money(minimum))+'</small>':'')+'</div>';renderCheckoutOrderReview();
 }
+function renderCheckoutOrderReview(){const host=document.getElementById("checkoutOrderReview");if(!host)return;if(!orderCart.size){host.innerHTML='<p class="cart-note">السلة فاضية حاليًا.</p>';return}let total=0;const lines=[...orderCart.entries()].map(([id,q])=>{const p=availableProducts.find(x=>String(x.id)===id);if(!p)return "";const sub=Number(p.price)*q;total+=sub;return '<div class="review-line"><span>'+esc(p.name)+' × '+q+'</span><strong>'+money(sub)+'</strong></div>'}).join("");const zone=selectedDeliveryZone(),fee=zone?Number(zone.delivery_fee||0):0;host.innerHTML=lines+'<div class="review-total"><span>إجمالي المنتجات</span><strong>'+money(total)+'</strong></div><div class="review-total"><span>التوصيل</span><strong>'+(zone?money(fee):"يتحدد حسب المنطقة")+'</strong></div><div class="review-total grand"><span>الإجمالي</span><strong>'+money(total+fee)+'</strong></div>'}
 document.getElementById("orderDeliveryZone").addEventListener("change",()=>{renderBranchOptions();renderOrderCart();});
 let activeDetailProduct=null,activeDetailVariant=null,detailQuantity=1;
 function openProductDetails(productId){const parent=availableProducts.find(p=>String(p.id)===String(productId)&&!p.parent_product_id);if(!parent)return;const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(parent.id));activeDetailProduct=parent;activeDetailVariant=variants[0]||parent;detailQuantity=1;renderProductDetails(variants);const modal=document.getElementById("productDetailsModal");modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";}
 function renderProductDetails(variants){const modal=document.getElementById("productDetailsModal"),p=activeDetailProduct,v=activeDetailVariant||p;const list=variants.length?variants:[p];modal.querySelector("#detailProductTitle").textContent=p.name;modal.querySelector("#detailProductDescription").textContent=p.description||"اختاري الصنف المناسب ليكي وشوفي صورته وسعره قبل الإضافة للسلة.";modal.querySelector("#detailProductImage").src=v.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=85";modal.querySelector("#detailProductImage").alt=v.name||p.name;modal.querySelector("#detailSelectedName").textContent=v.name||p.name;modal.querySelector("#detailSelectedPrice").textContent=money(v.price);modal.querySelector("#detailQty").textContent=detailQuantity;modal.querySelector("#detailVariantList").innerHTML=variants.length?'<div class="detail-variant-grid">'+list.map(x=>'<button type="button" class="detail-variant '+(String(x.id)===String(v.id)?'selected':'')+'" data-detail-variant="'+esc(x.id)+'"><img src="'+esc(x.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=300&q=80")+'" alt=""><span>'+esc(x.name)+'</span><strong>'+money(x.price)+'</strong></button>').join("")+'</div>':'<p class="detail-no-variants">الصنف المتاح حاليًا</p>';modal.querySelector("#detailVariantsHeading").textContent=variants.length?"اختاري الصنف":"تفاصيل المنتج";}
 function closeProductDetails(){const modal=document.getElementById("productDetailsModal");modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.style.overflow="";}
-function addDetailToCart(){if(!activeDetailVariant)return;const id=String(activeDetailVariant.id);orderCart.set(id,Math.min(20,(orderCart.get(id)||0)+detailQuantity));renderOrderCart();closeProductDetails();document.getElementById("checkout").scrollIntoView({behavior:"smooth",block:"start"});}
+function addDetailToCart(){if(!activeDetailVariant)return;const id=String(activeDetailVariant.id);orderCart.set(id,Math.min(20,(orderCart.get(id)||0)+detailQuantity));renderOrderCart();closeProductDetails();openCartModal();}
 grid.addEventListener("click",e=>{const target=e.target.closest("[data-open-product]");if(target)openProductDetails(target.dataset.openProduct);});
 grid.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-open-product]")){e.preventDefault();openProductDetails(e.target.dataset.openProduct);}});
 const detailModal=document.getElementById("productDetailsModal");
@@ -530,6 +549,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&detailModal.classLi
 
 
 document.getElementById("cartSummary").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(r)orderCart.delete(String(r.dataset.remove));if(q){const id=String(q.dataset.qty),n=(orderCart.get(id)||0)+Number(q.dataset.delta);if(n<1)orderCart.delete(id);else orderCart.set(id,Math.min(20,n));}renderOrderCart();});
+document.getElementById("cartSummary").addEventListener("change",e=>{const sel=e.target.closest("[data-swap-item]");if(!sel)return;const oldId=String(sel.dataset.swapItem),newId=String(sel.value),qty=orderCart.get(oldId)||1;if(oldId!==newId){orderCart.delete(oldId);orderCart.set(newId,Math.min(20,qty+(orderCart.get(newId)||0)));renderOrderCart();}});
 
 function renderPaymentDetails(){
  const select=document.getElementById("orderPaymentMethod"),box=document.getElementById("paymentMethodDetails");
@@ -589,6 +609,8 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
 });
 
 
+function openCartModal(){const section=document.getElementById("cart");if(!section)return;section.classList.add("cart-modal-open");section.setAttribute("aria-hidden","false");document.body.classList.add("checkout-lock");renderOrderCart();section.querySelector(".cart-close")?.focus({preventScroll:true});}
+function closeCartModal(){const section=document.getElementById("cart");if(!section)return;section.classList.remove("cart-modal-open");section.setAttribute("aria-hidden","true");document.body.classList.remove("checkout-lock");}
 function openCheckoutModal(){
  const section=document.getElementById("checkout");
  if(!section)return;
@@ -605,16 +627,17 @@ function closeCheckoutModal(){
  section.setAttribute("aria-hidden","true");
  document.body.classList.remove("checkout-lock");
 }
-document.querySelectorAll('a[href="#checkout"]').forEach(link=>link.addEventListener("click",event=>{
- event.preventDefault();openCheckoutModal();
-}));
+document.querySelectorAll('a[href="#cart"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();openCartModal();}));
+document.getElementById("continueToCheckout")?.addEventListener("click",()=>{if(!orderCart.size){const host=document.getElementById("cartSummary");host?.scrollIntoView({behavior:"smooth",block:"center"});return}closeCartModal();openCheckoutModal();renderCheckoutOrderReview();});
+document.getElementById("backToCart")?.addEventListener("click",()=>{closeCheckoutModal();openCartModal();});
+document.querySelector("#cart .cart-close")?.addEventListener("click",closeCartModal);
+document.getElementById("cart")?.addEventListener("click",event=>{if(event.target===event.currentTarget)closeCartModal();});
+document.querySelectorAll('a[href="#checkout"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();openCartModal();}));
 document.querySelector("#checkout .checkout-close")?.addEventListener("click",closeCheckoutModal);
 document.getElementById("checkout")?.addEventListener("click",event=>{
  if(event.target===event.currentTarget)closeCheckoutModal();
 });
-document.addEventListener("keydown",event=>{
- if(event.key==="Escape"&&document.getElementById("checkout")?.classList.contains("checkout-modal-open"))closeCheckoutModal();
-});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.getElementById("checkout")?.classList.contains("checkout-modal-open"))closeCheckoutModal();if(event.key==="Escape"&&document.getElementById("cart")?.classList.contains("cart-modal-open"))closeCartModal();});
 
 showProducts();
 const storeSearchInput=document.getElementById("storeSearchInput");
