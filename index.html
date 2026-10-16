@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#153b74">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="/icons/blaban-icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/blaban-icon.svg">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -616,7 +616,7 @@ if(storeSearchClear)storeSearchClear.addEventListener("click",()=>{storeSearchIn
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    navigator.serviceWorker.register("sw.js").catch(() => {});
   });
 }
 </script>
@@ -655,4 +655,49 @@ if ("serviceWorker" in navigator) {
  document.addEventListener("keydown",event=>{if(event.key==="Escape"&&drawer.classList.contains("open"))closeDrawer()});
 })();
 </script>
+
+<style id="store-search-modal-style">
+.store-search-trigger{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:9px 13px;border:1px solid #cde7ff;border-radius:14px;background:#eef7ff;color:#075eaa;font-weight:800;box-shadow:0 5px 16px #0066c80d}
+.store-search-trigger svg{width:20px;height:20px;display:block}
+.store-search-modal{position:fixed;inset:0;z-index:150;display:none;align-items:flex-start;justify-content:center;padding:clamp(18px,7vh,64px) 16px 24px;background:#0b1b31a8;backdrop-filter:blur(7px);overflow-y:auto}
+.store-search-modal.open{display:flex}
+.store-search-dialog{width:min(620px,100%);padding:20px;border:1px solid #dcecff;border-radius:25px;background:#fffdf9;box-shadow:0 25px 90px #071a3340;animation:searchDialogIn .18s ease-out}
+@keyframes searchDialogIn{from{opacity:0;transform:translateY(-9px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.store-search-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.store-search-dialog-head h2{margin:0;color:#153b74;font-size:1.2rem}
+.store-search-dialog-head p{margin:3px 0 0;color:#738198;font-size:.84rem}
+.store-search-dialog-close{width:39px;height:39px;flex:0 0 39px;border:0;border-radius:13px;background:#eaf4ff;color:#075eaa;font-size:1.6rem;line-height:1}
+.store-search-dialog .store-search-wrap{margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+.store-search-dialog .store-search-wrap>label{display:none}
+.store-search-dialog .store-search-box{min-height:54px}
+.store-search-dialog .store-search-box input{font-size:1rem}
+@media(max-width:600px){.store-search-trigger{min-height:38px;padding:7px 10px;font-size:.85rem}.store-search-dialog{padding:16px;border-radius:22px}.store-search-modal{padding:24px 12px}}
+</style>
+<div class="store-search-modal" id="storeSearchModal" aria-hidden="true">
+ <section class="store-search-dialog" role="dialog" aria-modal="true" aria-labelledby="storeSearchDialogTitle">
+  <div class="store-search-dialog-head"><div><h2 id="storeSearchDialogTitle">دوري على اللي بتحبيه</h2><p>اكتبي اسم المنتج أو جزء من اسمه</p></div><button class="store-search-dialog-close" id="storeSearchModalClose" type="button" aria-label="إغلاق البحث">×</button></div>
+ </section>
+</div>
+<script>
+(()=> {
+ const modal=document.getElementById("storeSearchModal");
+ const dialog=modal?.querySelector(".store-search-dialog");
+ const searchWrap=document.querySelector(".store-search-wrap");
+ const actions=document.querySelector("header .head-actions");
+ const input=document.getElementById("storeSearchInput");
+ const close=document.getElementById("storeSearchModalClose");
+ if(!modal||!dialog||!searchWrap||!actions||!input||!close)return;
+ const trigger=document.createElement("button");
+ trigger.type="button";trigger.className="store-search-trigger";trigger.setAttribute("aria-label","فتح البحث عن المنتجات");
+ trigger.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg><span>بحث</span>';
+ actions.prepend(trigger);
+ dialog.appendChild(searchWrap);
+ function openSearch(){modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";window.setTimeout(()=>input.focus({preventScroll:true}),30);}
+ function closeSearch(){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.style.overflow="";trigger.focus({preventScroll:true});}
+ trigger.addEventListener("click",openSearch);close.addEventListener("click",closeSearch);
+ modal.addEventListener("click",event=>{if(event.target===modal)closeSearch();});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape"&&modal.classList.contains("open"))closeSearch();});
+})();
+</script>
+
 </body></html>
