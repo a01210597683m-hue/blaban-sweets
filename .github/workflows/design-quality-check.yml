@@ -1,0 +1,213 @@
+name: Storefront design quality check
+
+on:
+  push:
+    branches:
+      - design/reference-blue-white-polish
+    paths:
+      - 'index.html'
+      - 'admin.html'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'icons/**'
+      - '.github/workflows/design-quality-check.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'admin.html'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'icons/**'
+      - '.github/workflows/design-quality-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-quality:
+    name: Validate storefront and admin assets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the proposed changes
+        uses: actions/checkout@v5
+
+      - name: Validate HTML structure, manifest assets, and service-worker safeguards
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const fail = message => {
+            console.error('FAIL:', message);
+            process.exitCode = 1;
+          };
+          const pass = message => console.log('PASS:', message);
+
+          for (const file of ['index.html', 'admin.html']) {
+            if (!fs.existsSync(file)) {
+              fail(`Missing required file: ${file}`);
+              continue;
+            }
+            const html = fs.readFileSync(file, 'utf8');
+            const staticMarkup = html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
+            const ids = [...staticMarkup.matchAll(/\bid=["']([^"']+)["']/gi)].map(match => match[1]);
+            const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+            if (duplicates.length) {
+              fail(`${file}: duplicate static HTML id(s): ${[...new Set(duplicates)].join(', ')}`);
+            } else {
+              pass(`${file}: static HTML ids are unique`);
+            }
+            for (const [label, pattern] of [
+              ['doctype', /^<!doctype html>/i],
+              ['head opening', /<head\b/i],
+              ['head closing', /<\/head>/i],
+              ['body opening', /<body\b/i],
+              ['body closing', /<\/body>/i],
+              ['html closing', /<\/html>/i]
+            ]) {
+              if (!pattern.test(html)) fail(`${file}: missing ${label}`);
+            }
+            const openStyles = (html.match(/<style\b/gi) || []).length;
+            const closeStyles = (html.match(/<\/style>/gi) || []).length;
+            if (openStyles !== closeStyles) fail(`${file}: unbalanced style tags (${openStyles}/${closeStyles})`);
+            if (!html.includes('id="reference-design-refinement"')) {
+              fail(`${file}: expected reference design refinement stylesheet not found`);
+            }
+            pass(`${file}: basic document and stylesheet checks`);
+          }
+
+          let manifest;
+          try {
+            manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
+            pass('manifest.webmanifest: valid JSON');
+          } catch (error) {
+            fail(`manifest.webmanifest: invalid JSON: ${error.message}`);
+          }
+
+          if (manifest) {
+            if (!manifest.name || !manifest.start_url || !manifest.scope) {
+              fail('manifest.webmanifest: missing name, start_url, or scope');
+            }
+            if (manifest.dir !== 'rtl') fail('manifest.webmanifest: expected dir=rtl');
+            if (!Array.isArray(manifest.icons) || manifest.icons.length === 0) {
+              fail('manifest.webmanifest: no icons declared');
+            } else {
+              for (const icon of manifest.icons) {
+                if (!icon.src) {
+                  fail('manifest.webmanifest: icon entry missing src');
+                  continue;
+                }
+                const localPath = path.join('.', icon.src.replace(/^\/+/, ''));
+                if (!fs.existsSync(localPath)) fail(`manifest icon file missing: ${icon.src}`);
+                else pass(`manifest icon exists: ${icon.src}`);
+              }
+            }
+          }
+
+          if (fs.existsSync('sw.js')) {
+            const sw = fs.readFileSync('sw.js', 'utf8');
+            if (!/const\s+CACHE_NAME\s*=\s*["'][^"']+["']/.test(sw)) {
+              fail('sw.js: cache version constant not found');
+            }
+            if (!/url\.pathname\s*===?\s*["']\/admin\.html["']/.test(sw)) {
+              fail('sw.js: admin route exclusion not found');
+            }
+            if (!/request\.method\s*!==\s*["']GET["']/.test(sw)) {
+              fail('sw.js: non-GET request safeguard not found');
+            }
+            pass('sw.js: cache version and admin/request safeguards');
+          } else {
+            fail('Missing sw.js');
+          }
+
+          if (process.exitCode) process.exit(process.exitCode);
+          NODE
+
+
+      - name: Validate CSS braces and mobile viewport safeguards
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          let failed = false;
+          for (const file of ['index.html', 'admin.html']) {
+            const html = fs.readFileSync(file, 'utf8');
+            const styles = html.split('<style').slice(1).map(part => {
+              const openingEnd = part.indexOf('>');
+              const closingStart = part.indexOf('</style>');
+              return openingEnd >= 0 && closingStart > openingEnd ? part.slice(openingEnd + 1, closingStart) : '';
+            }).filter(Boolean);
+            if (!styles.length) {
+              console.error(`FAIL: ${file}: no embedded stylesheets found`);
+              failed = true;
+              continue;
+            }
+            for (let i = 0; i < styles.length; i++) {
+              const css = styles[i].split('/*').map((part, index) => index === 0 ? part : part.split('*/').slice(1).join('*/')).join('');
+              let depth = 0;
+              let minimum = 0;
+              for (const character of css) {
+                if (character === '{') depth++;
+                if (character === '}') depth--;
+                minimum = Math.min(minimum, depth);
+              }
+              if (depth !== 0 || minimum < 0) {
+                console.error(`FAIL: ${file} stylesheet #${i + 1}: unbalanced CSS braces (depth=${depth}, min=${minimum})`);
+                failed = true;
+              } else {
+                console.log(`PASS: ${file} stylesheet #${i + 1} CSS brace balance`);
+              }
+            }
+            if (!html.includes('name="viewport"')) {
+              console.error(`FAIL: ${file}: responsive viewport meta tag missing`);
+              failed = true;
+            } else {
+              console.log(`PASS: ${file} responsive viewport meta tag`);
+            }
+          }
+          if (failed) process.exit(1);
+          NODE
+
+      - name: Parse inline JavaScript without executing storefront code
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const os = require('node:os');
+          const path = require('node:path');
+          const { spawnSync } = require('node:child_process');
+
+          const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'blaban-js-check-'));
+          let count = 0;
+          let failed = false;
+
+          for (const file of ['index.html', 'admin.html']) {
+            const html = fs.readFileSync(file, 'utf8');
+            const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+            for (let i = 0; i < scripts.length; i++) {
+              const attrs = scripts[i][1] || '';
+              const source = scripts[i][2] || '';
+              if (!source.trim()) continue;
+              const isModule = /\btype\s*=\s*["']module["']/i.test(attrs);
+              const target = path.join(tempDir, `${path.basename(file)}-${i}.${isModule ? 'mjs' : 'js'}`);
+              fs.writeFileSync(target, source);
+              const result = spawnSync(process.execPath, ['--check', target], { encoding: 'utf8' });
+              if (result.status !== 0) {
+                failed = true;
+                console.error(`FAIL: JavaScript syntax in ${file} inline script #${i + 1}`);
+                console.error(result.stderr || result.stdout);
+              } else {
+                count++;
+                console.log(`PASS: ${file} inline script #${i + 1} syntax`);
+              }
+            }
+          }
+
+          fs.rmSync(tempDir, { recursive: true, force: true });
+          if (failed || count === 0) process.exit(1);
+          console.log(`Checked ${count} inline JavaScript block(s) without executing them.`);
+          NODE

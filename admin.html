@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#153b74">
+<meta name="theme-color" content="#0759ad">
 <title>إدارة متجر حلو ب لبن</title>
 <style>
 :root{--navy:#153b74;--blue:#2865a8;--pink:#f9dce8;--cream:#fffaf5;--ink:#1b2940;--muted:#778197;--line:#e5e9f1;--white:#fff;--green:#17865b;--red:#b7374b}
@@ -130,6 +130,78 @@ body{background:linear-gradient(180deg,#f1f9ff,#fff 45%,#f5fbff)!important;color
  #app .stat{padding:10px!important}
  #app .stat span{font-size:.78rem!important}
 }
+
+
+/* Safe visual polish based on approved blue-white reference; admin logic unchanged. */
+:root{--navy:#0066c8;--blue:#0785ed;--pink:#dff4ff;--cream:#fbfdff;--ink:#123c70;--muted:#68809b;--line:#d8edff}
+#app.shell{background:linear-gradient(180deg,#f2f9ff,#fff 44%,#f5fbff)!important}
+#app .side{background:linear-gradient(110deg,#0066c8,#087fdf)!important;box-shadow:0 8px 25px #0066c81a!important}
+#app .side .brand{background:linear-gradient(110deg,#0066c8,#087fdf)!important}
+#app .side #adminLogoMark.logo{border:0!important;box-shadow:none!important}
+#app .side .nav{background:#fff!important;border-bottom:1px solid #d8edff!important}
+#app .side .nav button{color:#0066c8!important;background:#eef8ff!important;border:1px solid #e0f1ff!important}
+#app .side .nav button.active,#app .side .nav button:hover{color:#fff!important;background:linear-gradient(110deg,#0066c8,#0785ed)!important;border-color:transparent!important}
+#app .top{background:linear-gradient(110deg,#0066c8,#087fdf)!important;color:#fff!important;border:0!important;box-shadow:0 6px 20px #0066c812!important}
+#app .top h1,#app .top small{color:#fff!important}
+#app .btn{background:linear-gradient(110deg,#0066c8,#0785ed)!important;border-radius:12px!important}
+#app .top .btn.pale{background:#fff!important;color:#0066c8!important}
+#app .content{max-width:1500px!important}
+#app .welcome h2,#app .panel h3{color:#0066c8!important}
+#app .stat,#app .panel{background:#fff!important;border:1px solid #d8edff!important;border-radius:18px!important;box-shadow:0 7px 22px #0066c80b!important}
+#app .stat i{background:#e4f5ff!important;color:#0066c8!important}
+#app th{background:#f0f9ff!important;color:#1763a8!important}
+#app .field input,#app .field select,#app .field textarea{border-color:#d8eaf8!important;border-radius:12px!important}
+#app .field input:focus,#app .field textarea:focus,#app .field select:focus{border-color:#0785ed!important;box-shadow:0 0 0 3px #d8edff!important}
+#login .login-card{border:1px solid #d8edff!important;box-shadow:0 18px 55px #0066c812!important}
+@media(max-width:760px){#app .top{background:linear-gradient(110deg,#0066c8,#087fdf)!important}#app .side .nav{background:#fff!important}}
+
+</style>
+<style id="reference-design-refinement">
+
+/* Design refinement: balanced dashboard hierarchy for desktop and mobile */
+:root{--navy:#0759ad;--blue:#087fe3;--pink:#e4f5ff;--cream:#f8fcff;--ink:#17385e;--muted:#66809b;--line:#d7eafa;--white:#fff}
+html,body{background:#f5faff!important}
+#app.shell{background:linear-gradient(180deg,#f2f9ff,#fff 52%,#f7fbff)!important}
+#app .side{background:linear-gradient(120deg,#0759ad,#087fe3)!important;border-bottom:4px solid #bce8ff!important}
+#app .side .brand{background:transparent!important}
+#app .side #adminLogoMark.logo{border:2px solid #d8f2ff!important;box-shadow:0 7px 20px #003d7a20!important}
+#app .side .brand small{color:#e1f4ff!important}
+#app .side .nav{background:transparent!important;border:0!important;box-shadow:none!important;padding:12px 18px!important;gap:8px!important}
+#app .side .nav button{background:#ffffff14!important;border:1px solid #ffffff2e!important;color:#fff!important;border-radius:13px!important;transition:background .2s,transform .2s!important}
+#app .side .nav button.active,#app .side .nav button:hover{background:#fff!important;border-color:#fff!important;color:#0759ad!important;transform:translateY(-1px)!important}
+#app .side .side-note{color:#e1f4ff!important}
+#app .top{background:linear-gradient(110deg,#0759ad,#087fe3)!important;border-bottom:4px solid #bce8ff!important}
+#app .top h1,#app .top small{color:#fff!important}
+#app .top .btn.pale{background:#fff!important;color:#0759ad!important;border:1px solid #d8f2ff!important}
+#app .content{max-width:1480px!important;padding:clamp(16px,2.5vw,32px)!important}
+#app .welcome{padding:20px 22px!important;border-radius:22px!important;border:1px solid #d7eafa!important;background:linear-gradient(110deg,#e7f5ff,#fff 70%)!important;margin-bottom:22px!important}
+#app .welcome h2,#app .panel h3{color:#0759ad!important}
+#app .stat,#app .panel,#login .login-card{border:1px solid #d7eafa!important;border-radius:20px!important;box-shadow:0 10px 28px #0759ad0c!important}
+#app .stat{position:relative!important;overflow:hidden!important;min-height:126px!important}
+#app .stat:after{content:"";position:absolute;left:-22px;bottom:-28px;width:90px;height:90px;border-radius:50%;background:#e5f4ff80!important;pointer-events:none}
+#app .stat i{position:relative;z-index:1;background:#e4f5ff!important;color:#0759ad!important;border-radius:13px!important}
+#app .stat strong{position:relative;z-index:1;color:#0759ad!important}
+#app .panel{padding:22px!important}
+#app .panel-head{padding-bottom:12px!important;border-bottom:1px solid #e6f2fc!important}
+#app th{background:#eef8ff!important;color:#0759ad!important}
+#app td{background:#fff!important}
+#app .tag{border-radius:999px!important}
+#app .field input,#app .field select,#app .field textarea{border:1px solid #d7eafa!important;border-radius:12px!important}
+#app .field input:focus,#app .field textarea:focus,#app .field select:focus{border-color:#0784e7!important;box-shadow:0 0 0 3px #d9efff!important}
+#app .hint{border-radius:14px!important}
+@media(max-width:760px){
+ #app .side{padding-bottom:8px!important}
+ #app .side .nav{padding:10px 12px!important;gap:7px!important}
+ #app .side .nav button{padding:9px 12px!important;font-size:.84rem!important}
+ #app .side #adminLogoMark.logo{aspect-ratio:4/1!important;max-height:180px!important}
+ #app .content{padding:13px!important}
+ #app .welcome{padding:16px!important}
+ #app .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ #app .stat{min-height:112px!important;padding:14px!important}
+ #app .stat strong{font-size:1.45rem!important}
+ #app .panel{padding:15px!important}
+}
+@media(max-width:390px){#app .stats{grid-template-columns:1fr!important}}
 
 </style>
 </head>
