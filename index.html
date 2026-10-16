@@ -463,17 +463,53 @@ body{font-family:var(--store-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 .product-card .category-img img,.category .category-img img{border-radius:12px!important;max-width:100%;max-height:100%;object-fit:cover}
 @media(max-width:600px){.cart-modal.cart-modal-open{padding:10px 8px calc(12px + env(safe-area-inset-bottom))}.cart-app{border-radius:20px}.cart-app>.section-title{padding:18px 16px}.cart-body{padding:14px}.cart-item{align-items:flex-start;gap:8px}.cart-variant-label select{max-width:55vw}}
 </style>
-</head>
+<style id="customer-order-tracking">
+#orderTracking{scroll-margin-top:24px}
+#orderTracking .tracking-shell{overflow:hidden;border:1px solid #d9eafb;border-radius:25px;background:linear-gradient(145deg,#f2f9ff 0%,#fff 60%,#fff5f8 100%);box-shadow:0 14px 38px #123b5e0c}
+#orderTracking .tracking-head{padding:clamp(20px,4vw,32px);display:flex;align-items:center;gap:15px;border-bottom:1px solid #e5eef7}
+#orderTracking .tracking-head-icon{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:16px;background:#e3f2ff;color:#0877ce;font-size:1.4rem}
+#orderTracking .tracking-head h2{margin:0;color:#153b5c;font-size:clamp(1.2rem,3vw,1.7rem)}
+#orderTracking .tracking-head p{margin:5px 0 0;color:#70869b;font-size:.9rem;line-height:1.7}
+#orderTrackingForm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:end;gap:12px;padding:clamp(16px,3vw,26px)}
+#orderTrackingForm .tracking-field{display:grid;gap:7px;min-width:0}
+#orderTrackingForm label{font-size:.86rem;font-weight:800;color:#345571}
+#orderTrackingForm input{width:100%;min-width:0;box-sizing:border-box;padding:12px 13px;border:1px solid #d5e5f4;border-radius:13px;background:#fff;color:#173b5d;font:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+#orderTrackingForm input:focus{border-color:#1887db;box-shadow:0 0 0 3px #1887db1c}
+#trackOrderBtn{min-height:46px;white-space:nowrap;border-radius:13px}
+#orderTrackingResult{margin:0 clamp(16px,3vw,26px) clamp(16px,3vw,26px);padding:20px;border:1px solid #e0ebf5;border-radius:20px;background:#fff}
+#orderTrackingResult[hidden]{display:none!important}
+.tracking-result-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding-bottom:15px;border-bottom:1px solid #edf2f7}
+.tracking-result-top h3{margin:0;color:#193e60;font-size:1.05rem}
+.tracking-result-top p{margin:5px 0 0;color:#7b8fa3;font-size:.82rem}
+.tracking-current-status{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#eaf5ff;color:#2879b9;font-size:.8rem;font-weight:900}
+.tracking-current-status:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.tracking-current-status.status-cancelled{background:#fff0f0;color:#b7374b}
+.tracking-timeline{display:grid;gap:0;padding-top:15px}
+.tracking-step{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;min-height:60px}
+.tracking-step:not(:last-child):before{content:"";position:absolute;right:16px;top:32px;bottom:-2px;width:2px;background:#e3edf6}
+.tracking-step.is-complete:not(:last-child):before{background:#7eb6e8}
+.tracking-step-icon{z-index:1;display:grid;place-items:center;width:34px;height:34px;border:2px solid #dce8f3;border-radius:50%;background:#fff;color:#8ba1b4;font-size:.82rem;font-weight:900}
+.tracking-step.is-complete .tracking-step-icon{border-color:#7eb6e8;background:#eaf5ff;color:#247bb9}
+.tracking-step.is-current .tracking-step-icon{border-color:#0877ce;background:#0877ce;color:#fff;box-shadow:0 0 0 4px #0877ce1c}
+.tracking-step-copy{padding:4px 0 18px;min-width:0}
+.tracking-step-copy strong{display:block;color:#72869a;font-size:.9rem}
+.tracking-step.is-complete .tracking-step-copy strong{color:#244b70}
+.tracking-step-copy small{display:block;margin-top:3px;color:#8a9bab;font-size:.78rem;line-height:1.6}
+.tracking-cancelled-note{margin-top:15px;padding:12px 14px;border-radius:13px;background:#fff1f1;color:#b7374b;font-size:.88rem}
+.tracking-refresh-note{margin-top:12px;color:#8496a7;font-size:.75rem}
+@media(max-width:700px){#orderTrackingForm{grid-template-columns:minmax(0,1fr);gap:10px}#trackOrderBtn{width:100%}#orderTracking .tracking-head{align-items:flex-start;padding:19px 16px}#orderTracking .tracking-head-icon{width:42px;height:42px;flex-basis:42px;border-radius:14px}#orderTrackingResult{padding:15px;margin:0 12px 12px}.tracking-result-top{gap:9px}}
+@media(prefers-reduced-motion:reduce){#orderTrackingForm input{transition:none}}
+</style></head>
 <body>
 <header><div class="wrap top">
 <button class="menu-toggle" id="menuToggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="storeSideDrawer"><span></span><span></span><span></span></button>
 <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
 <aside class="store-drawer" id="storeSideDrawer" aria-hidden="true" aria-label="قائمة المتجر">
   <div class="drawer-head"><strong>القائمة</strong><button class="drawer-close" id="drawerClose" type="button" aria-label="إغلاق القائمة">×</button></div>
-  <nav class="nav nav-start drawer-nav"><a href="#home">الرئيسية</a><a href="#categories">المنتجات</a><a href="#checkout">المشتريات</a><a href="#story">من نحن</a></nav>
+  <nav class="nav nav-start drawer-nav"><a href="#home">الرئيسية</a><a href="#categories">المنتجات</a><a href="#checkout">المشتريات</a><a href="#orderTracking">تتبعي طلبك</a><a href="#story">من نحن</a></nav>
 </aside>
 <a class="brand brand-center" href="#home" aria-label="BLABAN-SWEETS الرئيسية"><img id="storeLogo" class="logo" src="" alt="لوجو حلو ب لبن" style="object-fit:contain;display:none;background:white"><span id="logoFallback" class="logo">حلو ب لبن</span><span class="brand-copy"><span id="storeNameAr">حلو ب لبن</span><small id="storeTagline">مع حلو ب لبن / حلى أيامك</small><small id="storeNameEn">BLABAN-SWEETS</small></span></a>
-<div class="head-actions"><a class="head-icon" href="#cart" aria-label="سلة المشتريات">🛒<span class="cart-count" id="cartCount">0</span></a><a class="head-icon" href="#contact" aria-label="تواصل معنا">♧</a><button class="head-icon store-search-trigger" id="storeSearchTrigger" type="button" aria-label="فتح البحث عن المنتجات" aria-haspopup="dialog" aria-controls="storeSearchModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button></div>
+<div class="head-actions"><a class="head-icon" href="#cart" aria-label="سلة المشتريات">🛒<span class="cart-count" id="cartCount">0</span></a><a class="head-icon" href="#orderTracking" aria-label="تتبعي طلبك">🚚</a><a class="head-icon" href="#contact" aria-label="تواصل معنا">♧</a><button class="head-icon store-search-trigger" id="storeSearchTrigger" type="button" aria-label="فتح البحث عن المنتجات" aria-haspopup="dialog" aria-controls="storeSearchModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button></div>
 </div></header>
 <main id="home">
 <section class="hero"><div class="wrap"><div class="hero-card">
@@ -502,6 +538,16 @@ body{font-family:var(--store-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 <label style="display:block;font-weight:700;margin:10px 0 4px" for="orderNotes">ملاحظات (اختياري)</label><textarea id="orderNotes" maxlength="1000" rows="2" style="width:100%;padding:11px;border:1px solid #dce2ec;border-radius:10px"></textarea>
 <button class="btn" id="submitOrder" type="submit" style="width:100%;margin-top:15px">تأكيد الطلب</button><div id="orderStatus" class="notice" role="status"></div>
 </form></div></section>
+<section class="section wrap" id="orderTracking">
+<div class="tracking-shell">
+<div class="tracking-head"><span class="tracking-head-icon" aria-hidden="true">🚚</span><div><h2>تابعي طلبك خطوة بخطوة</h2><p>اكتبي رقم الطلب ورقم الموبايل اللي سجلتي بيه الطلب، وهنعرضلك آخر حالة وصل لها.</p></div></div>
+<form id="orderTrackingForm">
+<div class="tracking-field"><label for="trackingOrderNumber">رقم الطلب</label><input id="trackingOrderNumber" required maxlength="20" placeholder="مثال: BL-A1B2C3D4" autocomplete="off" dir="ltr"></div>
+<div class="tracking-field"><label for="trackingPhone">رقم الهاتف المسجل بالطلب</label><input id="trackingPhone" required maxlength="30" type="tel" inputmode="tel" placeholder="رقم الموبايل" autocomplete="tel"></div>
+<button class="btn" id="trackOrderBtn" type="submit">تتبعي الطلب ←</button>
+</form>
+<div id="orderTrackingResult" role="status" aria-live="polite" hidden></div>
+</div></section>
 <section class="section wrap" id="story"><div class="story"><div class="story-photo"><img id="storyImage" loading="lazy" src="https://images.unsplash.com/photo-1551024506-0f1c6e5e6f1e?auto=format&fit=crop&w=900&q=80" alt="صورة حلو ب لبن"></div><div class="story-copy"><span class="eyebrow">مع حلو ب لبن</span><h2 id="storyTitle">حلى أيامك،<br>على طريقتك</h2><p id="storyDescription">بنجهّز تجربة إلكترونية تخليك تتصفح المنيو بسهولة، تشوف تفاصيل كل صنف، وتطلب لما نظام الطلبات يكون جاهز. دي البداية، ولسه هنضيف الصور الرسمية وباقي التفاصيل.</p><a class="btn" href="#contact">خلينا على تواصل</a></div></div></section>
 <section class="section wrap"><div class="section-title"><div><span class="eyebrow">تجربة بتتطور</span><h2>كل حاجة أوضح وأسهل</h2></div></div><div class="benefits"><article class="benefit"><div class="benefit-icon">✦</div><div><h3>تصميم مريح</h3><p>تصفح واضح ومناسب للموبايل والكمبيوتر.</p></div></article><article class="benefit"><div class="benefit-icon">▦</div><div><h3>منيو منظم</h3><p>الأصناف والوصف والأسعار هتظهر بعد إضافتها رسميًا.</p></div></article><article class="benefit"><div class="benefit-icon">♡</div><div><h3>تجربة على ذوقك</h3><p>هنطوّر الشكل حسب هوية البراند والصور الرسمية.</p></div></article></div></section>
 <section class="contact-panels wrap" id="contact">
@@ -510,7 +556,7 @@ body{font-family:var(--store-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 <article class="contact-card socials-card"><h3>تابعينا على صفحاتنا</h3><p>فيسبوك · واتساب · تيك توك</p><div class="social-links" id="socialLinks"><span aria-label="فيسبوك">f</span><span aria-label="واتساب">◉</span><span aria-label="تيك توك">♪</span></div><small id="socialLinksHint">روابط الصفحات هتظهر بعد إضافتها.</small></article>
 </section>
 </main>
-<footer><div class="footer-wave"></div><div class="wrap foot"><div class="foot-brand-wrap"><img id="footerLogo" class="footer-logo" alt="لوجو أسفل المتجر" style="display:none"><div><div class="foot-brand" id="footerBrand">حلو ب لبن ✦</div><div id="footerTagline">مع حلو ب لبن / حلى أيامك</div></div></div><div class="foot-links"><a href="#home">الرئيسية</a><a href="#categories">المنتجات</a><a href="#checkout">المشتريات</a><a href="#contact">تواصل معانا</a></div><small>© <span id="year"></span> BLABAN-SWEETS — جميع الحقوق محفوظة</small></div><div class="footer-slogan">♥ من دنيا حلوة ♥</div></footer>
+<footer><div class="footer-wave"></div><div class="wrap foot"><div class="foot-brand-wrap"><img id="footerLogo" class="footer-logo" alt="لوجو أسفل المتجر" style="display:none"><div><div class="foot-brand" id="footerBrand">حلو ب لبن ✦</div><div id="footerTagline">مع حلو ب لبن / حلى أيامك</div></div></div><div class="foot-links"><a href="#home">الرئيسية</a><a href="#categories">المنتجات</a><a href="#checkout">المشتريات</a><a href="#orderTracking">تتبعي طلبك</a><a href="#contact">تواصل معانا</a></div><small>© <span id="year"></span> BLABAN-SWEETS — جميع الحقوق محفوظة</small></div><div class="footer-slogan">♥ من دنيا حلوة ♥</div></footer>
 
 <div id="cartToast" class="cart-toast" role="status" aria-live="polite" hidden></div>
 <script type="module">
@@ -648,12 +694,56 @@ function renderPaymentDetails(){
 }
 document.getElementById("orderPaymentMethod")?.addEventListener("change",renderPaymentDetails);
 
+
+// Customer order tracking: public endpoint returns status only after matching order number and phone.
+const TRACKING_ENDPOINT=SUPABASE_URL+"/functions/v1/track-store-order";
+let trackingPollTimer=null;
+const trackingStages=[
+ {key:"new",title:"استلمنا طلبك",detail:"طلبك وصلنا وبنراجعه."},
+ {key:"confirmed",title:"تم تأكيد الطلب",detail:"تم تأكيد تفاصيل الطلب."},
+ {key:"preparing",title:"طلبك قيد التجهيز",detail:"بنجهّز اختياراتك بكل عناية."},
+ {key:"ready",title:"تم تجهيز الطلب",detail:"طلبك جاهز لاستلام مندوب التوصيل."},
+ {key:"out_for_delivery",title:"استلمه مندوب التوصيل",detail:"المندوب استلم طلبك وهو في طريقه ليكي."},
+ {key:"delivered",title:"تم تسليم الطلب",detail:"بالهنا والشفا، نتمنى تجربتك تكون حلوة 💗"}
+];
+const trackingStatusLabels={new:"طلب جديد",confirmed:"تم التأكيد",preparing:"قيد التجهيز",ready:"تم التجهيز",out_for_delivery:"مع مندوب التوصيل",delivered:"تم التسليم",cancelled:"تم إلغاء الطلب"};
+function stopTrackingPolling(){if(trackingPollTimer){clearInterval(trackingPollTimer);trackingPollTimer=null}}
+function escapeTrackingText(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderTrackingResult(order){
+ const host=document.getElementById("orderTrackingResult");if(!host)return;
+ const currentLabel=trackingStatusLabels[order.status]||"قيد المتابعة",cancelled=order.status==="cancelled";
+ const currentIndex=trackingStages.findIndex(s=>s.key===order.status);
+ let html='<div class="tracking-result-top"><div><h3>طلب رقم '+escapeTrackingText(order.order_number)+'</h3><p>تاريخ الطلب: '+escapeTrackingText(order.created_at?new Date(order.created_at).toLocaleString("ar-EG"):"غير متاح")+'</p></div><span class="tracking-current-status '+(cancelled?"status-cancelled":"")+'">'+currentLabel+'</span></div>';
+ if(cancelled){html+='<div class="tracking-cancelled-note">الطلب ده اتلغى. لو محتاجة مساعدة، تواصلي مع المتجر.</div>'}
+ else{html+='<div class="tracking-timeline">'+trackingStages.map((step,i)=>{const complete=i<currentIndex,current=i===currentIndex,reached=i<=currentIndex;return '<div class="tracking-step '+(reached?"is-complete ":"")+(current?"is-current":"")+'"><span class="tracking-step-icon">'+(complete?"✓":String(i+1))+'</span><div class="tracking-step-copy"><strong>'+step.title+'</strong><small>'+step.detail+'</small></div></div>'}).join("")+'</div>'}
+ html+='<div class="tracking-refresh-note">الحالة بتتحدّث تلقائيًا كل 30 ثانية طالما الصفحة مفتوحة.</div>';
+ host.innerHTML=html;host.hidden=false;
+}
+async function lookupOrderStatus(silent=false,forcedValues=null){
+ const number=String(forcedValues?.order_number??document.getElementById("trackingOrderNumber").value??"").trim().toUpperCase();
+ const phone=String(forcedValues?.phone??document.getElementById("trackingPhone").value??"").trim();
+ const host=document.getElementById("orderTrackingResult"),button=document.getElementById("trackOrderBtn");
+ if(!number||!phone){if(!silent){host.hidden=false;host.textContent="اكتبي رقم الطلب ورقم الهاتف الأول."}return}
+ if(!silent){button.disabled=true;button.textContent="جارٍ البحث…";host.hidden=false;host.textContent="بندور على طلبك بأمان…"}
+ try{
+  const response=await fetch(TRACKING_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY},body:JSON.stringify({order_number:number,phone})});
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok||!payload.found){stopTrackingPolling();host.hidden=false;host.textContent=payload.error||"ملقيناش طلب مطابق للبيانات دي. راجعي رقم الطلب ورقم الهاتف.";return}
+  renderTrackingResult(payload.order);
+  if(!trackingPollTimer)trackingPollTimer=setInterval(()=>{if(document.visibilityState==="visible"&&document.getElementById("trackingOrderNumber").value.trim().toUpperCase()===number&&document.getElementById("trackingPhone").value.trim()===phone)lookupOrderStatus(true,{order_number:number,phone})},30000);
+ }catch(error){if(!silent){host.hidden=false;host.textContent="مش قادرين نجيب حالة الطلب دلوقتي. جرّبي كمان شوية."}}
+ finally{if(!silent){button.disabled=false;button.textContent="تتبعي الطلب ←"}}
+}
+document.getElementById("orderTrackingForm")?.addEventListener("submit",e=>{e.preventDefault();stopTrackingPolling();lookupOrderStatus()});
+document.getElementById("trackingOrderNumber")?.addEventListener("input",stopTrackingPolling);
+document.getElementById("trackingPhone")?.addEventListener("input",stopTrackingPolling);
+
 document.getElementById("checkoutForm").addEventListener("submit",async e=>{
  e.preventDefault();const statusEl=document.getElementById("orderStatus"),btn=document.getElementById("submitOrder");
  if(!orderCart.size){statusEl.textContent="اختاري منتجًا واحدًا على الأقل من المنيو.";return}
  const selectedZone=selectedDeliveryZone();if(!selectedZone){statusEl.textContent="اختاري مدينة ومنطقة التوصيل أولًا.";return}
  const cartSubtotal=[...orderCart.entries()].reduce((sum,[id,q])=>{const p=availableProducts.find(x=>String(x.id)===id);return sum+(p?Number(p.price)*q:0)},0);if(cartSubtotal<Number(selectedZone.minimum_order||0)){statusEl.textContent="الحد الأدنى للطلب في المنطقة دي هو "+money(selectedZone.minimum_order)+".";return}
- btn.disabled=true;statusEl.textContent="جارٍ تسجيل الطلب بأمان...";
+ const trackingPhone=document.getElementById("orderPhone").value.trim();btn.disabled=true;statusEl.textContent="جارٍ تسجيل الطلب بأمان...";
  try{
   const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
   const client=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -662,6 +752,9 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
   const summary=(data.items||[]).map(x=>x.name+" × "+x.quantity+" = "+money(x.subtotal)).join("\n");
   const message="طلب جديد من حلو ب لبن "+data.order_number+"\n"+summary+"\nقيمة المنتجات: "+money(data.subtotal_amount)+"\nالتوصيل: "+money(data.delivery_fee)+"\nالإجمالي شامل التوصيل: "+money(data.total_amount)+"\nالاسم: "+document.getElementById("orderName").value.trim()+"\nالهاتف: "+document.getElementById("orderPhone").value.trim()+"\nالعنوان: "+document.getElementById("orderAddress").value.trim()+"\nملاحظات: "+(document.getElementById("orderNotes").value.trim()||"لا يوجد");
   statusEl.textContent="تم تسجيل طلبك بنجاح برقم "+data.order_number+". الإجمالي "+money(data.total_amount)+".";
+  document.getElementById("trackingOrderNumber").value=data.order_number;
+  document.getElementById("trackingPhone").value=trackingPhone;
+  const trackingLink=document.createElement("a");trackingLink.href="#orderTracking";trackingLink.className="btn";trackingLink.style.marginTop="12px";trackingLink.textContent="تابعي حالة طلبك خطوة بخطوة";trackingLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("orderTracking").scrollIntoView({behavior:"smooth",block:"start"});lookupOrderStatus(false,{order_number:data.order_number,phone:trackingPhone})});statusEl.appendChild(document.createElement("br"));statusEl.appendChild(trackingLink);
   const whatsappNumber=storeWhatsappNumber;
   if(whatsappNumber){const link="https://wa.me/"+whatsappNumber+"?text="+encodeURIComponent(message);const a=document.createElement("a");a.href=link;a.target="_blank";a.rel="noopener";a.className="btn";a.style.marginTop="12px";a.textContent="إرسال تفاصيل الطلب عبر واتساب";statusEl.appendChild(document.createElement("br"));statusEl.appendChild(a)}
   else {const note=document.createElement("p");note.textContent="الطلب اتسجل في لوحة الإدارة. هنفعّل إرسال تفاصيله على واتساب بعد إضافة رقم واتساب الرسمي للمتجر.";statusEl.appendChild(note)}
