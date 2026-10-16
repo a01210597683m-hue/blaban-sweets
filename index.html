@@ -219,6 +219,16 @@ body.checkout-lock{overflow:hidden}
  #checkout .story>div.story-copy{order:1}
  #checkout label{font-size:.91rem}
 }
+/* Keep the main navigation above the uploaded header logo/banner */
+header .nav.nav-start{order:0!important;display:flex!important;flex:0 0 100%!important;width:100%!important;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;padding:9px 12px 10px!important;gap:clamp(12px,3vw,30px)!important}
+header .brand.brand-center{order:1!important}
+header .head-actions{order:2!important}
+@media(max-width:600px){
+ header .nav.nav-start{order:0!important;flex:0 0 100%!important;justify-content:space-evenly!important;gap:8px!important;padding:8px 9px 10px!important;font-size:.82rem!important}
+ header .brand.brand-center{order:1!important}
+ header .head-actions{order:2!important;position:absolute!important;right:8px!important;top:52px!important}
+}
+
 </style>
 <style id="design-controls-style">
 :root{--store-card-radius:23px;--store-button-radius:14px}
