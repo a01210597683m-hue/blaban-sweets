@@ -243,7 +243,30 @@ body[data-store-layout="large"] .category-img{height:230px}
 @media(max-width:850px){body[data-store-layout="large"] .categories{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-store-layout="large"] .category-img{height:180px}}
 @media(max-width:440px){body[data-store-layout="large"] .category-img{height:150px}}
 </style>
-<style id="customizable-footer-style">footer{display:block!important;background:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:inherit!important;padding:0!important;margin:0!important;min-height:0!important;overflow:visible!important}footer .footer-wave,footer .foot-brand-wrap>div,footer .foot-links,footer .foot>small,footer .footer-slogan{display:none!important}footer .foot{display:flex!important;justify-content:center!important;align-items:center!important;padding:0!important;margin:0 auto!important;gap:0!important;width:100%!important;max-width:none!important}footer .foot-brand-wrap{display:flex!important;justify-content:center!important;align-items:center!important;width:100%!important;margin:0!important;padding:0!important}footer .footer-logo{display:block;width:min(100%,var(--footer-logo-size,420px))!important;height:auto!important;max-height:none!important;object-fit:contain!important;border:0!important;border-radius:0!important;background:transparent!important;background-color:transparent!important;padding:0!important;margin:0 auto!important;box-shadow:none!important;outline:0!important}</style></head>
+<style id="customizable-footer-style">footer{display:block!important;background:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:inherit!important;padding:0!important;margin:0!important;min-height:0!important;overflow:visible!important}footer .footer-wave,footer .foot-brand-wrap>div,footer .foot-links,footer .foot>small,footer .footer-slogan{display:none!important}footer .foot{display:flex!important;justify-content:center!important;align-items:center!important;padding:0!important;margin:0 auto!important;gap:0!important;width:100%!important;max-width:none!important}footer .foot-brand-wrap{display:flex!important;justify-content:center!important;align-items:center!important;width:100%!important;margin:0!important;padding:0!important}footer .footer-logo{display:block;width:min(100%,var(--footer-logo-size,420px))!important;height:auto!important;max-height:none!important;object-fit:contain!important;border:0!important;border-radius:0!important;background:transparent!important;background-color:transparent!important;padding:0!important;margin:0 auto!important;box-shadow:none!important;outline:0!important}</style><style id="navigation-over-logo-style">
+/* Transparent navigation placed directly over the blank upper area of the uploaded logo/banner */
+header .top{position:relative!important}
+header .nav.nav-start{
+ position:absolute!important;top:0!important;left:0!important;right:0!important;z-index:10!important;
+ display:flex!important;flex:0 0 auto!important;width:100%!important;
+ justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:clamp(12px,2.5vw,30px)!important;padding:9px 135px 8px 18px!important;
+ margin:0!important;background:transparent!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;color:#fff!important;font-weight:900!important;
+}
+header .nav.nav-start a{
+ color:#fff!important;background:transparent!important;border:0!important;border-radius:0!important;
+ padding:0!important;margin:0!important;text-decoration:none!important;
+ text-shadow:0 1px 5px #00345f75!important;white-space:nowrap!important;font-weight:900!important;
+}
+header .brand.brand-center{order:0!important;position:relative!important;z-index:1!important}
+header .head-actions{order:2!important;z-index:11!important}
+@media(max-width:600px){
+ header .nav.nav-start{top:0!important;justify-content:center!important;gap:clamp(8px,2.6vw,14px)!important;padding:8px 8px 6px!important;font-size:clamp(.68rem,2.8vw,.82rem)!important}
+ header .head-actions{top:48px!important;right:7px!important}
+}
+</style>
+</head>
 <body>
 <header><div class="wrap top">
 <nav class="nav nav-start"><a href="#home">الرئيسية</a><a href="#categories">المنتجات</a><a href="#checkout">المشتريات</a><a href="#story">من نحن</a></nav>
