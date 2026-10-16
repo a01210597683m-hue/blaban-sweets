@@ -106,7 +106,7 @@ header .head-icon{color:#fff!important}
 /* Reference-inspired BLABAN-SWEETS storefront: glossy blue header, airy white canvas, rounded cards */
 :root{--navy:#0066c8;--blue:#0785ed;--sky:#e7f6ff;--pink:#dff4ff;--cream:#fbfdff;--ink:#123c70;--muted:#68809b;--line:#d9edfb;--gold:#ffd96a}
 body{background:linear-gradient(180deg,#f5fbff 0%,#fff 48%,#f4faff 100%);color:var(--ink)}
-header{position:relative;top:auto;background:#0066c8!important;border:0!important;box-shadow:0 8px 25px #0066c81c!important;overflow:hidden}
+header{position:relative;top:auto;background:#0066c8!important;border:0!important;box-shadow:0 8px 25px #0066c81c!important;overflow:visible!important}
 header .top{width:100%!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0 0 12px!important;display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;gap:0!important}
 header .brand.brand-center{order:0!important;display:flex!important;flex:0 0 100%!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#0066c8!important;box-shadow:none!important;overflow:hidden!important;gap:0!important}
 header .brand.brand-center #storeLogo.logo{display:block!important;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:3/1!important;max-height:360px!important;min-height:0!important;margin:0!important;padding:0!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:0!important;background:#0066c8!important;box-shadow:none!important}
@@ -583,6 +583,9 @@ if ("serviceWorker" in navigator) {
  const backdrop=document.getElementById("drawerBackdrop");
  const closeButton=document.getElementById("drawerClose");
  if(!toggle||!drawer||!backdrop||!closeButton)return;
+ // Keep the drawer and backdrop outside the header so ancestor overflow/stacking
+ // cannot clip the menu on mobile or desktop.
+ document.body.append(backdrop,drawer);
  function openDrawer(){
    drawer.classList.add("open");
    drawer.setAttribute("aria-hidden","false");
