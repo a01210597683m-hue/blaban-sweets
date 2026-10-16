@@ -269,6 +269,63 @@ body{font-family:var(--admin-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 }
 @media(prefers-reduced-motion:reduce){#app .overview-view{animation:none!important}}
 </style>
+
+<style id="modern-overview-followup">
+/* Modern follow-up area: clear section header, refined panels, and compact list rows */
+#app .overview-latest-heading{position:relative;display:flex;align-items:center;gap:14px;padding:5px 2px 2px 0;margin-top:2px}
+#app .overview-latest-heading:before{content:"";width:5px;height:42px;flex:0 0 5px;border-radius:8px;background:linear-gradient(180deg,#7eb6e8,#f3a1b8)}
+#app .overview-latest-heading h3{font-size:clamp(1.08rem,1.8vw,1.3rem);font-weight:900;letter-spacing:-.02em;color:#24435f!important}
+#app .overview-latest-heading p{font-size:.88rem;color:#7b8fa3;margin-top:4px}
+#app .overview-lists{gap:18px}
+#app .overview-list-panel{position:relative;padding:0!important;overflow:hidden;border:1px solid #e1edf7!important;border-radius:23px!important;background:linear-gradient(180deg,#fff,#fcfdff)!important;box-shadow:0 12px 30px #2347650b!important;transition:transform .2s ease,box-shadow .2s ease!important}
+#app .overview-list-panel:hover{transform:translateY(-2px);box-shadow:0 16px 34px #23476512!important}
+#app .overview-list-panel>.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0!important;padding:19px 22px;border-bottom:1px solid #edf2f7;background:linear-gradient(110deg,#f5faff,#fff8fb)}
+#app .overview-list-panel>.panel-head h3{display:flex;align-items:center;gap:10px;font-size:1.03rem;font-weight:900;color:#24435f!important}
+#app .overview-list-panel>.panel-head h3:before{display:grid;place-items:center;content:"↗";width:35px;height:35px;border-radius:12px;background:#e8f4ff;color:#4c8fcb;font-size:1rem}
+#app .overview-list-panel:nth-child(2)>.panel-head h3:before{content:"✦";background:#fff0f5;color:#db7394}
+#app .overview-list-panel .tiny[data-goto]{border:1px solid #d7eafa!important;border-radius:12px!important;padding:9px 13px!important;background:#fff!important;color:#4c8fcb!important;font-size:.82rem;font-weight:800;box-shadow:0 3px 9px #24435f07;transition:background .2s ease,color .2s ease,transform .2s ease}
+#app .overview-list-panel .tiny[data-goto]:hover{background:#4c8fcb!important;color:#fff!important;transform:translateY(-1px)}
+#app #recentOrders,#app #recentProducts{padding:8px 22px 18px!important;min-width:0}
+#app .overview-order-list,#app .overview-product-list{display:flex;flex-direction:column;gap:0}
+#app .overview-order-row,#app .overview-product-row{display:grid;align-items:center;gap:13px;min-width:0;padding:14px 2px;border-bottom:1px solid #edf2f7}
+#app .overview-order-row:last-child,#app .overview-product-row:last-child{border-bottom:0}
+#app .overview-order-row{grid-template-columns:minmax(0,1fr) auto;row-gap:7px}
+#app .overview-order-main,#app .overview-product-main{display:flex;align-items:center;gap:11px;min-width:0}
+#app .overview-order-symbol{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:14px;background:#eaf5ff;color:#4c8fcb;font-weight:900;font-size:.82rem}
+#app .overview-order-copy,#app .overview-product-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+#app .overview-order-copy strong,#app .overview-product-copy strong{color:#294b68;font-size:.91rem;font-weight:900;overflow-wrap:anywhere}
+#app .overview-order-copy small,#app .overview-product-copy small{color:#8293a5;font-size:.78rem;overflow-wrap:anywhere}
+#app .overview-order-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;white-space:nowrap}
+#app .overview-order-amount{font-size:.87rem;color:#294b68;font-weight:900}
+#app .overview-order-status,#app .overview-product-tag{display:inline-flex;align-items:center;justify-content:center;padding:4px 9px;border-radius:999px;font-size:.72rem;font-weight:800;background:#edf6ff;color:#4c8fcb;white-space:nowrap}
+#app .overview-order-status.is-new{background:#fff0f5;color:#c65f82}
+#app .overview-order-status.is-done{background:#e9f8f0;color:#23845c}
+#app .overview-order-status.is-cancelled{background:#fff0f0;color:#b7374b}
+#app .overview-product-row{grid-template-columns:minmax(0,1fr) auto;row-gap:7px}
+#app .overview-product-thumb{width:46px;height:46px;flex:0 0 46px;object-fit:cover;border-radius:14px;border:1px solid #e3edf6;background:#f3f8fc}
+#app .overview-product-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;white-space:nowrap}
+#app .overview-product-price{font-size:.88rem;color:#294b68;font-weight:900}
+#app .overview-product-tag{background:#fff0f5;color:#c65f82}
+#app .overview-product-tag.available{background:#e9f8f0;color:#23845c}
+#app #recentOrders.empty,#app #recentProducts.empty{padding:28px 15px!important;color:#8293a5}
+@media(max-width:650px){
+ #app .overview-latest-heading{align-items:flex-start}
+ #app .overview-latest-heading:before{height:38px}
+ #app .overview-list-panel>.panel-head{padding:15px 14px;align-items:center!important}
+ #app .overview-list-panel>.panel-head h3{font-size:.94rem;gap:8px}
+ #app .overview-list-panel>.panel-head h3:before{width:31px;height:31px;border-radius:10px}
+ #app .overview-list-panel .tiny[data-goto]{padding:8px 9px!important;font-size:.73rem}
+ #app #recentOrders,#app #recentProducts{padding:5px 14px 12px!important}
+ #app .overview-order-row,#app .overview-product-row{gap:8px;padding:12px 0}
+ #app .overview-order-symbol{width:35px;height:35px;flex-basis:35px;border-radius:12px}
+ #app .overview-product-thumb{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+ #app .overview-order-copy strong,#app .overview-product-copy strong{font-size:.83rem}
+ #app .overview-order-copy small,#app .overview-product-copy small{font-size:.72rem}
+ #app .overview-order-amount,#app .overview-product-price{font-size:.78rem}
+ #app .overview-order-status,#app .overview-product-tag{font-size:.66rem;padding:4px 7px}
+}
+@media(prefers-reduced-motion:reduce){#app .overview-list-panel,#app .overview-list-panel .tiny[data-goto]{transition:none!important}}
+</style>
 </head>
 <body>
 <div id="login" class="login-wrap">
@@ -406,10 +463,10 @@ async function loadData(){if(!sb)return;try{const pr=await sb.from("products").s
 function money(v){return new Intl.NumberFormat("ar-LY",{style:"currency",currency:"LYD",maximumFractionDigits:2}).format(Number(v||0))}
 function mainProducts(){return products.filter(p=>!p.parent_product_id)}
 function render(){const main=mainProducts();$("#statProducts").textContent=main.length;$("#statOrders").textContent=orders.length;$("#statNew").textContent=orders.filter(o=>["new","جديد","pending"].includes(o.status)).length;$("#statActive").textContent=main.filter(p=>p.is_available!==false).length;const delivered=orders.filter(o=>o.status==="delivered");$("#statSales").textContent=money(delivered.reduce((sum,o)=>sum+(Number(o.total_amount)||0),0));$("#statCustomers").textContent=new Set(orders.map(o=>String(o.customer_phone||o.customer_name||"").trim()).filter(Boolean)).size;
-$("#recentProducts").innerHTML=main.length?main.slice(0,5).map(p=>{const n=products.filter(v=>String(v.parent_product_id)===String(p.id)).length;return "<div style='padding:9px 0;border-bottom:1px solid #e5e9f1'><strong>"+esc(p.name)+"</strong>"+(n?" <small style='color:#778197'>("+n+" أصناف)</small>":"")+"<span style='float:left'>"+money(p.price)+"</span></div>"}).join(""):"لا توجد منتجات حتى الآن.";
+$("#recentProducts").classList.toggle("empty",!main.length);$("#recentProducts").innerHTML=main.length?"<div class='overview-product-list'>"+main.slice(0,5).map(p=>{const n=products.filter(v=>String(v.parent_product_id)===String(p.id)).length;const available=p.is_available!==false;return "<div class='overview-product-row'><div class='overview-product-main'><img class='overview-product-thumb' src='"+esc(p.image_url||"https://placehold.co/96x96/f3f8fc/7b8fa3?text=+")+"' alt='' loading='lazy' onerror=\"this.onerror=null;this.style.display=\u0027none\u0027;\"><div class='overview-product-copy'><strong>"+esc(p.name)+"</strong><small>"+esc(p.category||"من غير قسم")+(n?" · "+n+" أصناف":"")+"</small></div></div><div class='overview-product-side'><strong class='overview-product-price'>"+money(p.price)+"</strong><span class='overview-product-tag "+(available?"available":"")+"'>"+(available?"متاح":"غير متاح")+"</span></div></div>"}).join("")+"</div>":"لا توجد منتجات حتى الآن.";
 $("#productsTable").innerHTML=main.length?"<div class='table-wrap'><table><thead><tr><th>الصورة</th><th>المنتج</th><th>القسم</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>"+main.map(p=>{const n=products.filter(v=>String(v.parent_product_id)===String(p.id)).length;return "<tr><td><img src=\""+esc(p.image_url||"https://placehold.co/64x64/f5f7fb/778197?text=No+Image")+"\" alt=\""+esc(p.name)+"\" loading=\"lazy\" style=\"width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid #e5e9f1\" onerror=\"this.onerror=null;this.src='https://placehold.co/64x64/f5f7fb/778197?text=No+Image'\"></td><td>"+esc(p.name)+(n?"<br><small style='color:#778197'>"+n+" أصناف</small>":"")+"</td><td>"+esc(p.category||"—")+"</td><td>"+money(p.price)+"</td><td><span class='tag "+(p.is_available===false?"danger":"")+"'>"+(p.is_available===false?"غير متاح":"متاح")+"</span></td><td><div class='product-actions'><button class='tiny' data-edit='"+p.id+"'>تعديل</button><button class='tiny del' data-delete='"+p.id+"'>حذف</button></div></td></tr>"}).join("")+"</tbody></table></div>":"<div class='empty'>لم تتم إضافة منتجات بعد.</div>";
 $("#ordersTable").innerHTML=orders.length?"<div class='table-wrap'><table><thead><tr><th>رقم الطلب</th><th>العميل وبيانات التواصل</th><th>تفاصيل المنتجات</th><th>العنوان والملاحظات</th><th>قيمة المنتجات</th><th>التوصيل</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody>"+orders.map(o=>{const items=Array.isArray(o.items)?o.items:[];const itemText=items.map(it=>esc(it.name||"منتج")+" — الكمية: "+esc(it.quantity||1)+" — سعر الوحدة: "+money(it.price)+" — الإجمالي: "+money(it.subtotal??((Number(it.price)||0)*(Number(it.quantity)||1)))).join("<br>")||"—";const state=o.status||"new";const states=[["new","جديد"],["confirmed","تم التأكيد"],["preparing","قيد التجهيز"],["out_for_delivery","خرج للتوصيل"],["delivered","تم التسليم"],["cancelled","ملغي"]];return "<tr><td><strong>"+esc(o.order_number||String(o.id).slice(0,8))+"</strong></td><td>"+esc(o.customer_name||"—")+"<br><a href='tel:"+esc(o.customer_phone||"")+"'>"+esc(o.customer_phone||"—")+"</a></td><td>"+itemText+"</td><td>"+esc(o.delivery_address||"—")+(o.notes?"<br><small>ملاحظات: "+esc(o.notes)+"</small>":"")+"</td><td>"+money(o.subtotal_amount??o.total_amount)+"</td><td>"+money(o.delivery_fee||0)+"</td><td>"+money(o.total_amount)+"</td><td><select data-order-status='"+esc(o.id)+"' aria-label='حالة الطلب' style='max-width:170px;padding:7px;border:1px solid #dce2ec;border-radius:8px'>"+states.map(s=>"<option value='"+s[0]+"'"+(state===s[0]?" selected":"")+">"+s[1]+"</option>").join("")+"</select><div class='status' data-order-message='"+esc(o.id)+"'></div></td><td>"+esc(o.created_at?new Date(o.created_at).toLocaleString("ar-EG"):"—")+"</td></tr>"}).join("")+"</tbody></table></div>":"<div class='empty'>لا توجد طلبات محفوظة.</div>";
-$("#recentOrders").innerHTML=orders.length?"<div class='table-wrap'><table><thead><tr><th>الطلب</th><th>العميل</th><th>الحالة</th></tr></thead><tbody>"+orders.slice(0,5).map(o=>"<tr><td>"+esc(o.order_number||String(o.id).slice(0,8))+"</td><td>"+esc(o.customer_name||"—")+"</td><td>"+esc(o.status||"جديد")+"</td></tr>").join("")+"</tbody></table></div>":"لا توجد طلبات بعد.";renderSalesChart();renderNewOrders();renderUsers();}
+$("#recentOrders").classList.toggle("empty",!orders.length);$("#recentOrders").innerHTML=orders.length?"<div class='overview-order-list'>"+orders.slice(0,5).map(o=>{const raw=String(o.status||"new").toLowerCase();const labels={new:"جديد",pending:"جديد",جديد:"جديد",confirmed:"تم التأكيد",preparing:"قيد التجهيز",out_for_delivery:"خرج للتوصيل",delivered:"تم التسليم",cancelled:"ملغي"};const label=labels[raw]||String(o.status||"جديد");const cls=["new","pending","جديد"].includes(raw)?"is-new":raw==="delivered"?"is-done":raw==="cancelled"?"is-cancelled":"";const date=o.created_at?new Date(o.created_at).toLocaleDateString("ar-EG"):"تاريخ غير متاح";return "<div class='overview-order-row'><div class='overview-order-main'><span class='overview-order-symbol'>#"+esc(String(o.order_number||String(o.id).slice(0,5)))+"</span><div class='overview-order-copy'><strong>"+esc(o.customer_name||"عميل بدون اسم")+"</strong><small>طلب "+esc(o.order_number||String(o.id).slice(0,8))+" · "+esc(date)+"</small></div></div><div class='overview-order-side'><strong class='overview-order-amount'>"+money(o.total_amount)+"</strong><span class='overview-order-status "+cls+"'>"+esc(label)+"</span></div></div>"}).join("")+"</div>":"لا توجد طلبات بعد.";renderSalesChart();renderNewOrders();renderUsers();}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
 let salesPeriod="month";
