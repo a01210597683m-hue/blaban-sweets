@@ -1,4 +1,4 @@
-const CACHE_NAME = "blaban-shell-v10";
+const CACHE_NAME = "blaban-shell-v11";
 const CACHE_PREFIX = "blaban-shell-";
 const BASE_URL = new URL("./", self.registration.scope);
 const APP_SHELL = [
