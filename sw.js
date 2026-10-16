@@ -1,4 +1,4 @@
-const CACHE_NAME = "blaban-shell-v9";
+const CACHE_NAME = "blaban-shell-v10";
 const CACHE_PREFIX = "blaban-shell-";
 const BASE_URL = new URL("./", self.registration.scope);
 const APP_SHELL = [
@@ -18,7 +18,7 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
-  if (url.pathname.endsWith("/admin.html") || url.pathname.includes("/rest/") || url.pathname.includes("/auth/")) return;
+  if (url.pathname === "/admin.html" || url.pathname.endsWith("/admin.html") || url.pathname.includes("/rest/") || url.pathname.includes("/auth/")) return;
   if (request.mode === "navigate") {
     if (url.pathname !== HOME_PATH) return;
     event.respondWith(fetch(request).then(response => {

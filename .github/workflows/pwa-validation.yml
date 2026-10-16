@@ -41,42 +41,28 @@ jobs:
           if (manifest.display !== 'standalone') {
             throw new Error('Manifest display must be standalone');
           }
-          if (manifest.start_url !== '/' || manifest.scope !== '/') {
-            throw new Error('Customer app must launch at the storefront root');
+          if (manifest.start_url !== './' || manifest.scope !== './') {
+            throw new Error('Customer app must launch relative to the GitHub Pages project root');
           }
           if ((manifest.shortcuts || []).some(item => /admin|إدارة/i.test(String(item.url) + ' ' + String(item.name)))) {
             throw new Error('Admin route must not be exposed as a customer app shortcut');
           }
-          for (const expected of [
-            { path: 'icons/blaban-icon-192.png', size: 192 },
-            { path: 'icons/blaban-icon-512.png', size: 512 },
-          ]) {
-            const icon = manifest.icons.find(item => item.src === '/' + expected.path);
-            if (!icon || icon.sizes !== expected.size + 'x' + expected.size || icon.type !== 'image/png') {
-              throw new Error('Missing or incorrectly declared icon: ' + expected.path);
-            }
-            const bytes = fs.readFileSync(expected.path);
-            const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-            if (bytes.length < 24 || !bytes.subarray(0, 8).equals(signature)) {
-              throw new Error('Invalid PNG file: ' + expected.path);
-            }
-            const width = bytes.readUInt32BE(16);
-            const height = bytes.readUInt32BE(20);
-            if (width !== expected.size || height !== expected.size) {
-              throw new Error('Unexpected dimensions for ' + expected.path + ': ' + width + 'x' + height);
-            }
+          const iconPath = 'icons/blaban-icon.svg';
+          if (!fs.existsSync(iconPath)) {
+            throw new Error('Missing SVG app icon: ' + iconPath);
+          }
+          for (const size of ['192x192', '512x512']) {
+            const icon = manifest.icons.find(item => item.src === iconPath && item.sizes === size && item.type === 'image/svg+xml');
+            if (!icon) throw new Error('Missing or incorrectly declared SVG icon size: ' + size);
           }
           const sw = fs.readFileSync('sw.js', 'utf8');
-          for (const path of [
-            '/icons/blaban-icon-192.png',
-            '/icons/blaban-icon-512.png',
-          ]) {
-            if (!sw.includes(path)) throw new Error('Service worker does not cache ' + path);
+          if (!sw.includes('icons/blaban-icon.svg')) {
+            throw new Error('Service worker does not cache the SVG app icon');
           }
           if (!/url\.pathname\s*===\s*["']\/admin\.html["']/.test(sw)) {
             throw new Error('Service worker must explicitly bypass the admin route');
           }
-          if (!/if\s*\(url\.pathname\s*!==\s*["']\/["']\)\s*return/.test(sw)) {
+          if (!/if\s*\(url\.pathname\s*!==\s*HOME_PATH\)\s*return/.test(sw)) {
             throw new Error('Service worker must only cache the storefront navigation shell');
           }
           const storefront = fs.readFileSync('index.html', 'utf8');
