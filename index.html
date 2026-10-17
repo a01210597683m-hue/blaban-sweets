@@ -1836,7 +1836,7 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
 <button id="storeSupportLauncher" type="button" aria-label="فتح دعم العملاء الذكي" title="دعم العملاء"><svg class="support-headset-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 13v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="12" width="4" height="7" rx="2"/><rect x="17" y="12" width="4" height="7" rx="2"/><path d="M17 19a5 5 0 0 1-5 3h-1"/></svg></button>
 <div id="storeSupportModal" class="store-support-modal" hidden role="dialog" aria-modal="true" aria-label="مساعد دعم المتجر">
  <div class="store-support-panel"><div class="store-support-head"><div><strong>مساعد حلو ب لبن</strong><small>مساعدة الطلبات والدفع والتوصيل</small></div><button class="store-support-close" id="storeSupportClose" type="button" aria-label="إغلاق">×</button></div>
- <div id="storeSupportMessages" aria-live="polite"><div class="support-message assistant">أهلًا بيك 💙 أقدر أساعدك في الطلبات والتوصيل والدفع والحساب. اكتبي سؤالك، ولو احتاج متابعة من فريق المتجر هوجّهك لقنوات التواصل.</div></div>
+ <div id="storeSupportMessages" aria-live="polite"><div class="support-message assistant">أهلًا وسهلًا بيكم في حلو ب لبن 💙 إيه اللي أقدر أساعدكم فيه؟ اسألوني عن المينيو، إزاي تطلبوا أوردر أو تتابعوه، الدفع والتوصيل. ولو احتجتم مساعدة من شخص في خدمة العملاء، هحوّل المحادثة للفريق.</div></div>
  <form id="storeSupportForm" class="store-support-form"><input id="storeSupportInput" maxlength="1000" autocomplete="off" placeholder="اكتبي سؤالك هنا…" required><button type="submit">إرسال</button></form>
  </div>
 </div>
@@ -1871,7 +1871,7 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   account.hidden=false;account.setAttribute("aria-hidden","false");document.body.classList.add("customer-account-open");setAccountPanel(panel);window.scrollTo({top:0,behavior:"auto"});
  }
  function closeAccount(){account.hidden=true;account.setAttribute("aria-hidden","true");document.body.classList.remove("customer-account-open")}
- function openSupport(){const modal=$("storeSupportModal");modal.hidden=false;setTimeout(()=>$("storeSupportInput")?.focus(),20)}
+ function openSupport(){const modal=$("storeSupportModal");modal.hidden=false;if(supportConversationId)refreshSupportHistory(true).catch(error=>console.warn("Support history unavailable",error));setTimeout(()=>$("storeSupportInput")?.focus(),20)}
  function closeSupport(){$("storeSupportModal").hidden=true}
  document.addEventListener("click",e=>{
   const open=e.target.closest("[data-open-account]");if(open){e.preventDefault();openAccount("home");return}
@@ -2022,65 +2022,108 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(/منتج|صنف|سلة|product|cart|produit|panier/.test(t))return "افتحي قسم المنتج من الدوائر أعلى المتجر، اختاري الصنف والكمية، ثم افتحي السلة واضغطي «متابعة لإدخال البيانات والدفع».";
   return "أقدر أوجّهك حاليًا في الطلبات والتوصيل والدفع والحساب. لو المشكلة مستمرة، استخدمي «تواصل معنا» في المتجر ليتابعها فريق الدعم. هذا الرد الإرشادي لا يزال يعمل دون اتصال بخدمة ذكاء اصطناعي خارجية.";
  }
- function addSupportMessage(text,type){const host=$("storeSupportMessages"),div=document.createElement("div");div.className="support-message "+type;div.textContent=text;host.appendChild(div);host.scrollTop=host.scrollHeight}
+ function addSupportMessage(text,type,messageId=null){const host=$("storeSupportMessages"),div=document.createElement("div");div.className="support-message "+type;div.textContent=text;if(messageId){div.dataset.messageId=messageId;supportRenderedMessageIds.add(String(messageId))}host.appendChild(div);host.scrollTop=host.scrollHeight;return div}
  const SUPPORT_CONVERSATION_KEY="blaban-support-conversation-v1";
  let supportConversationId=localStorage.getItem(SUPPORT_CONVERSATION_KEY)||"";
+ const supportRenderedMessageIds=new Set();
  async function ensureSupportConversation(){
-  const c=client();if(!c)throw new Error("support service unavailable");
-  if(supportConversationId)return supportConversationId;
+  const c=client();if(!c)throw new Error("خدمة الدعم غير متاحة");
   let user=null;
-  try{if(typeof customerAuthClient!=="undefined"&&customerAuthClient){const result=await customerAuthClient.auth.getUser();user=result.data?.user||null}}catch{}
+  try{const result=await c.auth.getUser();user=result.data?.user||null}catch{}
+  if(!user)throw new Error("سجّلي الدخول لحسابك قبل استخدام المحادثة");
+  if(supportConversationId){
+   const existing=await c.from("support_conversations").select("id").eq("id",supportConversationId).eq("customer_user_id",user.id).maybeSingle();
+   if(!existing.error&&existing.data)return supportConversationId;
+   supportConversationId="";localStorage.removeItem(SUPPORT_CONVERSATION_KEY);
+  }
   const id=globalThis.crypto?.randomUUID?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16)});
-  const {error}=await c.from("support_conversations").insert({id,customer_user_id:user?.id||null,customer_email:user?.email||null,customer_name:user?.user_metadata?.full_name||user?.user_metadata?.name||null,status:"open"});
+  const {error}=await c.from("support_conversations").insert({id,customer_user_id:user.id,customer_email:user.email||null,customer_name:user.user_metadata?.full_name||user.user_metadata?.name||null,status:"open"});
   if(error)throw error;
   supportConversationId=id;localStorage.setItem(SUPPORT_CONVERSATION_KEY,id);return id;
  }
  async function saveSupportMessage(senderType,message,metadata={}){
   const c=client(),conversationId=await ensureSupportConversation();
-  const {error}=await c.from("support_messages").insert({conversation_id:conversationId,sender_type:senderType,message:String(message).slice(0,4000),metadata});
+  const {data,error}=await c.from("support_messages").insert({conversation_id:conversationId,sender_type:senderType,message:String(message).slice(0,4000),metadata}).select("id,created_at").single();
   if(error)throw error;
-  return conversationId;
+  return {conversationId,id:data.id,created_at:data.created_at};
+ }
+ async function refreshSupportHistory(replace=false){
+  const c=client();if(!c||!supportConversationId)return;
+  const conversationId=await ensureSupportConversation();
+  const {data,error}=await c.from("support_messages").select("id,sender_type,message,created_at").eq("conversation_id",conversationId).order("created_at",{ascending:true}).limit(500);
+  if(error)throw error;
+  const host=$("storeSupportMessages");
+  if(replace){host.innerHTML="";supportRenderedMessageIds.clear()}
+  for(const message of data||[]){
+   if(supportRenderedMessageIds.has(String(message.id)))continue;
+   addSupportMessage(message.message,message.sender_type==="customer"?"user":message.sender_type==="admin"?"assistant":"assistant",message.id);
+  }
+  if(replace&&!(data||[]).length&&!host.children.length){
+   addSupportMessage("أهلًا وسهلًا بيكم في حلو ب لبن 💙 إيه اللي أقدر أساعدكم فيه؟ اسألوني عن المينيو والطلبات والتوصيل والدفع.", "assistant");
+  }
  }
  async function requestHumanSupport(reason){
   const c=client(),conversationId=await ensureSupportConversation();
+  const {data:current,error:currentError}=await c.from("support_conversations").select("status").eq("id",conversationId).single();
+  if(currentError)throw currentError;
+  if(current.status==="waiting_human")return;
   const {error}=await c.from("support_handoffs").insert({conversation_id:conversationId,reason:String(reason||"المساعد يحتاج متابعة من فريق خدمة العملاء").slice(0,1000)});
   if(error)throw error;
-  const note="حوّلنا محادثتك لممثل خدمة العملاء عشان يراجعها فريق المتجر. احتفظي بالمحادثة دي، والفريق هيشوف تفاصيلها في لوحة الإدارة 💙";
-  try{await saveSupportMessage("system",note,{handoff:true})}catch(error){console.error("Support handoff note could not be saved",error)}
-  addSupportMessage(note,"assistant");
+  const {error:statusError}=await c.from("support_conversations").update({status:"waiting_human",updated_at:new Date().toISOString()}).eq("id",conversationId);
+  if(statusError)throw statusError;
+  const note="حوّلنا محادثتك لممثل خدمة العملاء عشان يراجعها فريق المتجر. ابعتي أي تفاصيل إضافية هنا، وردّ الفريق هيظهر لك في نفس المحادثة 💙";
+  try{const saved=await saveSupportMessage("system",note,{handoff:true});addSupportMessage(note,"assistant",saved.id)}catch(error){addSupportMessage(note,"assistant");console.error("Support handoff note could not be saved",error)}
  }
  function shouldEscalateSupport(question,reply){
   const q=String(question||"").toLowerCase(),a=String(reply||"").toLowerCase();
-  return /شكوى|اشتك|مشكلة كبيرة|خصم غلط|اتخصم|فلوسي|سرقة|نصب|طلبى ضاع|طلب ضاع|مش قادر|مش عارف احل|عايز موظف|عايزة موظف|خدمة العملاء|كلموا حد|ممثل خدمة|complaint|refund|charged twice|fraud|speak to (a )?human|human agent|customer service/.test(q)
+  return /شكوى|اشتك|مشكلة كبيرة|خصم غلط|اتخصم|فلوسي|سرقة|نصب|طلبى ضاع|طلب ضاع|مش قادر|مش عارف احل|مش فاهم|مش واضحة|عايز موظف|عايزة موظف|عايز حد|عايزة حد|خدمة العملاء|كلموا حد|ممثل خدمة|complaint|refund|charged twice|fraud|speak to (a )?human|human agent|customer service/.test(q)
    || /لا أستطيع|لا يمكنني|مش قادر أساعد|محتاج متابعة من فريق|تواصل مع فريق المتجر|تواصل مع خدمة العملاء|contact the store|human support|customer support team/.test(a);
  }
  $("storeSupportForm").addEventListener("submit",async e=>{
   e.preventDefault();const input=$("storeSupportInput"),form=$("storeSupportForm"),q=input.value.trim();if(!q||form.dataset.busy==="true")return;
-  addSupportMessage(q,"user");input.value="";
+  input.value="";
   const submit=form.querySelector('button[type="submit"]');form.dataset.busy="true";form.setAttribute("aria-busy","true");if(submit){submit.disabled=true;submit.dataset.originalLabel=submit.textContent;submit.textContent="جاري الرد…"}
-  let reply="",aiAvailable=false;
+  let reply="",aiAvailable=false,needsHuman=false,waitingForHuman=false;
+  const customerBubble=addSupportMessage(q,"user");
   try{
-   // Never let a database/history write prevent the AI request from running.
    const c=client();
    if(c){
+    try{
+     const conversationId=await ensureSupportConversation();
+     const {data:conversation,error:conversationError}=await c.from("support_conversations").select("status").eq("id",conversationId).single();
+     if(conversationError)throw conversationError;
+     waitingForHuman=conversation.status==="waiting_human";
+     if(conversation.status==="resolved"){
+      const {error:reopenError}=await c.from("support_conversations").update({status:"open",updated_at:new Date().toISOString()}).eq("id",conversationId);
+      if(reopenError)throw reopenError;
+     }
+     const savedCustomer=await saveSupportMessage("customer",q);
+     if(savedCustomer?.id){customerBubble.dataset.messageId=savedCustomer.id;supportRenderedMessageIds.add(String(savedCustomer.id))}
+    }catch(error){console.warn("Customer support message could not be saved",error)}
+   }
+   if(waitingForHuman){
+    reply="وصلت رسالتك لفريق خدمة العملاء 💙 أول ما يردّوا عليك، هتلاقي الرد هنا في نفس المحادثة.";
+    needsHuman=false;
+   }else if(c){
     try{
      const {data,error}=await c.functions.invoke("ai-store-support",{body:{message:q}});
      if(error)throw error;
      if(typeof data?.reply!=="string"||!data.reply.trim())throw new Error("AI returned an empty response");
-     reply=data.reply.trim();aiAvailable=true;
+     reply=data.reply.trim();aiAvailable=true;needsHuman=data.needs_human===true;
     }catch(error){console.warn("AI support unavailable; using guided fallback",error)}
    }
-   if(!aiAvailable)reply=guidedAnswer(q)+"\n\nلو محتاجة متابعة من فريق المتجر، استخدمي «تواصل معنا»؛ ولو حفظ المحادثة متاح هنحاول تسجيل طلب متابعة.";
-   addSupportMessage(reply,"assistant");
-   // History persistence is best-effort and must not block customer assistance.
-   try{await saveSupportMessage("customer",q)}catch(error){console.error("Customer support message could not be saved",error)}
-   try{await saveSupportMessage("assistant",reply,{ai_available:aiAvailable})}catch(error){console.error("Support reply could not be saved",error)}
-   if(!aiAvailable||shouldEscalateSupport(q,reply)){
-    const reason=!aiAvailable?"تعذّر على المساعد تقديم رد آلي؛ يلزم تدخل فريق خدمة العملاء.":"المحادثة تتضمن شكوى أو تحتاج مراجعة بشرية.";
-    try{await requestHumanSupport(reason)}catch(error){addSupportMessage("معلش، تعذر تسجيل طلب المتابعة تلقائيًا. تقدري تتواصلي مع فريق المتجر مباشرة من «تواصل معنا».","assistant");console.error("Human handoff could not be saved",error)}
+   if(!reply){
+    reply=guidedAnswer(q)+"\n\nلو المساعدة دي مش كفاية، هحوّل المحادثة لفريق خدمة العملاء.";
+    needsHuman=true;
+   }
+   let savedReply=null;
+   try{savedReply=await saveSupportMessage(waitingForHuman?"assistant":"assistant",reply,{ai_available:aiAvailable,needs_human:needsHuman})}catch(error){console.error("Support reply could not be saved",error)}
+   addSupportMessage(reply,"assistant",savedReply?.id||null);
+   if(!waitingForHuman&&(needsHuman||!aiAvailable||shouldEscalateSupport(q,reply))){
+    const reason=!aiAvailable?"تعذّر على المساعد تقديم رد آلي؛ يلزم تدخل فريق خدمة العملاء.":(shouldEscalateSupport(q,reply)?"السؤال يحتاج مراجعة بشرية أو طلب العميل موظفًا.":"المحادثة تحتاج مراجعة بشرية.");
+    try{await requestHumanSupport(reason)}catch(error){addSupportMessage("معلش، تعذر تسجيل التحويل تلقائيًا. جرّبي إرسال الرسالة مرة أخرى أو استخدمي «تواصل معنا».","assistant");console.error("Human handoff could not be saved",error)}
    }
   }catch(error){
-   // Keep a useful response visible even if an unexpected client-side error occurs.
    if(!reply){reply=guidedAnswer(q);addSupportMessage(reply,"assistant")}
    console.error("Unexpected support flow error",error);
   }finally{
@@ -2088,6 +2131,7 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
    if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalLabel||"إرسال";delete submit.dataset.originalLabel}
   }
  });
+ setInterval(()=>{const modal=$("storeSupportModal");if(modal&&!modal.hidden&&supportConversationId)refreshSupportHistory(false).catch(error=>console.warn("Support chat refresh failed",error))},7000);
  const savedLanguage=localStorage.getItem("blaban-store-language");if(savedLanguage)applyStoreLanguage(savedLanguage);
  // One authoritative checkout transition: catch clicks before older listeners can interfere.
  function clearFlowStyles(el){
