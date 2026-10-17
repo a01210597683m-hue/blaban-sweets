@@ -1090,7 +1090,7 @@ function openCustomerStore(user){
  const gate=document.getElementById("customerAuthGate");
  gate.hidden=true;document.body.classList.remove("customer-auth-required");
  document.getElementById("customerAccountPill").hidden=false;
- const name=user?.user_metadata?.full_name||user?.user_metadata?.name||user?.email||"حسابي";
+ const name=user?.email||user?.user_metadata?.full_name||user?.user_metadata?.name||"حسابي";
  document.getElementById("customerAccountName").textContent=name;
 }
 function closeCustomerStore(){
@@ -1697,7 +1697,7 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
 @media(prefers-reduced-motion:reduce){#categories .product-card,#categories .product-card img,#story .story-photo img,.store-page-back,.detail-close,#cart .cart-continue,#checkout #submitOrder{animation:none!important;transition:none!important}}
 </style>
 
-<button id="storeSupportLauncher" type="button" aria-label="فتح دعم المتجر"><span class="support-spark">✦</span><span>مساعدة ذكية</span></button>
+<button id="storeSupportLauncher" type="button" aria-label="فتح دعم العملاء الذكي" title="دعم العملاء"><svg class="support-headset-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 13v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="12" width="4" height="7" rx="2"/><rect x="17" y="12" width="4" height="7" rx="2"/><path d="M17 19a5 5 0 0 1-5 3h-1"/></svg></button>
 <div id="storeSupportModal" class="store-support-modal" hidden role="dialog" aria-modal="true" aria-label="مساعد دعم المتجر">
  <div class="store-support-panel"><div class="store-support-head"><div><strong>مساعد حلو ب لبن</strong><small>مساعدة الطلبات والدفع والتوصيل</small></div><button class="store-support-close" id="storeSupportClose" type="button" aria-label="إغلاق">×</button></div>
  <div id="storeSupportMessages" aria-live="polite"><div class="support-message assistant">أهلًا بيك 💙 أقدر أساعدك في الطلبات والتوصيل والدفع والحساب. اكتبي سؤالك، ولو احتاج متابعة من فريق المتجر هوجّهك لقنوات التواصل.</div></div>
@@ -2108,6 +2108,84 @@ body.store-view-category #categories .categories{background:transparent!importan
  },true);
 })();
 </script>
+
+<style id="blaban-requested-account-drawer-and-draggable-support">
+/* Requested-only refinement: account sign-out lives at the bottom of the hamburger menu. */
+#customerAccountPill{
+ position:static!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
+ z-index:auto!important;display:flex;align-items:center;gap:9px;width:100%;max-width:100%!important;
+ box-sizing:border-box;margin:16px 0 0!important;padding:12px!important;border:1px solid #cfe5f7!important;
+ border-radius:16px!important;background:#fff!important;color:#17406e!important;box-shadow:0 5px 18px #163b6810!important;
+ font-size:.84rem!important;flex-wrap:wrap
+}
+#customerAccountPill[hidden]{display:none!important}
+#customerAccountPill #customerAccountName{flex:1 1 140px;min-width:0;max-width:none!important;overflow-wrap:anywhere;white-space:normal!important}
+#customerAccountPill #customerSignOut{flex:0 0 auto}
+#storeSupportLauncher{
+ position:fixed!important;left:16px;top:auto;right:auto;bottom:78px;z-index:11000;
+ display:grid!important;place-items:center!important;gap:0!important;width:48px!important;height:48px!important;
+ min-width:48px!important;min-height:48px!important;padding:0!important;border:1.5px solid #fff!important;
+ border-radius:50%!important;background:linear-gradient(135deg,#0066c8,#0787ef)!important;color:#fff!important;
+ box-shadow:0 5px 18px #0059b53d!important;cursor:grab!important;touch-action:none!important;
+ user-select:none!important; -webkit-user-select:none!important;animation:none!important
+}
+#storeSupportLauncher:active{cursor:grabbing!important}
+#storeSupportLauncher .support-headset-icon{display:block;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){#storeSupportLauncher{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;left:10px;bottom:74px}}
+</style>
+<script id="blaban-requested-account-and-support-behavior">
+(function(){
+ const drawer=document.getElementById("storeSideDrawer");
+ const nav=drawer?.querySelector(".drawer-nav");
+ const accountPill=document.getElementById("customerAccountPill");
+ /* Move the existing live auth controls (not a copy) to the final position in the menu. */
+ if(drawer&&nav&&accountPill&&accountPill.parentElement!==drawer)drawer.appendChild(accountPill);
+ else if(drawer&&nav&&accountPill&&accountPill.previousElementSibling!==nav)drawer.appendChild(accountPill);
+
+ const launcher=document.getElementById("storeSupportLauncher");
+ if(!launcher)return;
+ let dragging=false,moved=false,startX=0,startY=0,originX=0,originY=0,suppressClick=false;
+ const key="blaban-support-launcher-position-v1";
+ function clamp(n,min,max){return Math.min(Math.max(n,min),Math.max(min,max))}
+ function applyPosition(x,y,save){
+  const w=launcher.offsetWidth||48,h=launcher.offsetHeight||48;
+  x=clamp(x,4,window.innerWidth-w-4);y=clamp(y,4,window.innerHeight-h-4);
+  launcher.style.left=x+"px";launcher.style.top=y+"px";launcher.style.right="auto";launcher.style.bottom="auto";
+  if(save){try{localStorage.setItem(key,JSON.stringify({x,y}))}catch(_){}}
+ }
+ try{
+  const saved=JSON.parse(localStorage.getItem(key)||"null");
+  if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y))applyPosition(saved.x,saved.y,false);
+ }catch(_){}
+ launcher.addEventListener("pointerdown",function(e){
+  if(e.button!==undefined&&e.button!==0)return;
+  const r=launcher.getBoundingClientRect();
+  dragging=true;moved=false;startX=e.clientX;startY=e.clientY;originX=r.left;originY=r.top;
+  try{launcher.setPointerCapture(e.pointerId)}catch(_){}
+ });
+ launcher.addEventListener("pointermove",function(e){
+  if(!dragging)return;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
+  if(Math.abs(dx)>5||Math.abs(dy)>5)moved=true;
+  if(moved){applyPosition(originX+dx,originY+dy,false);e.preventDefault()}
+ });
+ function finishDrag(){
+  if(!dragging)return;
+  dragging=false;
+  if(moved){const r=launcher.getBoundingClientRect();applyPosition(r.left,r.top,true);suppressClick=true;setTimeout(()=>{suppressClick=false},350)}
+ }
+ launcher.addEventListener("pointerup",finishDrag);
+ launcher.addEventListener("pointercancel",finishDrag);
+ launcher.addEventListener("click",function(e){
+  if(suppressClick){e.preventDefault();e.stopImmediatePropagation();suppressClick=false}
+ },true);
+ window.addEventListener("resize",function(){
+  const r=launcher.getBoundingClientRect();
+  if(launcher.style.top&&launcher.style.left)applyPosition(r.left,r.top,true);
+ });
+})();
+</script>
+
 </body></html>
 
 
