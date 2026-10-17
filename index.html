@@ -2076,6 +2076,34 @@ body.store-view-category #categories .categories{background:transparent!importan
  },true);
 })();
 </script>
+<script id="blaban-tracking-navigation-fix">
+/* Make every storefront link to order tracking open the dedicated tracking page.
+   Handle it in capture phase so older navigation handlers cannot swallow the click. */
+(function(){
+ document.addEventListener("click",function(event){
+  const link=event.target instanceof Element?event.target.closest('a[href="#orderTracking"],a[data-store-page="tracking"]'):null;
+  if(!link)return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  document.getElementById("storeDrawer")?.classList.remove("open");
+  document.querySelector(".store-drawer")?.classList.remove("open","active");
+  document.body.classList.remove("store-view-cart","store-view-checkout","store-view-product","store-view-products","store-page-categories","store-page-story","store-page-cart","cart-page-active","checkout-page-active","store-view-extras");
+  document.getElementById("cart")?.classList.remove("cart-page-open");
+  document.getElementById("cart")?.setAttribute("aria-hidden","true");
+  document.getElementById("checkout")?.classList.remove("checkout-page-open");
+  document.getElementById("checkout")?.setAttribute("aria-hidden","true");
+  document.getElementById("productDetailsModal")?.classList.remove("open");
+  document.getElementById("productExtrasPage")?.classList.remove("open");
+  document.getElementById("categories")?.classList.remove("store-dedicated-page");
+  document.getElementById("story")?.classList.remove("store-dedicated-page");
+  const tracking=document.getElementById("orderTracking");
+  if(!tracking)return;
+  tracking.classList.add("store-dedicated-page");
+  document.body.classList.add("store-page-tracking");
+  window.scrollTo({top:0,behavior:"auto"});
+ },true);
+})();
+</script>
 </body></html>
 
 
