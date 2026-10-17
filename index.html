@@ -1997,7 +1997,7 @@ body.store-view-category #categories .categories{background:transparent!importan
 </style>
 
 <script id="blaban-single-checkout-entry">
-/* Delegate to the store's canonical page-flow controller so all required classes/styles stay in sync. */
+/* Recover the actual cart before calling any legacy checkout controller. */
 (function(){
  window.addEventListener("click",function(event){
   const button=event.target instanceof Element?event.target.closest("#continueToCheckout"):null;
@@ -2005,26 +2005,57 @@ body.store-view-category #categories .categories{background:transparent!importan
   event.preventDefault();
   event.stopImmediatePropagation();
   try{
+   if(typeof orderCart!=="undefined"&&!orderCart.size){
+    // First restore the persisted cart, but only after products have loaded.
+    if(Array.isArray(availableProducts)&&availableProducts.length&&typeof restoreOrderCart==="function"){
+     try{restoreOrderCart()}catch(err){console.warn("Cart restore before checkout failed",err)}
+    }
+    // If memory/storage disagree with the visible cart, recover the item IDs and quantities from its rows.
+    if(!orderCart.size){
+     const summary=document.getElementById("cartSummary");
+     const rows=summary?[...summary.querySelectorAll(".cart-item")]:[];
+     for(const row of rows){
+      const remove=row.querySelector("[data-remove]");
+      const id=String(remove?.getAttribute("data-remove")||"").trim();
+      if(!id)continue;
+      const productExists=!Array.isArray(availableProducts)||!availableProducts.length||availableProducts.some(p=>String(p.id)===id);
+      if(!productExists)continue;
+      const qtyNode=row.querySelector(".cart-qty b");
+      const qty=Math.max(1,Math.min(20,Math.floor(Number(qtyNode?.textContent)||1)));
+      orderCart.set(id,qty);
+     }
+    }
+    if(orderCart.size&&typeof persistOrderCart==="function")persistOrderCart();
+   }
    if(typeof window.openCheckoutModal==="function"){
     window.openCheckoutModal();
+    // Some legacy controllers return silently when their first check sees an empty cart.
+    if(typeof orderCart!=="undefined"&&orderCart.size){
+     const checkout=document.getElementById("checkout"),cart=document.getElementById("cart");
+     if(checkout&&checkout.getAttribute("aria-hidden")!=="false"){
+      cart?.classList.remove("cart-page-open");cart?.setAttribute("aria-hidden","true");
+      document.body.classList.remove("store-view-cart","cart-page-active");
+      document.body.classList.add("store-view-checkout","checkout-page-active");
+      checkout.classList.add("checkout-page-open");checkout.setAttribute("aria-hidden","false");
+      checkout.style.setProperty("display","block","important");
+      checkout.style.setProperty("position","fixed","important");
+      checkout.style.setProperty("inset","0","important");
+      checkout.style.setProperty("z-index","50000","important");
+      checkout.style.setProperty("width","100vw","important");
+      checkout.style.setProperty("height","100dvh","important");
+      checkout.style.setProperty("overflow-y","auto","important");
+      if(typeof renderOrderCart==="function")renderOrderCart();
+      if(typeof renderCheckoutOrderReview==="function")renderCheckoutOrderReview();
+      window.scrollTo({top:0,behavior:"auto"});
+     }
+    }
     return;
    }
    throw new Error("Checkout controller is unavailable");
   }catch(error){
-   console.error("Checkout navigation failed; using canonical view fallback",error);
-   try{
-    if(typeof recoverCartFromVisibleSummary==="function")recoverCartFromVisibleSummary();
-    if(typeof recoverCartIfMemoryIsEmpty==="function")recoverCartIfMemoryIsEmpty();
-    if(typeof orderCart!=="undefined"&&orderCart.size&&typeof setStoreFlowView==="function"){
-     if(typeof persistOrderCart==="function")persistOrderCart();
-     if(typeof renderOrderCart==="function")renderOrderCart();
-     setStoreFlowView("checkout");
-     if(typeof renderCheckoutOrderReview==="function")renderCheckoutOrderReview();
-    }else{
-     const summary=document.getElementById("cartSummary");
-     if(summary)summary.insertAdjacentHTML("beforeend",'<p role="status" style="margin-top:12px;color:#9b1c1c">مش قادرين نفتح خطوة الدفع دلوقتي. اختياراتك محفوظة؛ جرّبي مرة تانية بعد تحديث الصفحة.</p>');
-    }
-   }catch(fallbackError){console.error("Checkout fallback failed",fallbackError)}
+   console.error("Checkout navigation failed",error);
+   const summary=document.getElementById("cartSummary");
+   if(summary)summary.insertAdjacentHTML("beforeend",'<p role="status" style="margin-top:12px;color:#9b1c1c">تعذر فتح الدفع. اختياراتك محفوظة؛ حدّثي الصفحة وجربي مرة أخرى.</p>');
   }
  },true);
 })();
