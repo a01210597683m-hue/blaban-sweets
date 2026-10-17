@@ -1110,7 +1110,7 @@ document.getElementById("customerSignOut").addEventListener("click",async()=>{
 });
 startCustomerAuth();
 
-showProducts();
+showProducts().then(()=>{const l=localStorage.getItem("blaban-store-language");if(l&&window.blabanApplyStoreLanguage)window.blabanApplyStoreLanguage(l);});
 const storeSearchInput=document.getElementById("storeSearchInput");
 const storeSearchClear=document.getElementById("storeSearchClear");
 const storeSearchEmpty=document.getElementById("storeSearchEmpty");
@@ -1684,11 +1684,32 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   en:{home:"Home",products:"Products",cart:"Shopping cart",tracking:"Track your order",story:"About us",account:"Your account",about:"About the app",support:"Store support",heroTitle:"Sweeten your day",heroDescription:"Choose your favorite desserts, juices and hot or cold drinks.",explore:"Explore the menu",checkout:"Customer details & payment",backCart:"Back to cart",payment:"Payment method",name:"Name",phone:"Phone number",address:"Delivery address or pickup location",zone:"Delivery city and area",branch:"Responsible branch (optional)",previousOrders:"Previous orders",settings:"Settings",profile:"Account information",addresses:"Delivery addresses",notifications:"Notifications",language:"Language and country",save:"Save",supportLabel:"Smart help"},
   fr:{home:"Accueil",products:"Produits",cart:"Panier",tracking:"Suivre votre commande",story:"À propos",account:"Votre compte",about:"À propos de l’application",support:"Assistance",heroTitle:"Une touche de douceur chaque jour",heroDescription:"Choisissez vos desserts, jus et boissons chaudes ou froides.",explore:"Découvrir le menu",checkout:"Informations et paiement",backCart:"Retour au panier",payment:"Mode de paiement",name:"Nom",phone:"Téléphone",address:"Adresse de livraison ou retrait",zone:"Ville et zone de livraison",branch:"Agence responsable (facultatif)",previousOrders:"Commandes précédentes",settings:"Paramètres",profile:"Informations du compte",addresses:"Adresses de livraison",notifications:"Notifications",language:"Langue et pays",save:"Enregistrer",supportLabel:"Aide intelligente"}
  };
- const originalText=new Map();
+ const originalText=new Map(),originalTextNodes=new Map();
  function setText(el,value){if(!el)return;if(!originalText.has(el))originalText.set(el,el.textContent);el.textContent=value}
+ const staticTextTranslations={
+  en:{
+   "أهلاً بيكي في عالم حلو ب لبن":"Welcome to Blaban Sweets","كل يوم محتاج حاجة حلوة":"Every day deserves something sweet","اختاري حلاوتك المفضلة، من أكواب الحلويات إلى العصائر والمشروبات الباردة والسخنة.":"Choose your favorite desserts, juices, and hot or cold drinks.","حلى أيامك، على طريقتك":"Sweeten your day, your way","اختار مزاجك":"Choose your mood","اكتشفي عالم حلو ب لبن.":"Discover the world of Blaban Sweets.","حلى أيامك، على طريقتك":"Sweeten your day, your way","جاهزين نخلي التجربة أحلى؟":"Ready to make your experience sweeter?","خلي للحلاوة مكان في يومك.":"Make room for sweetness in your day.","تواصل معنا":"Contact us","تتبعي طلبك":"Track your order","اختاري المنتج المناسب ليكي":"Choose the product you love","عرض التفاصيل":"View details","إضافة للسلة":"Add to cart","اختاري الصنف":"Choose an option","الكمية":"Quantity","السعر":"Price","سلة المشتريات":"Shopping cart","كل اختياراتك في مكان واحد":"All your selections in one place","راجعي صور الأصناف والكميات، وعدّلي اختياراتك قبل إتمام الطلب.":"Review your items and quantities before checkout.","تمام، متابعة لإدخال البيانات والدفع ←":"Continue to details and payment →","الرجوع للمنيو واختيار أصناف تانية":"Back to menu and choose more items","إدخال البيانات والدفع":"Customer details and payment","بعد ما تخلصي اختياراتك من المنيو، اكتبي بياناتك وراجعي السعر النهائي هنا.":"After choosing your items, enter your details and review the final total here.","حساب السعر":"Order total","املئي البيانات واختاري طريقة الدفع":"Enter your details and choose a payment method","رسوم التوصيل والحد الأدنى بيتحددوا حسب المنطقة المختارة.":"Delivery fees and minimum order depend on the selected area.","اختاري مدينة ومنطقة التوصيل":"Choose your city and delivery area","طريقة الدفع":"Payment method","الفرع المسؤول عن الطلب (اختياري)":"Responsible branch (optional)","الرجوع للسلة":"Back to cart","الرجوع للمنيو":"Back to menu","إرسال":"Send","إغلاق":"Close","الاسم *":"Name *","رقم الهاتف *":"Phone number *","عنوان التوصيل أو مكان الاستلام *":"Delivery address or pickup location *","مدينة ومنطقة التوصيل *":"Delivery city and area *","المنتجات":"Products","الرئيسية":"Home","من نحن":"About us","مميزاتنا":"Our benefits","سياسة الخصوصية":"Privacy policy","الشروط والأحكام":"Terms and conditions","الطلبات السابقة":"Previous orders","حفظ معلومات الحساب":"Save account information","حفظ العنوان":"Save address","تفعيل الإشعارات":"Enable notifications","إيقاف التفضيل":"Turn off notifications","اللغة والدولة":"Language and country","معلومات الحساب":"Account information","عناوين التوصيل":"Delivery addresses","الإشعارات":"Notifications","طلباتك السابقة":"Your previous orders","الإعدادات":"Settings","حول التطبيق":"About the app","مساعدة ودعم المتجر":"Store help and support","مساعدة ذكية":"Smart help","حفظ التفضيلات":"Save preferences","البريد الإلكتروني المسجل":"Registered email","رقم التليفون":"Phone number","الدولة":"Country","لغة الواجهة":"Interface language","الاسم":"Name","المدينة":"City","المنطقة / الحي":"Area / neighborhood","اسم العنوان":"Address label","اسم المستلم":"Recipient name","الشارع والعنوان التفصيلي":"Street and full address","رقم المبنى / علامة مميزة":"Building number / landmark","إضافة عنوان جديد":"Add a new address","عناوينك المحفوظة":"Your saved addresses","فروع المتجر ومناطق التوصيل":"Store branches and delivery areas","إشعارات هذا الجهاز":"Notifications on this device","أهلًا بيك 💙 أقدر أساعدك في الطلبات والتوصيل والدفع والحساب. اكتبي سؤالك، ولو احتاج متابعة من فريق المتجر هوجّهك لقنوات التواصل.":"Hello 💙 I can help with orders, delivery, payment, and account settings. Ask your question and I’ll guide you to the right support channel if needed.","اكتبي سؤالك هنا…":"Type your question here…"
+  },
+  fr:{
+   "أهلاً بيكي في عالم حلو ب لبن":"Bienvenue chez Blaban Sweets","كل يوم محتاج حاجة حلوة":"Chaque jour mérite une douceur","اختاري حلاوتك المفضلة، من أكواب الحلويات إلى العصائر والمشروبات الباردة والسخنة.":"Choisissez vos desserts, jus et boissons chaudes ou froides préférés.","حلى أيامك، على طريقتك":"Une douceur à votre façon","اختار مزاجك":"Choisissez votre envie","اكتشفي عالم حلو ب لبن.":"Découvrez l’univers de Blaban Sweets.","جاهزين نخلي التجربة أحلى؟":"Prêts pour une expérience plus douce ?","خلي للحلاوة مكان في يومك.":"Faites une place à la douceur dans votre journée.","تواصل معنا":"Nous contacter","تتبعي طلبك":"Suivre votre commande","اختاري المنتج المناسب ليكي":"Choisissez votre produit préféré","عرض التفاصيل":"Voir les détails","إضافة للسلة":"Ajouter au panier","اختاري الصنف":"Choisir une option","الكمية":"Quantité","السعر":"Prix","سلة المشتريات":"Panier","كل اختياراتك في مكان واحد":"Tous vos choix au même endroit","راجعي صور الأصناف والكميات، وعدّلي اختياراتك قبل إتمام الطلب.":"Vérifiez les articles et quantités avant de valider la commande.","تمام، متابعة لإدخال البيانات والدفع ←":"Continuer vers les informations et le paiement →","الرجوع للمنيو واختيار أصناف تانية":"Retour au menu","إدخال البيانات والدفع":"Informations client et paiement","بعد ما تخلصي اختياراتك من المنيو، اكتبي بياناتك وراجعي السعر النهائي هنا.":"Après vos choix, saisissez vos informations et vérifiez le total.","حساب السعر":"Total de la commande","املئي البيانات واختاري طريقة الدفع":"Saisissez vos informations et choisissez un mode de paiement","رسوم التوصيل والحد الأدنى بيتحددوا حسب المنطقة المختارة.":"Les frais et le minimum dépendent de la zone choisie.","اختاري مدينة ومنطقة التوصيل":"Choisissez la ville et la zone de livraison","طريقة الدفع":"Mode de paiement","الفرع المسؤول عن الطلب (اختياري)":"Agence responsable (facultatif)","الرجوع للسلة":"Retour au panier","الرجوع للمنيو":"Retour au menu","إرسال":"Envoyer","إغلاق":"Fermer","الاسم *":"Nom *","رقم الهاتف *":"Téléphone *","عنوان التوصيل أو مكان الاستلام *":"Adresse de livraison ou retrait *","مدينة ومنطقة التوصيل *":"Ville et zone de livraison *","المنتجات":"Produits","الرئيسية":"Accueil","من نحن":"À propos","مميزاتنا":"Nos avantages","سياسة الخصوصية":"Politique de confidentialité","الشروط والأحكام":"Conditions d’utilisation","طلباتك السابقة":"Vos commandes précédentes","حفظ معلومات الحساب":"Enregistrer les informations","حفظ العنوان":"Enregistrer l’adresse","تفعيل الإشعارات":"Activer les notifications","إيقاف التفضيل":"Désactiver la préférence","اللغة والدولة":"Langue et pays","معلومات الحساب":"Informations du compte","عناوين التوصيل":"Adresses de livraison","الإشعارات":"Notifications","الإعدادات":"Paramètres","حول التطبيق":"À propos de l’application","مساعدة ودعم المتجر":"Aide et assistance","مساعدة ذكية":"Aide intelligente","حفظ التفضيلات":"Enregistrer les préférences","البريد الإلكتروني المسجل":"E-mail enregistré","رقم التليفون":"Téléphone","الدولة":"Pays","لغة الواجهة":"Langue de l’interface","الاسم":"Nom","المدينة":"Ville","المنطقة / الحي":"Quartier","اسم العنوان":"Nom de l’adresse","اسم المستلم":"Nom du destinataire","الشارع والعنوان التفصيلي":"Rue et adresse complète","رقم المبنى / علامة مميزة":"Numéro du bâtiment / repère","إضافة عنوان جديد":"Ajouter une adresse","عناوينك المحفوظة":"Vos adresses enregistrées","فروع المتجر ومناطق التوصيل":"Agences et zones de livraison","إشعارات هذا الجهاز":"Notifications sur cet appareil","أهلًا بيك 💙 أقدر أساعدك في الطلبات والتوصيل والدفع والحساب. اكتبي سؤالك، ولو احتاج متابعة من فريق المتجر هوجّهك لقنوات التواصل.":"Bonjour 💙 Je peux vous aider pour les commandes, la livraison, le paiement et votre compte. Posez votre question et je vous orienterai vers l’assistance si nécessaire.","اكتبي سؤالك هنا…":"Écrivez votre question ici…"
+  }
+ };
+ function applyStaticTranslations(lang){
+  for(const [node,original] of originalTextNodes.entries())if(node.isConnected)node.nodeValue=original;
+  if(lang==="ar")return;
+  const dict=staticTextTranslations[lang];if(!dict)return;
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  let node;while((node=walker.nextNode())){
+   const parent=node.parentElement;if(!parent||parent.closest("script,style,textarea,input,select,option,code"))continue;
+   const raw=node.nodeValue,trimmed=raw.trim();if(!trimmed||!Object.prototype.hasOwnProperty.call(dict,trimmed))continue;
+   if(!originalTextNodes.has(node))originalTextNodes.set(node,raw);
+   node.nodeValue=raw.replace(trimmed,dict[trimmed]);
+  }
+ }
  function applyStoreLanguage(lang){
   document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";account.style.direction=lang==="ar"?"rtl":"ltr";const drawer=document.getElementById("storeSideDrawer");if(drawer)drawer.style.direction=lang==="ar"?"rtl":"ltr";
-  if(lang==="ar"){for(const [el,value] of originalText.entries())el.textContent=value;return}
+  applyStaticTranslations("ar");
+  if(lang==="ar"){for(const [el,value] of originalText.entries())el.textContent=value;applyStaticTranslations("ar");["addressCountry","accountCountry"].forEach(id=>{const select=$(id);if(select)Array.from(select.options).forEach(option=>{if(option.value)option.textContent=option.value})});if($("storeSupportInput"))$("storeSupportInput").placeholder="اكتبي سؤالك هنا…";return}
   const dict=coreTranslations[lang];if(!dict)return;
   const links=[...document.querySelectorAll(".drawer-nav a span")];const keys=["home","products","cart","tracking","story","account","about","support"];
   links.forEach((el,i)=>{if(dict[keys[i]])setText(el,dict[keys[i]])});
@@ -1701,6 +1722,13 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   const checkoutTitle=document.querySelector("#checkout .section-title h2");setText(checkoutTitle,dict.checkout);
   const back=$("backToCart");if(back)setText(back,dict.backCart);
   const supportLabel=$("storeSupportLauncher")?.querySelector("span:last-child");if(supportLabel)setText(supportLabel,dict.supportLabel);
+  const countryTranslations={
+   en:{"ليبيا":"Libya","مصر":"Egypt","السعودية":"Saudi Arabia","الإمارات":"United Arab Emirates","تونس":"Tunisia","الجزائر":"Algeria","المغرب":"Morocco","فرنسا":"France","إيطاليا":"Italy","تركيا":"Türkiye","المملكة المتحدة":"United Kingdom","الولايات المتحدة":"United States"},
+   fr:{"ليبيا":"Libye","مصر":"Égypte","السعودية":"Arabie saoudite","الإمارات":"Émirats arabes unis","تونس":"Tunisie","الجزائر":"Algérie","المغرب":"Maroc","فرنسا":"France","إيطاليا":"Italie","تركيا":"Turquie","المملكة المتحدة":"Royaume-Uni","الولايات المتحدة":"États-Unis"}
+  };
+  ["addressCountry","accountCountry"].forEach(id=>{const select=$(id);if(select)Array.from(select.options).forEach(option=>{if(countryTranslations[lang]?.[option.value])option.textContent=countryTranslations[lang][option.value];else if(option.value&&countryOptions.includes(option.value))option.textContent=option.value})});
+  const supportInput=$("storeSupportInput");if(supportInput)supportInput.placeholder=lang==="en"?"Type your question here…":lang==="fr"?"Écrivez votre question ici…":"اكتبي سؤالك هنا…";
+  applyStaticTranslations(lang);
  }
  $("customerLocaleForm").addEventListener("submit",async e=>{
   e.preventDefault();const c=client(),language=$("accountLanguage").value,country=$("accountCountry").value;
@@ -1711,7 +1739,23 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
  function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
  // Local guided answers are always available; a secure AI endpoint can replace these when configured.
  function guidedAnswer(q){
-  const t=q.toLowerCase();
+  const t=q.toLowerCase(),lang=localStorage.getItem("blaban-store-language")||"ar";
+  if(lang==="en"){
+   if(/order|tracking|track|طلب|تتبع/.test(t))return "To track an order, open “Track your order” from the store menu and enter the order number and phone used at checkout. Orders linked to your account appear under Your account → Previous orders.";
+   if(/payment|pay|visa|transfer|wallet|دفع|تحويل/.test(t))return "Choose a payment method at checkout to see the available instructions. If the payment details are missing, contact the store before transferring money.";
+   if(/delivery|address|area|location|توصيل|عنوان/.test(t))return "Delivery fees and areas appear after you choose a delivery zone at checkout. Save multiple addresses under Your account → Settings → Delivery addresses.";
+   if(/account|password|email|حساب|كلمة المرور/.test(t))return "Open Your account → Settings to update your name and phone, manage addresses, and choose your language and country.";
+   if(/product|item|cart|منتج|صنف|سلة/.test(t))return "Choose a circular category icon on the storefront, select your item and quantity, then open the cart and continue to customer details and payment.";
+   return "I can guide you through orders, delivery, payment, and account settings. If the issue continues, use Contact us to reach the store team. This is temporary guided help while AI service is unavailable.";
+  }
+  if(lang==="fr"){
+   if(/commande|suivi|order|tracking|طلب|تتبع/.test(t))return "Pour suivre une commande, ouvrez « Suivre votre commande » et saisissez le numéro de commande et le téléphone utilisé. Les commandes liées au compte apparaissent dans Votre compte → Commandes précédentes.";
+   if(/paiement|payer|carte|virement|دفع|تحويل/.test(t))return "Choisissez un mode de paiement au moment de valider la commande pour voir les instructions disponibles. Si les informations manquent, contactez le magasin avant tout virement.";
+   if(/livraison|adresse|zone|توصيل|عنوان/.test(t))return "Les frais et zones de livraison s’affichent après le choix de la zone. Enregistrez plusieurs adresses dans Votre compte → Paramètres → Adresses de livraison.";
+   if(/compte|mot de passe|e-mail|حساب/.test(t))return "Ouvrez Votre compte → Paramètres pour modifier votre nom et téléphone, gérer vos adresses et choisir la langue et le pays.";
+   if(/produit|panier|article|منتج|سلة/.test(t))return "Choisissez une catégorie ronde sur la boutique, sélectionnez l’article et la quantité, puis ouvrez le panier et continuez vers les informations et le paiement.";
+   return "Je peux vous guider pour les commandes, la livraison, le paiement et le compte. Si le problème persiste, utilisez « Nous contacter ». Cette aide guidée est temporaire lorsque le service IA est indisponible.";
+  }
   if(/طلب|order|commande|تتبع|tracking|track/.test(t))return "لمتابعة طلبك افتحي «تتبعي طلبك» من قائمة المتجر واكتبي رقم الطلب ورقم الهاتف المستخدم عند الشراء. وتقدري تشوفي الطلبات المرتبطة بحسابك من «حسابك» ← «طلباتك السابقة».";
   if(/دفع|فلوس|payment|pay|paiement|فيزا|تحويل|محفظ/.test(t))return "اختاري طريقة الدفع في صفحة إتمام الطلب. التفاصيل المتاحة تظهر بعد اختيار الطريقة. لو بيانات طريقة الدفع ناقصة، تواصلي مع المتجر قبل التحويل.";
   if(/توصيل|عنوان|منطقة|delivery|address|livraison|adresse/.test(t))return "رسوم التوصيل والمنطقة بتظهر بعد اختيار منطقة التوصيل في إتمام الطلب. تقدري تحفظي أكتر من عنوان من «حسابك» ← «الإعدادات» ← «عناوين التوصيل».";
@@ -1775,7 +1819,7 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   else window.closeCartModal();
  },true);
 
-window.blabanOpenCustomerAccount=openAccount;window.blabanOpenStoreSupport=openSupport;
+window.blabanOpenCustomerAccount=openAccount;window.blabanOpenStoreSupport=openSupport;window.blabanApplyStoreLanguage=applyStoreLanguage;
 })();
 </script>
 </body></html>
