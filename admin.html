@@ -687,7 +687,7 @@ function renderPaymentSettings(raw,legacyVisaUrl){
  for(const def of paymentDefinitions){
   const item=saved?saved.find(x=>x.key===def.key):null;
   const legacyEnabled=!saved&&legacy.some(x=>x.toLowerCase()===def.label.toLowerCase()||x.toLowerCase().includes(def.key));
-  $("#pm_"+def.key+"_enabled").checked=item?item.enabled===true:(saved?false:(def.key==="cash_on_delivery"?!legacy.length:legacyEnabled));
+  $("#pm_"+def.key+"_enabled").checked=item?(item.enabled===true||String(item.enabled).trim().toLowerCase()==="true"||String(item.enabled).trim()==="1"||String(item.enabled).trim().toLowerCase()==="yes"):(saved?false:(def.key==="cash_on_delivery"?!legacy.length:legacyEnabled));
   $("#pm_"+def.key+"_details").value=item?.details||"";
   $("#pm_"+def.key+"_url").value=item?.url||(def.key==="visa"?legacyVisaUrl||"":"");
   const toggle=$("#pm_"+def.key+"_enabled"),card=toggle?.closest("label")?.parentElement;
