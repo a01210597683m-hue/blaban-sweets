@@ -1096,11 +1096,24 @@ function openCustomerStore(user){
  document.getElementById("customerAccountName").textContent=name;
 }
 function closeCustomerStore(){
- // Signing out should not lock visitors out of the public storefront.
- document.getElementById("customerAuthGate").hidden=true;
- document.body.classList.remove("customer-auth-required");
+ // After sign-out, return to the customer login screen without reloading the storefront.
+ const gate=document.getElementById("customerAuthGate");
+ if(gate)gate.hidden=false;
+ document.body.classList.add("customer-auth-required");
  document.getElementById("customerAccountPill").hidden=true;
+ const accountView=document.getElementById("customerAccountView");
+ if(accountView){accountView.hidden=true;accountView.setAttribute("aria-hidden","true");}
+ document.body.classList.remove("customer-account-open");
+ const drawer=document.getElementById("storeSideDrawer");
+ const backdrop=document.getElementById("drawerBackdrop");
+ const toggle=document.getElementById("menuToggle");
+ if(drawer){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");}
+ if(backdrop)backdrop.hidden=true;
+ if(toggle){toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","فتح القائمة");}
+ const password=document.getElementById("customerPassword");
+ if(password)password.value="";
  setCustomerAuthMode("login");
+ customerAuthMessage("تم تسجيل الخروج بنجاح.");
 }
 async function startCustomerAuth(){
  try{
