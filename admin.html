@@ -355,7 +355,14 @@ body{font-family:var(--admin-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 @keyframes orderModalIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:600px){#orderStatusModal{padding:10px}#orderStatusModal .order-status-dialog{border-radius:19px;max-height:86dvh}#orderStatusModal .order-status-head{padding:16px}#orderStatusModal .order-status-body{padding:15px}#orderStatusModal .order-status-summary{gap:7px}#app .overview-order-side .overview-order-edit{font-size:.68rem;padding:5px 7px}}
 @media(prefers-reduced-motion:reduce){#orderStatusModal .order-status-dialog{animation:none}}
-</style></head>
+</style><style id="sales-period-history-style">
+#app .sales-period-navigation{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;border:1px solid #e0edf7;border-radius:13px;background:#f8fbff}
+#app .sales-period-navigation strong{flex:1;text-align:center;color:#315c83;font-size:.9rem}
+#app .sales-period-navigation button{padding:7px 11px;font-size:.8rem;box-shadow:none}
+#app .sales-period-navigation button:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:600px){#app .sales-period-navigation{gap:6px}#app .sales-period-navigation button{flex:1 1 40%;white-space:nowrap}#app .sales-period-navigation strong{order:-1;flex:1 1 100%}}
+</style>
+</head>
 <body>
 <div id="login" class="login-wrap">
  <div class="login-card">
@@ -390,7 +397,7 @@ body{font-family:var(--admin-arabic-font,Tahoma),Tahoma,Arial,sans-serif}
 <div class="overview-section-heading overview-latest-heading"><div><h3>متابعة المتجر</h3><p>آخر المستجدات في الطلبات والمنتجات</p></div></div>
 <div class="overview-lists"><div class="panel overview-list-panel"><div class="panel-head"><h3>آخر الطلبات</h3><button class="tiny" data-goto="orders">عرض كل الطلبات ←</button></div><div id="recentOrders" class="empty">سيظهر سجل الطلبات بعد ربط قاعدة البيانات.</div></div><div class="panel overview-list-panel"><div class="panel-head"><h3>المنتجات</h3><button class="tiny" data-goto="products">إدارة المنتجات ←</button></div><div id="recentProducts" class="empty">أضيفي المنتجات المعتمدة بعد تفعيل قاعدة البيانات.</div></div></div>
 </section>
-<section id="view-sales" class="view hidden"><div class="welcome"><div><h2>المبيعات والطلبات</h2><p>تابعي حركة المبيعات وعدد الطلبات حسب اليوم أو الأسبوع أو الشهر أو السنة.</p></div><button class="btn pale" id="refreshSales" type="button">↻ تحديث البيانات</button></div><div class="sales-summary"><div class="sales-summary-item"><span>المبيعات المسلّمة في الفترة</span><strong id="salesPeriodTotal">—</strong></div><div class="sales-summary-item"><span>عدد الطلبات في الفترة</span><strong id="ordersPeriodTotal">—</strong></div></div><div class="panel sales-panel"><div class="panel-head sales-heading"><div><h3>تحليل الأداء</h3><p>الأزرق للمبيعات، والبينك لعدد الطلبات</p></div><div class="period-switch" role="group" aria-label="فترة الرسم البياني"><button type="button" data-sales-period="day">اليوم</button><button type="button" data-sales-period="week">الأسبوع</button><button type="button" class="active" data-sales-period="month">الشهر</button><button type="button" data-sales-period="year">السنة</button></div></div><div id="salesChart" class="sales-chart" aria-live="polite"><div class="empty">سيظهر الرسم البياني بعد تحميل البيانات.</div></div><div class="chart-legend"><span><i class="legend-blue"></i>المبيعات المسلّمة</span><span><i class="legend-pink"></i>عدد الطلبات</span></div><p class="chart-note">المبيعات تُحسب من الطلبات التي حالتها «تم التسليم»، والطلبات تشمل جميع الحالات. البيانات تُقرأ من سجل الطلبات في المتجر.</p></div></section>
+<section id="view-sales" class="view hidden"><div class="welcome"><div><h2>المبيعات والطلبات</h2><p>تابعي حركة المبيعات وعدد الطلبات حسب اليوم أو الأسبوع أو الشهر أو السنة.</p></div><button class="btn pale" id="refreshSales" type="button">↻ تحديث البيانات</button></div><div class="sales-summary"><div class="sales-summary-item"><span>قيمة الطلبات غير الملغاة في الفترة</span><strong id="salesPeriodTotal">—</strong></div><div class="sales-summary-item"><span>عدد الطلبات في الفترة</span><strong id="ordersPeriodTotal">—</strong></div></div><div class="panel sales-panel"><div class="panel-head sales-heading"><div><h3>تحليل الأداء</h3><p>الأزرق لقيمة الطلبات غير الملغاة، والبينك لعدد الطلبات</p></div><div class="period-switch" role="group" aria-label="فترة الرسم البياني"><button type="button" data-sales-period="day">اليوم</button><button type="button" data-sales-period="week">الأسبوع</button><button type="button" class="active" data-sales-period="month">الشهر</button><button type="button" data-sales-period="year">السنة</button></div><div class="sales-period-navigation"><button type="button" id="salesPeriodPrev" class="btn pale" aria-label="الفترة السابقة">‹ الفترة السابقة</button><strong id="salesPeriodRange">الفترة الحالية</strong><button type="button" id="salesPeriodNext" class="btn pale" aria-label="الفترة التالية" disabled>الفترة التالية ›</button></div></div><div id="salesChart" class="sales-chart" aria-live="polite"><div class="empty">سيظهر الرسم البياني بعد تحميل البيانات.</div></div><div class="chart-legend"><span><i class="legend-blue"></i>قيمة الطلبات غير الملغاة</span><span><i class="legend-pink"></i>عدد الطلبات</span></div><p class="chart-note">قيمة الطلبات تشمل كل الحالات ما عدا الملغاة؛ وعدد الطلبات يشمل جميع الحالات. تُحفظ الطلبات الأصلية وتُعاد منها حسابات الفترات التاريخية تلقائيًا.</p></div></section>
 <section id="view-products" class="view hidden">
 <div class="welcome"><div><h2>إدارة المنتجات</h2><p>إضافة وتعديل الأسعار والوصف والصورة والتوفر.</p></div><button class="btn" id="addProductBtn">＋ إضافة منتج</button></div>
 <div id="productFormPanel" class="panel hidden"><div class="panel-head"><h3 id="productFormTitle">إضافة منتج جديد</h3><button class="tiny" id="cancelProduct">إغلاق</button></div><form id="productForm"><input type="hidden" id="productId"><div class="formgrid"><div class="field"><label for="pName">اسم المنتج *</label><input id="pName" required maxlength="120"></div><div class="field"><label for="pCategory">القسم</label><select id="pCategory"><option value="">بدون قسم</option></select><small>إضافة وتغيير أسماء الأقسام من تبويب «أقسام المتجر».</small></div><div class="field"><label for="pPrice">السعر بالدينار الليبي (د.ل) *</label><input id="pPrice" required type="number" min="0" step="0.01" placeholder="يُستخدم لو المنتج من غير أصناف"></div><div class="field"><label for="pImageFile">رفع صورة من الموبايل</label><input id="pImageFile" type="file" accept="image/*"><small>اختاري صورة من جهازك، وهتترفع تلقائيًا عند حفظ المنتج.</small></div><div class="field"><label for="pImage">رابط صورة (اختياري)</label><input id="pImage" type="url" placeholder="https://..."></div></div><div class="field"><label for="pDescription">وصف المنتج</label><textarea id="pDescription" rows="3" maxlength="1000"></textarea></div><div class="field"><label><input id="pAvailable" type="checkbox" checked style="width:auto"> متاح للشراء</label></div><button class="btn" type="submit">حفظ المنتج</button><div id="productFormStatus" class="status"></div></form></div>
@@ -528,59 +535,77 @@ let salesPeriod="month";
 function isNewOrder(o){return ["new","جديد","pending"].includes(String(o.status||"new").toLowerCase())}
 function renderNewOrders(){const list=$("#newOrdersList");if(!list)return;const pending=orders.filter(isNewOrder);$("#newOrdersCount").textContent=String(pending.length);list.innerHTML=pending.length?pending.map(o=>"<div class='new-order-row'><div class='new-order-main'><strong>طلب "+esc(o.order_number||String(o.id).slice(0,8))+" · "+esc(o.customer_name||"عميل")+"</strong><small>"+esc(o.customer_phone||"لا يوجد رقم هاتف")+"</small></div><div class='new-order-meta'><small>"+esc(o.created_at?new Date(o.created_at).toLocaleString("ar-EG"):"تاريخ غير متاح")+"</small><small>"+(Array.isArray(o.items)?o.items.reduce((n,it)=>n+(Number(it.quantity)||1),0):0)+" قطعة تقريبًا</small></div><div class='new-order-total'>"+money(o.total_amount)+"</div><button class='tiny' type='button' data-open-order='"+esc(o.id)+"'>عرض الطلب</button></div>").join(""):"<div class='empty'>مفيش طلبات جديدة محتاجة متابعة حاليًا ✨</div>"}
 function renderUsers(){const el=$("#usersTable");if(!el)return;const map=new Map();for(const o of orders){const phone=String(o.customer_phone||"").trim();const name=String(o.customer_name||"عميل بدون اسم").trim();const key=phone||name;if(!key)continue;const cur=map.get(key)||{name,phone,count:0,total:0,last:null};cur.count++;cur.total+=Number(o.total_amount)||0;if(!cur.last||String(o.created_at||"")>String(cur.last))cur.last=o.created_at;map.set(key,cur)}const customers=[...map.values()].sort((a,b)=>String(b.last||"").localeCompare(String(a.last||"")));el.innerHTML=customers.length?"<div class='table-wrap'><table><thead><tr><th>العميل</th><th>رقم الهاتف</th><th>عدد الطلبات</th><th>إجمالي قيمة طلباته</th><th>آخر طلب</th></tr></thead><tbody>"+customers.map(c=>"<tr><td><span class='customer-name'>"+esc(c.name)+"</span></td><td>"+(c.phone?"<a href='tel:"+esc(c.phone)+"'>"+esc(c.phone)+"</a>":"—")+"</td><td>"+c.count+"</td><td>"+money(c.total)+"</td><td>"+esc(c.last?new Date(c.last).toLocaleDateString("ar-EG"):"—")+"</td></tr>").join("")+"</tbody></table></div>":"<div class='empty'>لا توجد بيانات عملاء في سجل الطلبات حتى الآن.</div>"}
+let salesOffset=0;
 function renderSalesChart(){
  const chart=$("#salesChart");if(!chart)return;
- const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),buckets=[];
- const rangeLabel=salesPeriod==="day"?"اليوم · "+today.toLocaleDateString("ar-EG"):salesPeriod==="week"?"الأسبوع الحالي":salesPeriod==="year"?"السنة الحالية":"الشهر الحالي";
- const note=document.querySelector("#view-sales .sales-heading p");if(note)note.textContent="الفترة: "+rangeLabel+" · الأزرق للمبيعات المسلّمة، والبينك لعدد الطلبات. الأرقام من سجل الطلبات الفعلي."; 
- const dateKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),anchor=new Date(today);
+ if(salesPeriod==="day")anchor.setDate(anchor.getDate()+salesOffset);
+ else if(salesPeriod==="week")anchor.setDate(anchor.getDate()+salesOffset*7);
+ else if(salesPeriod==="month")anchor.setMonth(anchor.getMonth()+salesOffset);
+ else if(salesPeriod==="year")anchor.setFullYear(anchor.getFullYear()+salesOffset);
+ const buckets=[],dateKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ let rangeLabel="";
  if(salesPeriod==="day"){
-  for(let h=0;h<24;h+=3)buckets.push({key:h,label:String(h).padStart(2,"0")+":00",start:new Date(today.getFullYear(),today.getMonth(),today.getDate(),h),end:new Date(today.getFullYear(),today.getMonth(),today.getDate(),h+3)});
+  rangeLabel="اليوم · "+anchor.toLocaleDateString("ar-EG",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  for(let h=0;h<24;h++)buckets.push({key:h,label:String(h).padStart(2,"0")+":00",start:new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate(),h),end:new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate(),h+1)});
  }else if(salesPeriod==="week"){
-  const mondayOffset=(today.getDay()+6)%7,weekStart=new Date(today.getFullYear(),today.getMonth(),today.getDate()-mondayOffset);
+  const mondayOffset=(anchor.getDay()+6)%7,weekStart=new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate()-mondayOffset),weekEnd=new Date(weekStart.getFullYear(),weekStart.getMonth(),weekStart.getDate()+6);
+  rangeLabel=weekStart.toLocaleDateString("ar-EG",{day:"numeric",month:"short"})+" – "+weekEnd.toLocaleDateString("ar-EG",{day:"numeric",month:"short",year:"numeric"});
   for(let i=0;i<7;i++){const d=new Date(weekStart.getFullYear(),weekStart.getMonth(),weekStart.getDate()+i);buckets.push({key:dateKey(d),dateKey:dateKey(d),label:d.toLocaleDateString("ar-EG",{weekday:"short",day:"numeric"}),start:d,end:new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)});}
  }else if(salesPeriod==="year"){
-  for(let m=0;m<12;m++)buckets.push({key:m,label:new Date(now.getFullYear(),m,1).toLocaleDateString("ar-EG",{month:"short"}),start:new Date(now.getFullYear(),m,1),end:new Date(now.getFullYear(),m+1,1)});
+  rangeLabel=String(anchor.getFullYear());
+  for(let m=0;m<12;m++)buckets.push({key:m,label:new Date(anchor.getFullYear(),m,1).toLocaleDateString("ar-EG",{month:"short"}),start:new Date(anchor.getFullYear(),m,1),end:new Date(anchor.getFullYear(),m+1,1)});
  }else{
-  const count=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
-  for(let d=1;d<=count;d++){const day=new Date(now.getFullYear(),now.getMonth(),d);buckets.push({key:d,dateKey:dateKey(day),label:String(d),start:day,end:new Date(now.getFullYear(),now.getMonth(),d+1)});}
+  rangeLabel=anchor.toLocaleDateString("ar-EG",{month:"long",year:"numeric"});
+  const count=new Date(anchor.getFullYear(),anchor.getMonth()+1,0).getDate();
+  for(let d=1;d<=count;d++){const day=new Date(anchor.getFullYear(),anchor.getMonth(),d);buckets.push({key:d,dateKey:dateKey(day),label:String(d),start:day,end:new Date(anchor.getFullYear(),anchor.getMonth(),d+1)});}
  }
+ const rangeEl=$("#salesPeriodRange");if(rangeEl)rangeEl.textContent=rangeLabel;
+ const next=$("#salesPeriodNext");if(next)next.disabled=salesOffset>=0;
+ const prev=$("#salesPeriodPrev");if(prev)prev.disabled=false;
+ const note=document.querySelector("#view-sales .sales-heading p");if(note)note.textContent="الفترة: "+rangeLabel+" · الأزرق لقيمة الطلبات غير الملغاة، والبينك لعدد الطلبات. السجل محفوظ في قاعدة البيانات ويتحدّث تلقائيًا.";
  const sales=buckets.map(()=>0),counts=buckets.map(()=>0);
  for(const o of orders){
   if(!o.created_at)continue;
   const d=new Date(o.created_at);if(Number.isNaN(d.getTime()))continue;
   let idx=-1;
-  if(salesPeriod==="day"){
-   if(dateKey(d)===dateKey(today))idx=Math.min(7,Math.floor(d.getHours()/3));
-  }else if(salesPeriod==="week"){
-   idx=buckets.findIndex(b=>b.dateKey===dateKey(d));
-  }else if(salesPeriod==="year"){
-   if(d.getFullYear()===now.getFullYear())idx=d.getMonth();
-  }else{
-   if(d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth())idx=d.getDate()-1;
-  }
-  if(idx>=0&&idx<buckets.length){
-   counts[idx]++;
-   if(String(o.status||"").toLowerCase()==="delivered")sales[idx]+=Number(o.total_amount)||0;
-  }
+  if(salesPeriod==="day"){if(dateKey(d)===dateKey(anchor))idx=d.getHours();}
+  else if(salesPeriod==="week"){idx=buckets.findIndex(b=>b.dateKey===dateKey(d));}
+  else if(salesPeriod==="year"){if(d.getFullYear()===anchor.getFullYear())idx=d.getMonth();}
+  else if(d.getFullYear()===anchor.getFullYear()&&d.getMonth()===anchor.getMonth()){idx=d.getDate()-1;}
+  if(idx>=0&&idx<buckets.length){counts[idx]++;if(String(o.status||"").toLowerCase()!=="cancelled")sales[idx]+=Number(o.total_amount)||0;}
  }
  const width=760,height=280,left=42,right=14,top=18,bottom=48,plotW=width-left-right,plotH=height-top-bottom,groupW=plotW/buckets.length,barW=Math.max(2,Math.min(18,groupW*.29)),maxSales=Math.max(1,...sales),maxOrders=Math.max(1,...counts);
- let svg='<svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="رسم بياني حقيقي للمبيعات والطلبات حسب الفترة">';
+ let svg='<svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="رسم بياني محفوظ للمبيعات والطلبات حسب الفترة">';
  for(let i=0;i<5;i++){const y=top+plotH*i/4;svg+='<line x1="'+left+'" y1="'+y+'" x2="'+(width-right)+'" y2="'+y+'" stroke="#dfeaf3" stroke-width="1"/>';}
  for(let i=0;i<buckets.length;i++){
   const x=left+i*groupW+groupW/2,h1=sales[i]/maxSales*(plotH*.92),h2=counts[i]/maxOrders*(plotH*.92);
   svg+='<rect class="chart-bar" x="'+(x-barW-1)+'" y="'+(top+plotH-h1)+'" width="'+barW+'" height="'+Math.max(1,h1)+'" rx="3" fill="#7EB6E8"><title>المبيعات المسلّمة: '+esc(money(sales[i]))+'</title></rect>';
   svg+='<rect class="chart-bar" x="'+(x+1)+'" y="'+(top+plotH-h2)+'" width="'+barW+'" height="'+Math.max(1,h2)+'" rx="3" fill="#F3A1B8" style="animation-delay:.05s"><title>عدد الطلبات: '+counts[i]+'</title></rect>';
-  const showLabel=salesPeriod!=="month"||i%3===0||i===buckets.length-1;
+  const showLabel=salesPeriod==="day"?i%3===0||i===23:salesPeriod==="month"?i%3===0||i===buckets.length-1:true;
   if(showLabel)svg+='<text x="'+x+'" y="'+(height-19)+'" text-anchor="middle" font-size="'+(salesPeriod==="month"?10:11)+'" fill="#68809b">'+esc(buckets[i].label)+'</text>';
  }
- svg+='</svg>';chart.innerHTML=svg;
+ svg+='</svg>';
+ if(!orders.length)svg='<div class="empty">لا توجد طلبات محفوظة حتى الآن.</div>';
+ else if(!counts.some(n=>n>0))svg+='<div class="chart-note">لا توجد طلبات في هذه الفترة. استخدمي «الفترة السابقة» لمراجعة السجل المحفوظ.</div>';
+ chart.innerHTML=svg;
  $("#salesPeriodTotal").textContent=money(sales.reduce((a,b)=>a+b,0));
  $("#ordersPeriodTotal").textContent=String(counts.reduce((a,b)=>a+b,0));
- $("#salesPeriodTotal").setAttribute("aria-label","إجمالي المبيعات المسلّمة في "+rangeLabel);
+ $("#salesPeriodTotal").setAttribute("aria-label","قيمة الطلبات غير الملغاة في "+rangeLabel);
  $("#ordersPeriodTotal").setAttribute("aria-label","إجمالي الطلبات في "+rangeLabel);
 }
-document.querySelectorAll("[data-sales-period]").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.salesPeriod===salesPeriod));b.addEventListener("click",()=>{salesPeriod=b.dataset.salesPeriod;document.querySelectorAll("[data-sales-period]").forEach(x=>{const active=x===b;x.classList.toggle("active",active);x.setAttribute("aria-pressed",String(active))});renderSalesChart()})});
+document.querySelectorAll("[data-sales-period]").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.salesPeriod===salesPeriod));b.addEventListener("click",()=>{salesPeriod=b.dataset.salesPeriod;salesOffset=0;document.querySelectorAll("[data-sales-period]").forEach(x=>{const active=x===b;x.classList.toggle("active",active);x.setAttribute("aria-pressed",String(active))});renderSalesChart()})});
+$("#salesPeriodPrev").addEventListener("click",()=>{salesOffset-=1;renderSalesChart()});
+$("#salesPeriodNext").addEventListener("click",()=>{if(salesOffset<0){salesOffset+=1;renderSalesChart()}});
+async function refreshAnalyticsOrders(){
+ if(!sb||document.hidden)return;
+ try{const all=[];for(let offset=0;;offset+=1000){const page=await sb.from("orders").select("*").order("created_at",{ascending:false}).range(offset,offset+999);if(page.error)throw page.error;const rows=page.data||[];all.push(...rows);if(rows.length<1000)break;}orders=all;renderSalesChart();renderNewOrders();renderUsers();}
+ catch(error){console.warn("Analytics refresh failed",error);const note=document.querySelector("#view-sales .sales-heading p");if(note)note.textContent="تعذر تحديث البيانات تلقائيًا؛ استخدمي زر تحديث البيانات."}
+}
+$("#refreshSales").addEventListener("click",refreshAnalyticsOrders);
+setInterval(()=>{if(!$("#view-sales")?.classList.contains("hidden"))refreshAnalyticsOrders();else if(salesPeriod==="day")renderSalesChart()},60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!$("#view-sales")?.classList.contains("hidden"))refreshAnalyticsOrders()});
+
 
 // Compact status editor opened from the dashboard's latest-order rows.
 let activeStatusOrderId=null;
@@ -618,7 +643,7 @@ $("#orderStatusModalSave").addEventListener("click",async()=>{
  }catch(error){msg.textContent="تعذر حفظ الحالة: "+(error.message||"حاولي مرة أخرى");button.disabled=false;button.textContent="حفظ الحالة"}
 });
 
-$("#refreshSales").addEventListener("click",loadData);$("#refreshNewOrders").addEventListener("click",loadData);$("#refreshUsers").addEventListener("click",loadData);
+$("#refreshNewOrders").addEventListener("click",loadData);$("#refreshUsers").addEventListener("click",loadData);
 $("#newOrdersList").addEventListener("click",e=>{const b=e.target.closest("[data-open-order]");if(!b)return;navigate("orders");const id=b.dataset.openOrder;const select=[...document.querySelectorAll("[data-order-status]")].find(x=>x.dataset.orderStatus===id);if(select){select.scrollIntoView({behavior:"smooth",block:"center"});select.focus({preventScroll:true})}});
 function navigate(view){document.querySelectorAll(".view").forEach(el=>el.classList.add("hidden"));const target=$("#view-"+view);if(!target)return;target.classList.remove("hidden");document.querySelectorAll("[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#pageTitle").textContent=({overview:"الرئيسية",sales:"المبيعات والطلبات","new-orders":"الطلبات الجديدة",products:"المنتجات",extras:"الإضافات والاكسترا",categories:"أقسام المتجر",orders:"كل الطلبات",users:"المستخدمون",branches:"إدارة الفروع",zones:"مناطق التوصيل",store:"تخصيص المتجر",settings:"إعدادات الربط"})[view]||view;if(view==="categories")loadStoreCategories();if(view==="store")loadStoreSettingsForm();if(view==="branches")loadBranches();if(view==="zones")loadZones();if(view==="sales")renderSalesChart();if(view==="new-orders")renderNewOrders();if(view==="users")renderUsers()}
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.goto)));$("#addProductTop").onclick=$("#addProductBtn").onclick=()=>{navigate("products");$("#productFormPanel").classList.remove("hidden");$("#productForm").reset();$("#productId").value="";$("#variantsList").innerHTML="";syncParentPriceField();$("#productFormTitle").textContent="إضافة منتج جديد"};
