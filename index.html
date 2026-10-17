@@ -756,7 +756,7 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
 <div id="orderTrackingResult" role="status" aria-live="polite" hidden></div>
 </div></section>
 <section class="section wrap" id="story"><div class="story"><div class="story-photo"><img id="storyImage" loading="lazy" src="https://images.unsplash.com/photo-1551024506-0f1c6e5e6f1e?auto=format&fit=crop&w=900&q=80" alt="صورة حلو ب لبن"></div><div class="story-copy"><span class="eyebrow">مع حلو ب لبن</span><h2 id="storyTitle">حلى أيامك،<br>على طريقتك</h2><p id="storyDescription">بنجهّز تجربة إلكترونية تخليك تتصفح المنيو بسهولة، تشوف تفاصيل كل صنف، وتطلب لما نظام الطلبات يكون جاهز. دي البداية، ولسه هنضيف الصور الرسمية وباقي التفاصيل.</p><a class="btn" href="#contact">خلينا على تواصل</a></div></div></section>
-<section class="section wrap"><div class="section-title"><div><span class="eyebrow">تجربة بتتطور</span><h2>كل حاجة أوضح وأسهل</h2></div></div><div class="benefits"><article class="benefit"><div class="benefit-icon">✦</div><div><h3>تصميم مريح</h3><p>تصفح واضح ومناسب للموبايل والكمبيوتر.</p></div></article><article class="benefit"><div class="benefit-icon">▦</div><div><h3>منيو منظم</h3><p>الأصناف والوصف والأسعار هتظهر بعد إضافتها رسميًا.</p></div></article><article class="benefit"><div class="benefit-icon">♡</div><div><h3>تجربة على ذوقك</h3><p>هنطوّر الشكل حسب هوية البراند والصور الرسمية.</p></div></article></div></section>
+<section class="section wrap"><div class="section-title"><div><span class="eyebrow">حلو بلبن في كل تفصيلة</span><h2>حلاكي المفضل، وتجربة أسهل</h2></div></div><div class="benefits"><article class="benefit"><div class="benefit-icon">✦</div><div><h3>تصفّح بكل سهولة</h3><p>تجربة مريحة وواضحة، من موبايلك أو الكمبيوتر.</p></div></article><article class="benefit"><div class="benefit-icon">▦</div><div><h3>منيو مرتب وواضح</h3><p>اكتشفي أصناف حلو بلبن وتفاصيلها في مكان واحد.</p></div></article><article class="benefit"><div class="benefit-icon">♡</div><div><h3>اختاري اللي على مزاجك</h3><p>خطوات بسيطة تساعدك توصلي لاختيارك وتكمّلي طلبك بسهولة.</p></div></article></div></section>
 <section class="contact-panels wrap" id="contact">
 <article class="contact-card delivery-card" aria-label="معلومات التوصيل"><span class="contact-symbol" aria-hidden="true">🚚</span><div class="delivery-copy"><h3>التوصيل لحد باب بيتك</h3><p>بأمان وسرعة</p></div></article>
 <article class="contact-card whatsapp-card"><span class="contact-symbol">◉</span><h3>تواصل معانا</h3><p>اتواصلي معانا بالطريقة المناسبة ليكي.</p><div id="contactNumbers" class="contact-empty">سيتم إضافة أرقام التواصل هنا</div></article>
@@ -2364,6 +2364,10 @@ body.store-view-category #categories .categories{background:transparent!importan
 })();
 </script>
 
+<style id="blaban-tracking-page-only">
+/* Keep order tracking on its dedicated page; never show the form on the storefront home. */
+#orderTracking:not(.store-dedicated-page){display:none!important}
+</style>
 </body></html>
 
 
