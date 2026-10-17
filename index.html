@@ -1640,7 +1640,8 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(panel==="orders")loadCustomerOrders();if(panel==="profile")loadCustomerProfile();if(panel==="addresses")loadCustomerAddresses();if(panel==="notifications")renderNotificationStatus();if(panel==="language")loadCustomerLocale();
  }
  function openAccount(panel="home"){
-  if(!activeUser){$("customerAuthGate")?.scrollIntoView({behavior:"smooth"});return}
+  // About the app is public information and must open without requiring sign-in.
+  if(!activeUser&&panel!=="about"){$("customerAuthGate")?.scrollIntoView({behavior:"smooth"});return}
   account.hidden=false;account.setAttribute("aria-hidden","false");document.body.classList.add("customer-account-open");setAccountPanel(panel);window.scrollTo({top:0,behavior:"auto"});
  }
  function closeAccount(){account.hidden=true;account.setAttribute("aria-hidden","true");document.body.classList.remove("customer-account-open")}
@@ -1847,12 +1848,16 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(typeof renderOrderCart==="function")renderOrderCart();
  }
  function openCheckoutPage(){
+  // Rehydrate the same persistent cart before deciding whether checkout is empty.
+  try{if(typeof restoreOrderCart==="function"&&typeof availableProducts!=="undefined"&&availableProducts.length)restoreOrderCart();}catch(error){console.warn("Could not restore cart before checkout",error)}
   if(typeof orderCart==="undefined"||!orderCart.size){
    openCartPage();
    const summary=$("cartSummary");
    if(summary)summary.textContent="السلة فاضية. اختاري منتجات الأول، وبعدها اضغطي متابعة لإدخال البيانات والدفع.";
    return;
   }
+  if(typeof persistOrderCart==="function")persistOrderCart();
+  if(typeof renderOrderCart==="function")renderOrderCart();
   setStoreFlowView("checkout");
   if(typeof renderCheckoutOrderReview==="function")renderCheckoutOrderReview();
  }
