@@ -1199,6 +1199,7 @@ async function startCustomerAuth(){
  try{
   const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
   customerAuthClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{storageKey:"blaban-customer-auth-v1",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  refreshCustomerSocialProviders();
   const {data,error}=await customerAuthClient.auth.getSession();
   if(error)throw error;
   if(data.session?.user)openCustomerStore(data.session.user);
@@ -2438,8 +2439,7 @@ body.store-view-category #categories .categories{background:transparent!importan
    }
   }finally{restoring=false}
  });
- // Social buttons appear only for providers that Supabase confirms are enabled.
- refreshCustomerSocialProviders();
+ // OAuth provider visibility is checked by the customer-auth module.
 })();
 </script>
 
