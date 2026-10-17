@@ -914,6 +914,10 @@ function renderPaymentChoices(){
   select.value=button.dataset.paymentKey||"";
   select.dispatchEvent(new Event("change",{bubbles:true}));
   renderPaymentChoices();
+  // Explicitly refresh the details panel after selecting a tile.
+  renderPaymentDetails();
+  const details=document.getElementById("paymentMethodDetails");
+  if(details&&details.style.display!=="none")details.scrollIntoView({behavior:"smooth",block:"nearest"});
  }));
 }
 function renderPaymentDetails(){
@@ -1174,7 +1178,18 @@ const quickCategoryAliases={
 };
 function matchesQuickCategory(card){
  if(!activeQuickCategory)return true;
- return normalizeStoreSearchText(card.dataset.category||"")===normalizeStoreSearchText(activeQuickCategory);
+ const selected=normalizeStoreSearchText(activeQuickCategory);
+ const category=normalizeStoreSearchText(card.dataset.category||"");
+ if(!category)return false;
+ if(category===selected)return true;
+ // Category shortcut names may be friendlier than the category assigned to a product.
+ for(const aliases of Object.values(quickCategoryAliases)){
+  const terms=aliases.map(normalizeStoreSearchText);
+  const selectedMatches=terms.some(term=>selected===term||selected.includes(term)||term.includes(selected));
+  const categoryMatches=terms.some(term=>category===term||category.includes(term)||term.includes(category));
+  if(selectedMatches&&categoryMatches)return true;
+ }
+ return false;
 }
 function renderStoreCategoryFilters(products){
  if(!storeCategoryFilters)return;
@@ -1462,11 +1477,41 @@ document.getElementById("quickCategories")?.addEventListener("click",event=>{
  activeStoreCategory="";activeQuickCategory=link.dataset.quickCategory||"";
  if(storeSearchInput)storeSearchInput.value="";
  const title=document.getElementById("quickCategoryPageTitle");if(title)title.textContent=activeQuickCategory;
- renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));filterStoreProducts();
- document.body.classList.remove("store-view-cart","store-view-checkout","store-view-product","store-view-products");document.body.classList.add("store-view-category");
+ // Clear any previous drawer/dedicated-page state before opening this category.
+ document.body.classList.remove("store-view-cart","store-view-checkout","store-view-product","store-view-products","store-page-categories","store-page-tracking","store-page-story");
+ const section=document.getElementById("categories");
+ section?.classList.remove("store-dedicated-page");
+ if(section){
+  section.style.setProperty("display","block","important");
+  section.style.setProperty("position","fixed","important");
+  section.style.setProperty("inset","0","important");
+  section.style.setProperty("z-index","60000","important");
+  section.style.setProperty("width","100vw","important");
+  section.style.setProperty("height","100dvh","important");
+  section.style.setProperty("max-height","100dvh","important");
+  section.style.setProperty("overflow","auto","important");
+  section.style.setProperty("background","var(--cream)","important");
+  section.style.setProperty("box-sizing","border-box","important");
+ }
+ renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));
+ filterStoreProducts();
+ // If there are no matching products yet, keep the page open with a single clear empty state.
+ if(!document.querySelector("#productsGrid .product-card")||!document.querySelector("#productsGrid .product-card:not([hidden])")){
+  document.querySelectorAll("#productsGrid > .empty:not(.quick-category-empty)").forEach(el=>el.remove());
+  let empty=document.querySelector("#productsGrid .quick-category-empty");
+  if(!empty){empty=document.createElement("div");empty.className="empty quick-category-empty";document.getElementById("productsGrid")?.appendChild(empty);}
+  empty.textContent="القسم ده جاهز، ولسه مفيش منتجات مضافة ليه. تقدري تضيفي المنتجات وتحددي القسم من لوحة التحكم، وهتظهر هنا تلقائيًا.";
+ }
+ document.body.classList.add("store-view-category");
  document.getElementById("productDetailsModal")?.classList.remove("open");document.getElementById("productExtrasPage")?.classList.remove("open");window.scrollTo({top:0,behavior:"auto"});
 },true);
-document.getElementById("backFromQuickCategory")?.addEventListener("click",()=>{document.body.classList.remove("store-view-category");activeQuickCategory="";activeStoreCategory="";const title=document.getElementById("quickCategoryPageTitle");if(title)title.textContent="";renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));filterStoreProducts();window.scrollTo({top:0,behavior:"auto"});});
+document.getElementById("backFromQuickCategory")?.addEventListener("click",()=>{
+ document.body.classList.remove("store-view-category");activeQuickCategory="";activeStoreCategory="";
+ const title=document.getElementById("quickCategoryPageTitle");if(title)title.textContent="";
+ const section=document.getElementById("categories");
+ if(section)for(const property of ["display","position","inset","z-index","width","height","max-height","overflow","background","box-sizing"])section.style.removeProperty(property);
+ renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));filterStoreProducts();window.scrollTo({top:0,behavior:"auto"});
+});
 window.openCartModal=function(){
  document.getElementById("productDetailsModal")?.classList.remove("open");
  document.getElementById("productExtrasPage")?.classList.remove("open");
@@ -1899,6 +1944,23 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
  window.blabanOpenCustomerAccount=openAccount;window.blabanOpenStoreSupport=openSupport;window.blabanApplyStoreLanguage=applyStoreLanguage;
 })();
 </script>
+
+<style id="blaban-circles-and-category-navigation-fix">
+/* Product art should be a bare circle; titles and prices sit directly on the store background. */
+#productsGrid.product-circles{align-items:start!important;gap:16px!important}
+#productsGrid .product-circle-card{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}
+#productsGrid .product-circle-open{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:4px 2px 10px!important}
+#productsGrid .product-circle-open:hover,#productsGrid .product-circle-open:focus-visible{background:transparent!important;outline:none!important;box-shadow:none!important}
+#productsGrid .product-circle-image{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:50%!important;overflow:hidden!important}
+#productsGrid .product-circle-image img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border:0!important;border-radius:50%!important}
+#productsGrid .product-circle-open>strong,#productsGrid .product-circle-price,#productsGrid .product-circle-open small{background:transparent!important;box-shadow:none!important}
+body.store-view-category #categories{display:block!important;visibility:visible!important;opacity:1!important}
+body.store-view-category #categories .categories{background:transparent!important}
+@media(max-width:700px){
+ #productsGrid.product-circles{gap:8px!important}
+ #productsGrid .product-circle-image{width:clamp(76px,25vw,112px)!important}
+}
+</style>
 </body></html>
 
 
