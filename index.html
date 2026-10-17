@@ -1903,13 +1903,25 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(view!=="menu")body.style.overflow="hidden";
   window.scrollTo({top:0,behavior:"auto"});
  }
+ function recoverCartIfMemoryIsEmpty(){
+  // A stale page-flow handler can leave the visible cart behind while the in-memory map is empty.
+  // Recover only when there are no in-memory items, and only from saved entries matching loaded products.
+  if(typeof orderCart==="undefined"||orderCart.size||!Array.isArray(availableProducts)||!availableProducts.length)return;
+  try{
+   const saved=JSON.parse(localStorage.getItem("blaban-cart-v1")||"[]");
+   if(Array.isArray(saved)&&saved.some(item=>Array.isArray(item)&&item.length>=2&&availableProducts.some(p=>String(p.id)===String(item[0])))){
+    if(typeof restoreOrderCart==="function")restoreOrderCart();
+   }
+  }catch(err){console.warn("Could not recover saved cart before checkout",err)}
+ }
  function openCartPage(){
+  recoverCartIfMemoryIsEmpty();
   setStoreFlowView("cart");
   if(typeof renderOrderCart==="function")renderOrderCart();
  }
  function openCheckoutPage(){
-  // Keep the in-memory cart authoritative during checkout. Rehydrating from localStorage here
-  // can overwrite freshly-added items with a stale/empty saved snapshot; restore only after products load.
+  // Recover a saved cart only if the active in-memory cart is empty; never overwrite fresh selections.
+  recoverCartIfMemoryIsEmpty();
   if(typeof orderCart==="undefined"||!orderCart.size){
    openCartPage();
    const summary=$("cartSummary");
