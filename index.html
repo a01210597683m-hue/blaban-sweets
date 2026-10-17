@@ -1999,8 +1999,11 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
  // Local guided answers are always available; a secure AI endpoint can replace these when configured.
  function guidedAnswer(q){
   const t=q.toLowerCase(),lang=localStorage.getItem("blaban-store-language")||"ar";
+  const orderHowTo=/ازاي\s*(?:اطلب|اعمل|اقدم)|إزاي\s*(?:أطلب|أعمل)|كيف\s*(?:اطلب|أطلب)|اطلب\s*(?:اوردر|طلب)|أطلب\s*(?:أوردر|طلب)|اعمل\s*(?:اوردر|طلب)|أعمل\s*(?:أوردر|طلب)|عايز(?:ة)?\s*(?:اطلب|أطلب|اعمل|أعمل)|طلب\s*جديد|how\s*(?:do\s*i|to)\s*order|place\s*an\s*order|make\s*an\s*order|passer\s*une\s*commande/i.test(t);
+  const orderTracking=/تتبع|تتبعي|متابعة\s*(?:ال)?طلب|فين\s*(?:ال)?طلب|حالة\s*(?:ال)?طلب|track(?:ing)?\s*(?:my\s*)?order|where\s+is\s+my\s+order|suivi\s*(?:de\s*)?commande/i.test(t);
   if(lang==="en"){
-   if(/order|tracking|track|طلب|تتبع/.test(t))return "To track an order, open “Track your order” from the store menu and enter the order number and phone used at checkout. Orders linked to your account appear under Your account → Previous orders.";
+   if(orderHowTo)return "To place an order: open the menu, choose a category and item, select quantity and extras, then add it to your cart. Open the cart, review items, continue to checkout, enter your contact details and delivery address, choose the delivery zone, branch and payment method, then confirm. Tell me which step you are on if you need help.";
+  if(orderTracking||/order|tracking|track|طلب|تتبع/.test(t))return "To track an order, open “Track your order” from the store menu and enter the order number and phone used at checkout. Orders linked to your account appear under Your account → Previous orders.";
    if(/payment|pay|visa|transfer|wallet|دفع|تحويل/.test(t))return "Choose a payment method at checkout to see the available instructions. If the payment details are missing, contact the store before transferring money.";
    if(/delivery|address|area|location|توصيل|عنوان/.test(t))return "Delivery fees and areas appear after you choose a delivery zone at checkout. Save multiple addresses under Your account → Settings → Delivery addresses.";
    if(/account|password|email|حساب|كلمة المرور/.test(t))return "Open Your account → Settings to update your name and phone, manage addresses, and choose your language and country.";
@@ -2008,14 +2011,16 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
    return "I can guide you through orders, delivery, payment, and account settings. If the issue continues, use Contact us to reach the store team. This is temporary guided help while AI service is unavailable.";
   }
   if(lang==="fr"){
-   if(/commande|suivi|order|tracking|طلب|تتبع/.test(t))return "Pour suivre une commande, ouvrez « Suivre votre commande » et saisissez le numéro de commande et le téléphone utilisé. Les commandes liées au compte apparaissent dans Votre compte → Commandes précédentes.";
+   if(orderHowTo)return "Pour passer une commande : ouvrez le menu, choisissez une catégorie et un produit, sélectionnez la quantité et les options, puis ajoutez-le au panier. Ouvrez le panier, vérifiez les articles, continuez vers la validation, saisissez vos coordonnées et adresse, choisissez la zone de livraison et le paiement, puis confirmez.";
+  if(orderTracking||/commande|suivi|order|tracking|طلب|تتبع/.test(t))return "Pour suivre une commande, ouvrez « Suivre votre commande » et saisissez le numéro de commande et le téléphone utilisé. Les commandes liées au compte apparaissent dans Votre compte → Commandes précédentes.";
    if(/paiement|payer|carte|virement|دفع|تحويل/.test(t))return "Choisissez un mode de paiement au moment de valider la commande pour voir les instructions disponibles. Si les informations manquent, contactez le magasin avant tout virement.";
    if(/livraison|adresse|zone|توصيل|عنوان/.test(t))return "Les frais et zones de livraison s’affichent après le choix de la zone. Enregistrez plusieurs adresses dans Votre compte → Paramètres → Adresses de livraison.";
    if(/compte|mot de passe|e-mail|حساب/.test(t))return "Ouvrez Votre compte → Paramètres pour modifier votre nom et téléphone, gérer vos adresses et choisir la langue et le pays.";
    if(/produit|panier|article|منتج|سلة/.test(t))return "Choisissez une catégorie ronde sur la boutique, sélectionnez l’article et la quantité, puis ouvrez le panier et continuez vers les informations et le paiement.";
    return "Je peux vous guider pour les commandes, la livraison, le paiement et le compte. Si le problème persiste, utilisez « Nous contacter ». Cette aide guidée est temporaire lorsque le service IA est indisponible.";
   }
-  if(/طلب|order|commande|تتبع|tracking|track/.test(t))return "لمتابعة طلبك افتحي «تتبعي طلبك» من قائمة المتجر واكتبي رقم الطلب ورقم الهاتف المستخدم عند الشراء. وتقدري تشوفي الطلبات المرتبطة بحسابك من «حسابك» ← «طلباتك السابقة».";
+  if(orderHowTo)return "عشان تطلبي أوردر 💙: 1) افتحي المينيو واختاري القسم والصنف اللي تحبيه. 2) اختاري الكمية والإضافات لو موجودة، واضغطي «إضافة للسلة». 3) افتحي السلة وراجعي الأصناف والكميات. 4) اضغطي «متابعة لإتمام الطلب». 5) اكتبي الاسم ورقم الموبايل والعنوان، واختاري منطقة التوصيل والفرع وطريقة الدفع. 6) راجعي الإجمالي واضغطي تأكيد الطلب. لو أي خطوة مش ظاهرة عندك، قوليلي إيه اللي ظاهر على الشاشة وأنا أساعدك.";
+  if(orderTracking||/طلب|order|commande|تتبع|tracking|track/.test(t))return "لمتابعة طلبك افتحي «تتبعي طلبك» من قائمة المتجر واكتبي رقم الطلب ورقم الهاتف المستخدم عند الشراء. وتقدري تشوفي الطلبات المرتبطة بحسابك من «حسابك» ← «طلباتك السابقة».";
   if(/دفع|فلوس|payment|pay|paiement|فيزا|تحويل|محفظ/.test(t))return "اختاري طريقة الدفع في صفحة إتمام الطلب. التفاصيل المتاحة تظهر بعد اختيار الطريقة. لو بيانات طريقة الدفع ناقصة، تواصلي مع المتجر قبل التحويل.";
   if(/توصيل|عنوان|منطقة|delivery|address|livraison|adresse/.test(t))return "رسوم التوصيل والمنطقة بتظهر بعد اختيار منطقة التوصيل في إتمام الطلب. تقدري تحفظي أكتر من عنوان من «حسابك» ← «الإعدادات» ← «عناوين التوصيل».";
   if(/حساب|كلمة المرور|بريد|email|account|mot de passe/.test(t))return "من قائمة المتجر افتحي «حسابك» ثم «الإعدادات» لتعديل الاسم ورقم التليفون وإدارة اللغة والدولة والعناوين.";
@@ -2027,7 +2032,12 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
  let supportConversationId=localStorage.getItem(SUPPORT_CONVERSATION_KEY)||"";
  const supportRenderedMessageIds=new Set();
  async function ensureSupportConversation(){
-  const c=client();if(!c)throw new Error("خدمة الدعم غير متاحة");
+  let c=client();
+  if(!c){
+   try{await startCustomerAuth()}catch(error){console.warn("Support auth initialization failed",error)}
+   c=client();
+  }
+  if(!c)throw new Error("تعذر تهيئة حساب المتجر. أعيدي تحميل الصفحة ثم جرّبي مرة أخرى.");
   let user=null;
   try{const result=await c.auth.getUser();user=result.data?.user||null}catch{}
   if(!user)throw new Error("سجّلي الدخول لحسابك قبل استخدام المحادثة");
@@ -2086,7 +2096,10 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   let reply="",aiAvailable=false,needsHuman=false,waitingForHuman=false;
   const customerBubble=addSupportMessage(q,"user");
   try{
-   const c=client();
+   let c=client();
+   if(!c){
+    try{await startCustomerAuth();c=client()}catch(error){console.warn("Support auth initialization failed",error)}
+   }
    if(c){
     try{
      const conversationId=await ensureSupportConversation();
