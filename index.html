@@ -1847,8 +1847,8 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(typeof renderOrderCart==="function")renderOrderCart();
  }
  function openCheckoutPage(){
-  // Rehydrate the same persistent cart before deciding whether checkout is empty.
-  try{if(typeof restoreOrderCart==="function"&&typeof availableProducts!=="undefined"&&availableProducts.length)restoreOrderCart();}catch(error){console.warn("Could not restore cart before checkout",error)}
+  // Keep the in-memory cart authoritative during checkout. Rehydrating from localStorage here
+  // can overwrite freshly-added items with a stale/empty saved snapshot; restore only after products load.
   if(typeof orderCart==="undefined"||!orderCart.size){
    openCartPage();
    const summary=$("cartSummary");
