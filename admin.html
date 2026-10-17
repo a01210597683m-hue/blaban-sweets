@@ -678,9 +678,35 @@ function loadDesignSettingsForm(raw){const d=normalizeDesignSettings(raw);$("#de
 for(const id of ["designStoreLayout","designAdminTheme","designCardRadius","designButtonStyle","designMenuShape","designMenuSize","designAdminBannerHeight","designStoreBannerHeight","designStoryImageWidth","designStoryImageHeight","designArabicFont","designEnglishFont","designFooterLogoFrame","designFooterLogoSize","designFooterBg","designFooterBg2","designFooterShape"]){$("#"+id).addEventListener("input",()=>applyAdminDesignSettings(collectDesignSettings()));}
 
 const settingFields={store_name_ar:"sNameAr",store_name_en:"sNameEn",tagline:"sTagline",whatsapp_number:"sWhatsapp",phone_number:"sPhone",phone_number_2:"sPhone2",whatsapp_url:"sWhatsappUrl",facebook_url:"sFacebook",tiktok_url:"sTiktok",payment_methods:"sPaymentMethods",logo_url:"sLogo",primary_color:"sPrimary",accent_color:"sAccent",hero_image_url:"sHeroImage",hero_title:"sHeroTitle",hero_description:"sHeroDescription",story_title:"sStoryTitle",story_description:"sStoryDescription",cta_title:"sCtaTitle",cta_description:"sCtaDescription"};
-const paymentDefinitions=[{"key":"instapay","label":"InstaPay"},{"key":"visa","label":"فيزا"},{"key":"debit_card","label":"بطاقة خصم"},{"key":"payment_card","label":"بطاقة دفع"},{"key":"credit_card","label":"بطاقة مشتريات / ائتمان"},{"key":"wallet","label":"محفظة إلكترونية"},{"key":"cash_on_delivery","label":"الدفع عند الاستلام"}];
-function renderPaymentSettings(raw,legacyVisaUrl){let parsed=null;try{parsed=JSON.parse(String(raw||""))}catch{}const saved=parsed&&Array.isArray(parsed.methods)?parsed.methods:null;const legacy=String(raw||"").split(/[،,\n]/).map(x=>x.trim()).filter(Boolean);for(const def of paymentDefinitions){const item=saved?saved.find(x=>x.key===def.key):null;const legacyEnabled=!saved&&legacy.some(x=>x.toLowerCase()===def.label.toLowerCase()||x.toLowerCase().includes(def.key));$("#pm_"+def.key+"_enabled").checked=item?item.enabled===true:(saved?false:(def.key==="cash_on_delivery"?!legacy.length:legacyEnabled));$("#pm_"+def.key+"_details").value=item?.details||"";$("#pm_"+def.key+"_url").value=item?.url||(def.key==="visa"?legacyVisaUrl||"":"");}}
-function collectPaymentSettings(){const methods=paymentDefinitions.map(def=>({key:def.key,label:def.label,enabled:$("#pm_"+def.key+"_enabled").checked,details:$("#pm_"+def.key+"_details").value.trim(),url:$("#pm_"+def.key+"_url").value.trim()}));$("#sPaymentMethods").value=JSON.stringify({version:1,methods});$("#sVisaPaymentUrl").value=methods.find(x=>x.key==="visa")?.url||"";return methods;}
+const paymentDefinitions=[{"key":"instapay","label":"InstaPay","icon":"📲"},{"key":"visa","label":"فيزا","icon":"💳"},{"key":"debit_card","label":"بطاقة خصم","icon":"💳"},{"key":"payment_card","label":"بطاقة دفع","icon":"💳"},{"key":"credit_card","label":"بطاقة مشتريات / ائتمان","icon":"💳"},{"key":"wallet","label":"محفظة إلكترونية","icon":"📱"},{"key":"cash_on_delivery","label":"الدفع عند الاستلام","icon":"💵"}];
+function renderPaymentSettings(raw,legacyVisaUrl){
+ let parsed=null;try{parsed=JSON.parse(String(raw||""))}catch{}
+ const saved=parsed&&Array.isArray(parsed.methods)?parsed.methods:null;
+ const legacy=String(raw||"").split(/[،,\\n]/).map(x=>x.trim()).filter(Boolean);
+ const iconOptions=[["📲","📲 إنستاباي"],["💳","💳 بطاقة"],["📱","📱 محفظة"],["💵","💵 نقدي"],["🏦","🏦 تحويل بنكي"],["💰","💰 دفع"],["🧾","🧾 فاتورة"],["💸","💸 تحويل"],["🪙","🪙 عملات"]];
+ for(const def of paymentDefinitions){
+  const item=saved?saved.find(x=>x.key===def.key):null;
+  const legacyEnabled=!saved&&legacy.some(x=>x.toLowerCase()===def.label.toLowerCase()||x.toLowerCase().includes(def.key));
+  $("#pm_"+def.key+"_enabled").checked=item?item.enabled===true:(saved?false:(def.key==="cash_on_delivery"?!legacy.length:legacyEnabled));
+  $("#pm_"+def.key+"_details").value=item?.details||"";
+  $("#pm_"+def.key+"_url").value=item?.url||(def.key==="visa"?legacyVisaUrl||"":"");
+  const toggle=$("#pm_"+def.key+"_enabled"),card=toggle?.closest("label")?.parentElement;
+  let iconSelect=$("#pm_"+def.key+"_icon");
+  if(card&&!iconSelect){
+   const field=document.createElement("div");field.className="field";field.style.marginBottom="0";
+   field.innerHTML='<label for="pm_'+def.key+'_icon">أيقونة طريقة الدفع</label><select id="pm_'+def.key+'_icon">'+iconOptions.map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join("")+'</select>';
+   const firstField=card.querySelector(".field");if(firstField)card.insertBefore(field,firstField);else card.appendChild(field);
+   iconSelect=$("#pm_"+def.key+"_icon");
+  }
+  if(iconSelect)iconSelect.value=item?.icon||def.icon||"💳";
+ }
+}
+function collectPaymentSettings(){
+ const methods=paymentDefinitions.map(def=>({key:def.key,label:def.label,icon:$("#pm_"+def.key+"_icon")?.value||def.icon,enabled:$("#pm_"+def.key+"_enabled").checked,details:$("#pm_"+def.key+"_details").value.trim(),url:$("#pm_"+def.key+"_url").value.trim()}));
+ $("#sPaymentMethods").value=JSON.stringify({version:1,methods});
+ $("#sVisaPaymentUrl").value=methods.find(x=>x.key==="visa")?.url||"";
+ return methods;
+}
 function setImagePreview(imgId,url){const img=$("#"+imgId);if(!img)return;if(url){img.src=url;img.style.display="block";}else{img.removeAttribute("src");img.style.display="none";}}
 function applyAdminBrand(){const name=normalizeBrandText($("#sNameAr")?.value.trim()||"حلو ب لبن");$("#adminBrandName").textContent=name;$("#loginBrandName").textContent=name;const logo=$("#sLogo")?.value.trim();for(const id of ["adminLogoMark","loginLogoMark"]){const mark=$("#"+id);if(!mark)continue;if(logo){mark.innerHTML="";const img=document.createElement("img");img.src=logo;img.alt="";img.style.cssText="width:100%;height:100%;object-fit:contain;border-radius:inherit";mark.appendChild(img);}else mark.textContent="ح";}}
 async function loadStoreSettingsForm(){if(!sb)return;status($("#storeSettingsStatus"),"جارٍ تحميل الإعدادات...");const {data,error}=await sb.from("store_settings").select("*").eq("id",1).maybeSingle();if(error){status($("#storeSettingsStatus"),"تعذر تحميل الإعدادات: "+error.message+" — تأكدي من تشغيل SQL الخاص بإعدادات المتجر.");return}for(const [key,id] of Object.entries(settingFields)){$("#"+id).value=normalizeBrandText(data?.[key]??($("#"+id).defaultValue||""))}if(["#153b74","#122f5c"].includes(String($("#sPrimary").value).toLowerCase()))$("#sPrimary").value="#0066c8";if(["#ffdfeb","#f9dce8","#ffe1ec"].includes(String($("#sAccent").value).toLowerCase()))$("#sAccent").value="#dff4ff";renderPaymentSettings(data?.payment_methods,data?.visa_payment_url);loadDesignSettingsForm(data?.design_settings);setImagePreview("sLogoPreview",$("#sLogo").value);setImagePreview("sHeroPreview",$("#sHeroImage").value);setImagePreview("sSloganImagePreview",normalizeDesignSettings(data?.design_settings).sloganImageUrl);applyAdminBrand();status($("#storeSettingsStatus"),data?"تم تحميل الإعدادات الحالية.":"لسه مفيش إعدادات محفوظة؛ تقدري تكتبيها وتحفظيها.");}
