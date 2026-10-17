@@ -1854,8 +1854,18 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   $("accountPageTitle").textContent=(titles[panel]||titles.home)[0];$("accountPageSubtitle").textContent=(titles[panel]||titles.home)[1];
   if(panel==="orders")loadCustomerOrders();if(panel==="profile")loadCustomerProfile();if(panel==="addresses")loadCustomerAddresses();if(panel==="notifications")renderNotificationStatus();if(panel==="language")loadCustomerLocale();
  }
- function openAccount(panel="home"){
-  // Public shopping stays open; request sign-in only when a visitor opens account pages.
+ async function openAccount(panel="home"){
+  // Refresh the customer session before deciding whether to show the account.
+  // This avoids a timing race where login succeeds before the account module syncs its user.
+  if(!activeUser){
+   const c=client();
+   if(c){
+    try{
+     const {data,error}=await c.auth.getUser();
+     if(!error&&data?.user)syncUser(data.user);
+    }catch(error){console.warn("Could not refresh customer session before opening account",error)}
+   }
+  }
   if(!activeUser){
    const gate=$("customerAuthGate");
    if(gate){gate.hidden=false;document.body.classList.add("customer-auth-required");}
