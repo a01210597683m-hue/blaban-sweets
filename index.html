@@ -2249,13 +2249,11 @@ body.store-view-category #categories .categories{background:transparent!importan
   }finally{restoring=false}
  });
  // Hide Google OAuth while Supabase reports that the Google provider is disabled (HTTP 400).
- const google=document.getElementById("customerGoogleSignIn");
- if(google){google.hidden=true;google.setAttribute("aria-hidden","true");}
  const social=document.querySelector(".customer-auth-social");
- const facebook=document.getElementById("customerFacebookSignIn");
- if(social&&facebook&&!facebook.hidden)social.style.gridTemplateColumns="1fr";
  const separator=document.querySelector(".customer-auth-separator");
- if(separator&&google&&!facebook){separator.hidden=true;social.hidden=true;}
+ // Both OAuth providers return HTTP 400 because they are not enabled in Supabase; keep email/password auth available.
+ if(social)social.hidden=true;
+ if(separator)separator.hidden=true;
 })();
 </script>
 
