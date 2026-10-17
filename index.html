@@ -650,9 +650,9 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
 }
 </style>
 </head>
-<body class="customer-auth-required">
+<body>
 
-<div id="customerAuthGate" role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
+<div id="customerAuthGate" hidden role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
  <section class="customer-auth-card">
   <div class="customer-auth-brand">
    <div class="customer-auth-logo-wrap">
@@ -668,11 +668,7 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
    <div class="customer-auth-field" id="customerPasswordField"><label for="customerPassword">كلمة المرور</label><input id="customerPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 أحرف على الأقل"></div>
    <button id="customerAuthSubmit" type="submit">تسجيل الدخول</button>
   </form>
-  <div class="customer-auth-separator">أو تابعي باستخدام</div>
-  <div class="customer-auth-social">
-   <button id="customerGoogleSignIn" type="button"><span class="google-g">G</span> Google</button>
-   <button id="customerFacebookSignIn" type="button"><span class="facebook-f">f</span> Facebook</button>
-  </div>
+  <p class="customer-auth-social-note">تسجيل الدخول بحسابات Google وFacebook غير مفعّل حاليًا؛ استخدمي البريد الإلكتروني وكلمة المرور.</p>
   <p id="customerAuthMessage" role="status" aria-live="polite"></p>
   <div class="customer-auth-switch"><span id="customerAuthSwitchText">لسه معندكيش حساب؟</span><button class="customer-auth-link" id="customerAuthSwitch" type="button">إنشاء حساب جديد</button></div>
   <div class="customer-auth-switch"><button class="customer-auth-link" id="customerForgotPassword" type="button">نسيتِ كلمة المرور؟</button></div>
@@ -858,7 +854,13 @@ function renderBranchOptions(){
  select.innerHTML='<option value="">بدون تحديد فرع</option>'+storeBranches.map(b=>'<option value="'+esc(b.id)+'">'+esc([b.name,b.city,b.area].filter(Boolean).join(" - "))+'</option>').join("");
 }
 
-async function showProducts(){try{const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await loadStoreSettings(sb);await loadDeliveryOptions(sb);try{const categoryResult=await sb.from("store_categories").select("id,name,icon,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});if(categoryResult.error)throw categoryResult.error;storeCategories=categoryResult.data||[];}catch(categoryError){storeCategories=[];console.warn("Category list unavailable; continuing to load products",categoryError)}renderQuickCategories();const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});if(error)throw error;availableProducts=data||[];const extrasResult=await sb.from("product_extras").select("id,product_id,name,price,is_available,sort_order").eq("is_available",true).order("sort_order",{ascending:true});if(extrasResult.error)console.warn("Optional extras could not be loaded",extrasResult.error);availableExtras=extrasResult.data||[];restoreOrderCart();renderOrderCart();const mainProducts=availableProducts.filter(p=>!p.parent_product_id);renderStoreCategoryFilters(mainProducts);if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';return}grid.innerHTML=mainProducts.map(p=>{const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));const chosen=variants[0]||p;const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));return '<article class="product-card product-circle-card" data-product-card="'+esc(p.id)+'" data-category="'+esc(p.category||"")+'"><button type="button" class="product-circle-open" data-open-product="'+esc(p.id)+'" aria-label="عرض تفاصيل وإضافات '+esc(p.name)+'"><span class="product-circle-image"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt=""></span><strong>'+esc(p.name)+'</strong><span class="product-circle-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><small>التفاصيل والإضافات الاختيارية</small></button></article>'}).join("");if(typeof filterStoreProducts==="function")filterStoreProducts();if(typeof renderStoreSearchResults==="function")renderStoreSearchResults();}catch(e){grid.innerHTML='<div class="empty">مش قادرين نحمل المنيو دلوقتي. حاولي تحديث الصفحة بعد شوية.</div>';console.error(e)}}
+async function showProducts(){try{const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await loadStoreSettings(sb);await loadDeliveryOptions(sb);try{const categoryResult=await sb.from("store_categories").select("id,name,icon,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});if(categoryResult.error)throw categoryResult.error;storeCategories=categoryResult.data||[];}catch(categoryError){storeCategories=[];console.warn("Category list unavailable; continuing to load products",categoryError)}renderQuickCategories();const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});if(error)throw error;availableProducts=data||[];const extrasResult=await sb.from("product_extras").select("id,product_id,name,price,is_available,sort_order").eq("is_available",true).order("sort_order",{ascending:true});if(extrasResult.error)console.warn("Optional extras could not be loaded",extrasResult.error);availableExtras=extrasResult.data||[];restoreOrderCart();renderOrderCart();const mainProducts=availableProducts.filter(p=>!p.parent_product_id);renderStoreCategoryFilters(mainProducts);if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';return}grid.innerHTML=mainProducts.map(p=>{const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));const chosen=variants[0]||p;const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));return '<article class="product-card product-circle-card" data-product-card="'+esc(p.id)+'" data-category="'+esc(p.category||"")+'"><button type="button" class="product-circle-open" data-open-product="'+esc(p.id)+'" aria-label="عرض تفاصيل وإضافات '+esc(p.name)+'"><span class="product-circle-image"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt=""></span><strong>'+esc(p.name)+'</strong><span class="product-circle-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><small>التفاصيل والإضافات الاختيارية</small></button></article>'}).join("");
+grid.hidden=false;
+try{if(typeof filterStoreProducts==="function")filterStoreProducts();}catch(filterError){console.warn("Product filters failed; showing available products",filterError)}
+const renderedCards=[...grid.querySelectorAll(".product-card")];
+if(renderedCards.length&&!storeSearchInput?.value&&!activeStoreCategory&&!activeQuickCategory)renderedCards.forEach(card=>card.hidden=false);
+if(typeof renderStoreSearchResults==="function")renderStoreSearchResults();
+}catch(e){if(grid)grid.innerHTML='<div class="empty">مش قادرين نحمل المنيو دلوقتي. حاولي تحديث الصفحة بعد شوية.</div>';console.error(e)}}
 
 // Extras stay optional; cart selections contain IDs only, and the server calculates all prices.
 const orderCart=new Map();
@@ -1094,8 +1096,9 @@ function openCustomerStore(user){
  document.getElementById("customerAccountName").textContent=name;
 }
 function closeCustomerStore(){
- document.getElementById("customerAuthGate").hidden=false;
- document.body.classList.add("customer-auth-required");
+ // Signing out should not lock visitors out of the public storefront.
+ document.getElementById("customerAuthGate").hidden=true;
+ document.body.classList.remove("customer-auth-required");
  document.getElementById("customerAccountPill").hidden=true;
  setCustomerAuthMode("login");
 }
@@ -1110,7 +1113,16 @@ async function startCustomerAuth(){
    if(session?.user)openCustomerStore(session.user);
    else if(event==="SIGNED_OUT")closeCustomerStore();
   });
- }catch(error){customerAuthMessage("تعذر تهيئة تسجيل الدخول. اتأكدي من اتصال الإنترنت وحاولي تحديث الصفحة.");console.error("Customer auth initialization failed",error)}
+ }catch(error){
+ // Authentication problems must never cover or break public product browsing.
+ const gate=document.getElementById("customerAuthGate");
+ if(gate)gate.hidden=true;
+ document.body.classList.remove("customer-auth-required");
+ const pill=document.getElementById("customerAccountPill");
+ if(pill)pill.hidden=true;
+ customerAuthMessage("تعذر تهيئة تسجيل الدخول؛ يمكنك تصفح المتجر، وحاولي الدخول للحساب لاحقًا.");
+ console.error("Customer auth initialization failed",error)
+}
 }
 document.getElementById("customerAuthForm").addEventListener("submit",async event=>{
  event.preventDefault();if(!customerAuthClient){customerAuthMessage("ثواني بنجهّز تسجيل الدخول، حاولي مرة تانية.");return}
