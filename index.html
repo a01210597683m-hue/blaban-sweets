@@ -675,9 +675,9 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
 }
 </style>
 </head>
-<body>
+<body class="customer-auth-required">
 
-<div id="customerAuthGate" hidden role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
+<div id="customerAuthGate" role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
  <section class="customer-auth-card">
   <div class="customer-auth-brand">
    <div class="customer-auth-logo-wrap">
@@ -1208,13 +1208,13 @@ async function startCustomerAuth(){
    else if(event==="SIGNED_OUT")closeCustomerStore();
   });
  }catch(error){
- // Authentication problems must never cover or break public product browsing.
+ // Keep the storefront locked until customer authentication succeeds.
  const gate=document.getElementById("customerAuthGate");
- if(gate)gate.hidden=true;
- document.body.classList.remove("customer-auth-required");
+ if(gate)gate.hidden=false;
+ document.body.classList.add("customer-auth-required");
  const pill=document.getElementById("customerAccountPill");
  if(pill)pill.hidden=true;
- customerAuthMessage("تعذر تهيئة تسجيل الدخول؛ يمكنك تصفح المتجر، وحاولي الدخول للحساب لاحقًا.");
+ customerAuthMessage("تعذر تهيئة تسجيل الدخول. تأكدي من اتصال الإنترنت ثم أعيدي تحميل الصفحة.");
  console.error("Customer auth initialization failed",error)
 }
 }
