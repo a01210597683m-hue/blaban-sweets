@@ -1866,11 +1866,8 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
     }catch(error){console.warn("Could not refresh customer session before opening account",error)}
    }
   }
-  if(!activeUser){
-   const gate=$("customerAuthGate");
-   if(gate){gate.hidden=false;document.body.classList.add("customer-auth-required");}
-   return;
-  }
+  // The customer login gate belongs only to entry into the storefront.
+  // Opening Account from the three-line menu must never reopen the login screen.
   account.hidden=false;account.setAttribute("aria-hidden","false");document.body.classList.add("customer-account-open");setAccountPanel(panel);window.scrollTo({top:0,behavior:"auto"});
  }
  function closeAccount(){account.hidden=true;account.setAttribute("aria-hidden","true");document.body.classList.remove("customer-account-open")}
