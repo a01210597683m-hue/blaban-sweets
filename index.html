@@ -617,6 +617,38 @@ body.customer-auth-required{overflow:hidden!important}
 .store-support-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e2eff9}.store-support-form input{flex:1;min-width:0;padding:11px;border:1px solid #d4e7f7;border-radius:999px;font:inherit}.store-support-form button{border:0;border-radius:999px;background:#0066c8;color:#fff;padding:0 15px;font:inherit;font-weight:900}
 @media(max-width:600px){.account-page-overlay{padding:0}.account-page-shell{min-height:100dvh;border-radius:0;border:0}.account-page-head{padding:15px}.account-action-grid,.account-form-grid{grid-template-columns:1fr}.account-page-content{padding:16px}#storeSupportLauncher{left:10px;bottom:74px;padding:8px 11px;font-size:.84rem}.store-support-modal{padding:8px}.store-support-panel{max-height:88dvh;border-radius:20px;width:100%}}
 </style>
+<style id="blaban-true-fullscreen-cart-checkout">
+/* Cart and checkout are independent full-screen app views, not sections further down the homepage. */
+body.store-view-cart,body.store-view-checkout{overflow:hidden!important}
+body.store-view-cart header,body.store-view-checkout header,
+body.store-view-cart footer,body.store-view-checkout footer{display:none!important}
+body.store-view-cart #cart.cart-page-open,
+body.store-view-checkout #checkout.checkout-page-open{
+ position:fixed!important;inset:0!important;z-index:50000!important;display:block!important;
+ width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+ overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;
+ margin:0!important;padding:max(14px,env(safe-area-inset-top)) 0 max(20px,env(safe-area-inset-bottom))!important;
+ box-sizing:border-box!important;border:0!important;border-radius:0!important;
+ background:radial-gradient(ellipse at 90% 0%,rgba(202,232,255,.7),transparent 38%),linear-gradient(180deg,#f8fcff 0%,#eef7ff 100%)!important;
+ backdrop-filter:none!important;scrollbar-gutter:stable;
+}
+body.store-view-cart #cart .cart-app,
+body.store-view-checkout #checkout .checkout-app{
+ width:min(960px,calc(100% - 24px))!important;max-width:960px!important;
+ margin:0 auto 20px!important;border-radius:24px!important;
+}
+body.store-view-cart #cart .cart-close,
+body.store-view-checkout #checkout .checkout-close{position:sticky!important;top:8px!important;z-index:5!important}
+@media(max-width:600px){
+ body.store-view-cart #cart.cart-page-open,
+ body.store-view-checkout #checkout.checkout-page-open{padding-left:0!important;padding-right:0!important}
+ body.store-view-cart #cart .cart-app,
+ body.store-view-checkout #checkout .checkout-app{width:calc(100% - 16px)!important;border-radius:18px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.store-view-cart #cart .cart-app,body.store-view-checkout #checkout .checkout-app{animation:none!important}
+}
+</style>
 </head>
 <body class="customer-auth-required">
 
@@ -1776,85 +1808,79 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
  });
  const savedLanguage=localStorage.getItem("blaban-store-language");if(savedLanguage)applyStoreLanguage(savedLanguage);
  // One authoritative checkout transition: catch clicks before older listeners can interfere.
+ function clearFlowStyles(el){
+  if(!el)return;
+  ["display","position","inset","z-index","width","height","max-height","overflow","overflow-x","overflow-y","overscroll-behavior","margin","padding","background","box-sizing","border","border-radius","backdrop-filter"].forEach(p=>el.style.removeProperty(p));
+ }
+ function setStoreFlowView(view){
+  const cart=$("cart"),checkout=$("checkout"),body=document.body;
+  clearFlowStyles(cart);clearFlowStyles(checkout);
+  body.classList.remove("store-view-cart","cart-page-active","store-view-checkout","checkout-page-active","store-view-product","store-view-products");
+  body.style.overflow="";
+  for(const [el,isOpen] of [[cart,view==="cart"],[checkout,view==="checkout"]]){
+   if(!el)continue;
+   el.classList.toggle("cart-page-open",el===cart&&isOpen);
+   el.classList.toggle("checkout-page-open",el===checkout&&isOpen);
+   el.setAttribute("aria-hidden",isOpen?"false":"true");
+   if(isOpen){
+    el.style.setProperty("display","block","important");
+    el.style.setProperty("position","fixed","important");
+    el.style.setProperty("inset","0","important");
+    el.style.setProperty("z-index","50000","important");
+    el.style.setProperty("width","100vw","important");
+    el.style.setProperty("height","100dvh","important");
+    el.style.setProperty("max-height","100dvh","important");
+    el.style.setProperty("overflow-y","auto","important");
+    el.style.setProperty("overflow-x","hidden","important");
+    el.style.setProperty("margin","0","important");
+    el.style.setProperty("box-sizing","border-box","important");
+    el.style.setProperty("background","linear-gradient(180deg,#f8fcff 0%,#eef7ff 100%)","important");
+    body.classList.add(el===cart?"store-view-cart":"store-view-checkout");
+    body.classList.add(el===cart?"cart-page-active":"checkout-page-active");
+   }
+  }
+  if(view!=="menu")body.style.overflow="hidden";
+  window.scrollTo({top:0,behavior:"auto"});
+ }
  function openCartPage(){
-  const cart=$("cart"),checkout=$("checkout");
-  ["display","position","inset","z-index","width","height","max-height","overflow-y","margin","padding","background","box-sizing"].forEach(prop=>checkout?.style.removeProperty(prop));
-  document.body.classList.remove("store-view-checkout","checkout-page-active","store-view-product","store-view-products");
-  document.body.classList.add("store-view-cart","cart-page-active");
-  document.body.style.overflow="hidden";
-  checkout?.classList.remove("checkout-page-open");checkout?.setAttribute("aria-hidden","true");
-  cart?.classList.add("cart-page-open");cart?.setAttribute("aria-hidden","false");
-  renderOrderCart?.();window.scrollTo({top:0,behavior:"auto"});
+  setStoreFlowView("cart");
+  if(typeof renderOrderCart==="function")renderOrderCart();
  }
  function openCheckoutPage(){
-  if(typeof orderCart==="undefined"||!orderCart.size){openCartPage();const summary=$("cartSummary");if(summary)summary.textContent="السلة فاضية. اختاري منتجات الأول، وبعدها اضغطي متابعة لإدخال البيانات والدفع.";return}
-  const cart=$("cart"),checkout=$("checkout");
-  document.body.classList.remove("store-view-cart","cart-page-active","store-view-product","store-view-products");
-  document.body.classList.add("store-view-checkout","checkout-page-active");
-  cart?.classList.remove("cart-page-open");cart?.setAttribute("aria-hidden","true");
-  checkout?.classList.add("checkout-page-open");checkout?.setAttribute("aria-hidden","false");
-  checkout?.style.setProperty("display","block","important");
-  checkout?.style.setProperty("position","fixed","important");
-  checkout?.style.setProperty("inset","0","important");
-  checkout?.style.setProperty("z-index","10050","important");
-  checkout?.style.setProperty("width","100%","important");
-  checkout?.style.setProperty("height","100dvh","important");
-  checkout?.style.setProperty("max-height","100dvh","important");
-  checkout?.style.setProperty("overflow-y","auto","important");
-  checkout?.style.setProperty("margin","0","important");
-  checkout?.style.setProperty("padding","12px","important");
-  checkout?.style.setProperty("background","#f4faff","important");
-  checkout?.style.setProperty("box-sizing","border-box","important");
-  document.body.style.overflow="hidden";
-  renderCheckoutOrderReview?.();window.scrollTo({top:0,behavior:"auto"});
+  if(typeof orderCart==="undefined"||!orderCart.size){
+   openCartPage();
+   const summary=$("cartSummary");
+   if(summary)summary.textContent="السلة فاضية. اختاري منتجات الأول، وبعدها اضغطي متابعة لإدخال البيانات والدفع.";
+   return;
+  }
+  setStoreFlowView("checkout");
+  if(typeof renderCheckoutOrderReview==="function")renderCheckoutOrderReview();
  }
- window.openCartModal=openCartPage;window.openCheckoutModal=openCheckoutPage;
- window.closeCartModal=()=>{const cart=$("cart"),checkout=$("checkout");cart?.classList.remove("cart-page-open");cart?.setAttribute("aria-hidden","true");checkout?.style.removeProperty("position");checkout?.style.removeProperty("inset");checkout?.style.removeProperty("z-index");checkout?.style.removeProperty("width");checkout?.style.removeProperty("height");checkout?.style.removeProperty("max-height");checkout?.style.removeProperty("overflow-y");checkout?.style.removeProperty("margin");checkout?.style.removeProperty("padding");checkout?.style.removeProperty("background");checkout?.style.removeProperty("box-sizing");document.body.classList.remove("store-view-cart","cart-page-active","store-view-checkout","checkout-page-active");document.body.style.overflow="";window.scrollTo({top:0,behavior:"auto"})};
+ function closeCartPage(){setStoreFlowView("menu");$("categories")?.scrollIntoView({behavior:"smooth",block:"start"});}
+ window.openCartModal=openCartPage;
+ window.closeCartModal=closeCartPage;
+ window.openCheckoutModal=openCheckoutPage;
  window.closeCheckoutModal=()=>openCartPage();
  document.addEventListener("click",event=>{
-  const target=event.target.closest("#continueToCheckout,#backToCart,#checkout .checkout-close,#cart .cart-close,#cart [data-back-to-products]");
-  if(!target)return;event.preventDefault();event.stopImmediatePropagation();
-  if(target.id==="continueToCheckout")openCheckoutPage();
-  else if(target.id==="backToCart"||target.classList.contains("checkout-close"))openCartPage();
-  else window.closeCartModal();
+  const target=event.target instanceof Element?event.target.closest('a[href="#cart"],a[data-store-page="cart"],#continueToCheckout,#backToCart,#checkout .checkout-close,#cart .cart-close,#cart [data-back-to-products],a[href="#checkout"]'):null;
+  if(!target)return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if(target.id==="continueToCheckout"||target.id==="backToCart"||target.matches("#checkout .checkout-close")||target.matches('a[href="#checkout"]')){
+   if(target.id==="backToCart"||target.matches("#checkout .checkout-close"))openCartPage();else openCheckoutPage();
+  }else if(target.matches("#cart .cart-close,#cart [data-back-to-products]")||target.matches('a[href="#cart"],a[data-store-page="cart"]')){
+   if(target.matches("#cart .cart-close,#cart [data-back-to-products]"))closeCartPage();else openCartPage();
+  }
  },true);
-
-window.blabanOpenCustomerAccount=openAccount;window.blabanOpenStoreSupport=openSupport;window.blabanApplyStoreLanguage=applyStoreLanguage;
+ document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"&&document.body.classList.contains("store-view-checkout"))openCartPage();
+  else if(event.key==="Escape"&&document.body.classList.contains("store-view-cart"))closeCartPage();
+ });
+ window.blabanOpenCustomerAccount=openAccount;window.blabanOpenStoreSupport=openSupport;window.blabanApplyStoreLanguage=applyStoreLanguage;
 })();
 </script>
 </body></html>
 
 
-<style id="blaban-true-fullscreen-cart-checkout">
-/* Cart and checkout are independent full-screen app views, not sections further down the homepage. */
-body.store-view-cart,body.store-view-checkout{overflow:hidden!important}
-body.store-view-cart header,body.store-view-checkout header,
-body.store-view-cart footer,body.store-view-checkout footer{display:none!important}
-body.store-view-cart #cart.cart-page-open,
-body.store-view-checkout #checkout.checkout-page-open{
- position:fixed!important;inset:0!important;z-index:50000!important;display:block!important;
- width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;
- overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;
- margin:0!important;padding:max(14px,env(safe-area-inset-top)) 0 max(20px,env(safe-area-inset-bottom))!important;
- box-sizing:border-box!important;border:0!important;border-radius:0!important;
- background:radial-gradient(ellipse at 90% 0%,rgba(202,232,255,.7),transparent 38%),linear-gradient(180deg,#f8fcff 0%,#eef7ff 100%)!important;
- backdrop-filter:none!important;scrollbar-gutter:stable;
-}
-body.store-view-cart #cart .cart-app,
-body.store-view-checkout #checkout .checkout-app{
- width:min(960px,calc(100% - 24px))!important;max-width:960px!important;
- margin:0 auto 20px!important;border-radius:24px!important;
-}
-body.store-view-cart #cart .cart-close,
-body.store-view-checkout #checkout .checkout-close{position:sticky!important;top:8px!important;z-index:5!important}
-@media(max-width:600px){
- body.store-view-cart #cart.cart-page-open,
- body.store-view-checkout #checkout.checkout-page-open{padding-left:0!important;padding-right:0!important}
- body.store-view-cart #cart .cart-app,
- body.store-view-checkout #checkout .checkout-app{width:calc(100% - 16px)!important;border-radius:18px!important}
-}
-@media(prefers-reduced-motion:reduce){
- body.store-view-cart #cart .cart-app,body.store-view-checkout #checkout .checkout-app{animation:none!important}
-}
-</style>
+
 
