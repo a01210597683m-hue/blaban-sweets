@@ -1025,7 +1025,7 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
   statusEl.textContent="تم تسجيل طلبك بنجاح برقم "+data.order_number+". الإجمالي "+money(data.total_amount)+".";
   document.getElementById("trackingOrderNumber").value=data.order_number;
   document.getElementById("trackingPhone").value=trackingPhone;
-  const trackingLink=document.createElement("a");trackingLink.href="#orderTracking";trackingLink.className="btn";trackingLink.style.marginTop="12px";trackingLink.textContent="تابعي حالة طلبك خطوة بخطوة";trackingLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("orderTracking").scrollIntoView({behavior:"smooth",block:"start"});lookupOrderStatus(false,{order_number:data.order_number,phone:trackingPhone})});statusEl.appendChild(document.createElement("br"));statusEl.appendChild(trackingLink);
+  const trackingLink=document.createElement("button");trackingLink.type="button";trackingLink.className="btn";trackingLink.style.cssText="margin-top:12px;position:relative;z-index:2;pointer-events:auto;cursor:pointer";trackingLink.setAttribute("data-store-page","tracking");trackingLink.textContent="تابعي حالة طلبك خطوة بخطوة";trackingLink.addEventListener("click",event=>{event.preventDefault();const tracking=document.getElementById("orderTracking");if(tracking){tracking.classList.add("store-dedicated-page");document.body.classList.add("store-page-tracking");document.body.classList.remove("store-view-cart","store-view-checkout","cart-page-active","checkout-page-active");document.getElementById("checkout")?.classList.remove("checkout-page-open");document.getElementById("checkout")?.setAttribute("aria-hidden","true");window.scrollTo({top:0,behavior:"auto"});}if(typeof lookupOrderStatus==="function")lookupOrderStatus(false,{order_number:data.order_number,phone:trackingPhone})});statusEl.appendChild(document.createElement("br"));statusEl.appendChild(trackingLink);
   const whatsappNumber=storeWhatsappNumber;
   if(whatsappNumber){const link="https://wa.me/"+whatsappNumber+"?text="+encodeURIComponent(message);const a=document.createElement("a");a.href=link;a.target="_blank";a.rel="noopener";a.className="btn";a.style.marginTop="12px";a.textContent="إرسال تفاصيل الطلب عبر واتساب";statusEl.appendChild(document.createElement("br"));statusEl.appendChild(a)}
   else {const note=document.createElement("p");note.textContent="الطلب اتسجل في لوحة الإدارة. هنفعّل إرسال تفاصيله على واتساب بعد إضافة رقم واتساب الرسمي للمتجر.";statusEl.appendChild(note)}
@@ -2081,7 +2081,7 @@ body.store-view-category #categories .categories{background:transparent!importan
    Handle it in capture phase so older navigation handlers cannot swallow the click. */
 (function(){
  document.addEventListener("click",function(event){
-  const link=event.target instanceof Element?event.target.closest('a[href="#orderTracking"],a[data-store-page="tracking"]'):null;
+  const link=event.target instanceof Element?event.target.closest('a[href="#orderTracking"],a[data-store-page="tracking"],button[data-store-page="tracking"]'):null;
   if(!link)return;
   event.preventDefault();
   /* Keep the order-confirmation CTA own click handler alive so it can also
