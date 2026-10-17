@@ -629,7 +629,7 @@ body.customer-auth-required{overflow:hidden!important}
 <div class="hero-copy"><span class="pill"><span class="dot"></span> أهلاً بيكي في عالم حلو ب لبن</span><h1 id="heroTitle">مع حلو ب لبن<br><em>حلى أيامك</em></h1><p id="heroDescription">اختاري حلاوتك المفضلة، من أكواب الحلويات إلى العصائر والمشروبات الباردة والسخنة.</p><div class="hero-links"><a class="btn" href="#categories">اكتشفي المنيو <span>←</span></a><a class="btn pink" href="#cart">السلة والمشتريات</a></div><div class="hero-slogan">♡ حلاوة كل يوم تبدأ من هنا ♡</div><div class="hero-slogan-media" id="heroSloganMedia" hidden><img id="heroSloganImage" alt="صورة إضافية لشعار حلو ب لبن"><span>حلى أيامك، على طريقتك</span></div></div>
 </div></div></section>
 <section class="quick-categories wrap" aria-label="أقسام المتجر">
-<a href="#categories"><span>🥤</span><b>عصائر طبيعية</b></a><a href="#categories"><span>🧋</span><b>مشروبات باردة</b></a><a href="#categories"><span>☕</span><b>مشروبات ساخنة</b></a><a href="#categories"><span>🍰</span><b>حلويات ومقبلات</b></a><a href="#categories"><span>🍨</span><b>أكواب الحلويات</b></a>
+<a href="#categories" data-quick-category="juices"><span>🥤</span><b>عصائر طبيعية</b></a><a href="#categories" data-quick-category="cold-drinks"><span>🧋</span><b>مشروبات باردة</b></a><a href="#categories" data-quick-category="hot-drinks"><span>☕</span><b>مشروبات ساخنة</b></a><a href="#categories" data-quick-category="sweets"><span>🍰</span><b>حلويات ومقبلات</b></a><a href="#categories" data-quick-category="dessert-cups"><span>🍨</span><b>أكواب الحلويات</b></a>
 </section>
 <section class="section wrap" id="categories"><div class="section-title"><div><span class="eyebrow">اختار مزاجك</span><h2>إيه نفسك فيه النهارده؟</h2></div><p>أقسام استرشادية — الأصناف والأسعار الرسمية هتضاف بعد اعتمادها.</p></div>
 <div class="store-search-wrap"><label for="storeSearchInput">ابحثي في المنيو</label><div class="store-search-box"><span aria-hidden="true">⌕</span><input id="storeSearchInput" type="search" placeholder="اكتبي اسم المنتج اللي بتدوري عليه..." autocomplete="off" aria-label="البحث عن منتج"><button type="button" id="storeSearchClear" aria-label="مسح البحث" hidden>×</button></div><p id="storeSearchEmpty" hidden>ملقيناش منتج بالاسم ده. جرّبي كلمة تانية.</p></div><div id="storeCategoryFilters" class="store-category-filters" aria-label="تصفية أقسام المنيو" hidden></div><div class="categories product-circles" id="productsGrid"><div class="empty">جارٍ تحميل المنتجات...</div></div><section id="productDetailsModal" class="product-page" aria-hidden="true" aria-labelledby="detailProductTitle"><div class="product-page-inner"><button type="button" class="detail-close" data-detail-close aria-label="الرجوع للمنتجات">← رجوع للمنتجات</button><div class="detail-layout"><div class="detail-main-image"><img id="detailProductImage" src="" alt=""></div><div class="detail-content"><span class="eyebrow">تفاصيل المنتج</span><h2 id="detailProductTitle"></h2><p id="detailProductDescription"></p><h3 id="detailVariantsHeading">اختاري الصنف</h3><p class="product-page-hint">اختاري أي صنف من الصور، وضيفي أكتر من صنف من نفس المنتج من غير ما تخرجي من الصفحة.</p><div id="detailVariantList"></div><p class="product-page-hint">اختاري الصنف اللي عايزاه عشان نفتح صفحة الإضافات والاكسترا الخاصة بيه.</p></div></div></div></section><section id="productExtrasPage" class="product-page product-extras-page" aria-hidden="true" aria-labelledby="extrasProductTitle"><div class="product-page-inner"><button type="button" class="detail-close" data-extras-back>← رجوع للأصناف</button><div class="detail-layout"><div class="detail-main-image"><img id="extrasProductImage" src="" alt=""></div><div class="detail-content"><span class="eyebrow">اختياراتك الإضافية</span><h2 id="extrasProductTitle"></h2><p id="extrasProductDescription" class="product-page-hint"></p><h3>الإضافات والاكسترا (اختياري)</h3><p class="product-page-hint">اختاري أي إضافات تحبيها، وممكن تكمّلي من غير أي إضافات.</p><div id="detailOptionalExtras" class="detail-optional-extras"></div><div class="detail-selected"><div><small>الصنف المحدد</small><strong id="detailSelectedName"></strong><b id="detailSelectedPrice"></b></div><div class="detail-quantity"><button type="button" data-detail-qty="-1" aria-label="تقليل الكمية">−</button><strong id="detailQty">1</strong><button type="button" data-detail-qty="1" aria-label="زيادة الكمية">+</button></div></div><button type="button" id="detailAddToCart" class="btn" style="width:100%;margin-top:16px">إضافة الصنف للسلة +</button><p id="detailAddedFeedback" class="detail-added-feedback" aria-live="polite"></p><button type="button" class="btn pale" data-open-cart-from-product style="width:100%;margin-top:8px">عرض سلة المشتريات (<span id="detailCartCount">0</span>)</button></div></div></div></section><p class="notice" id="productsNotice">الأسعار المعروضة بالدينار الليبي (د.ل).</p></section>
@@ -1026,6 +1026,21 @@ const storeSearchClear=document.getElementById("storeSearchClear");
 const storeSearchEmpty=document.getElementById("storeSearchEmpty");
 const storeCategoryFilters=document.getElementById("storeCategoryFilters");
 let activeStoreCategory="";
+let activeQuickCategory="";
+const quickCategoryAliases={
+ juices:["عصائر","عصير","juice","juices"],
+ "cold-drinks":["مشروبات باردة","مشروب بارد","باردة","بارد","ساقعة","ساقع","سموذي","cold drink","cold drinks"],
+ "hot-drinks":["مشروبات ساخنة","مشروب ساخن","ساخنة","ساخن","قهوة","شاي","hot drink","hot drinks"],
+ sweets:["حلويات","حلوى","مقبلات","dessert","sweets"],
+ "dessert-cups":["أكواب الحلويات","أكواب","كاسات","كوب","كاسات حلوى","dessert cup","dessert cups"]
+};
+function matchesQuickCategory(card){
+ if(!activeQuickCategory)return true;
+ const aliases=(quickCategoryAliases[activeQuickCategory]||[]).map(normalizeStoreSearchText);
+ const category=normalizeStoreSearchText(card.dataset.category||"");
+ const productText=normalizeStoreSearchText(card.textContent||"");
+ return aliases.some(alias=>alias&&(category.includes(alias)||productText.includes(alias)));
+}
 function renderStoreCategoryFilters(products){
  if(!storeCategoryFilters)return;
  const categories=[...new Set((products||[]).map(p=>String(p.category||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ar"));
@@ -1034,12 +1049,14 @@ function renderStoreCategoryFilters(products){
  if(activeStoreCategory&&!categories.includes(activeStoreCategory))activeStoreCategory="";
  storeCategoryFilters.innerHTML='<button type="button" class="store-category-chip '+(!activeStoreCategory?"active":"")+'" data-store-category="">كل المنتجات</button>'+categories.map(category=>'<button type="button" class="store-category-chip '+(activeStoreCategory===category?"active":"")+'" data-store-category="'+esc(category)+'">'+esc(category)+'</button>').join("");
 }
-if(storeCategoryFilters)storeCategoryFilters.addEventListener("click",event=>{const button=event.target.closest("[data-store-category]");if(!button)return;activeStoreCategory=button.dataset.storeCategory||"";renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));filterStoreProducts();});
+if(storeCategoryFilters)storeCategoryFilters.addEventListener("click",event=>{const button=event.target.closest("[data-store-category]");if(!button)return;activeQuickCategory="";activeStoreCategory=button.dataset.storeCategory||"";renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));filterStoreProducts();});
 function filterStoreProducts(){
  const query=normalizeStoreSearchText(storeSearchInput?.value||"");
  const cards=[...document.querySelectorAll("#productsGrid .product-card")];
  let visible=0;
- cards.forEach(card=>{const cardText=normalizeStoreSearchText(card.textContent);const matchesQuery=!query||cardText.includes(query);const matchesCategory=!activeStoreCategory||card.dataset.category===activeStoreCategory;const matches=matchesQuery&&matchesCategory;card.hidden=!matches;if(matches)visible++;});
+ cards.forEach(card=>{const cardText=normalizeStoreSearchText(card.textContent);const matchesQuery=!query||cardText.includes(query);const matchesCategory=!activeStoreCategory||card.dataset.category===activeStoreCategory;const matches=matchesQuery&&matchesCategory&&matchesQuickCategory(card);card.hidden=!matches;if(matches)visible++;});
+ document.querySelectorAll("#productsGrid .quick-category-empty").forEach(el=>el.remove());
+ if(activeQuickCategory&&visible===0){const empty=document.createElement("div");empty.className="empty quick-category-empty";empty.textContent="لسه مفيش منتجات مضافة للقسم ده. أول ما تضيفي المنتجات وتحددي قسمها في لوحة التحكم هتظهر هنا تلقائيًا.";grid.appendChild(empty);}
  if(storeSearchEmpty)storeSearchEmpty.hidden=!query||visible>0||cards.length===0;
  if(storeSearchClear)storeSearchClear.hidden=!query;
 }
@@ -1302,6 +1319,73 @@ body.store-page-story>header,body.store-page-story>footer{display:none!important
  const oldOpenCheckout=window.openCheckoutModal;
  if(typeof oldOpenCheckout==="function")window.openCheckoutModal=function(){clearDedicatedPages();oldOpenCheckout();};
 })();
+
+/* Reliable standalone cart and checkout navigation plus working quick category shortcuts. */
+document.querySelectorAll(".quick-categories a[data-quick-category]").forEach(link=>{
+ link.addEventListener("click",event=>{
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  activeStoreCategory="";
+  activeQuickCategory=link.dataset.quickCategory||"";
+  if(storeSearchInput)storeSearchInput.value="";
+  renderStoreCategoryFilters(availableProducts.filter(p=>!p.parent_product_id));
+  filterStoreProducts();
+  document.body.classList.remove("store-view-cart","store-view-checkout","store-view-product","store-view-products");
+  document.getElementById("productDetailsModal")?.classList.remove("open");
+  document.getElementById("productExtrasPage")?.classList.remove("open");
+  document.getElementById("categories")?.scrollIntoView({behavior:"smooth",block:"start"});
+ },true);
+});
+window.openCartModal=function(){
+ document.getElementById("productDetailsModal")?.classList.remove("open");
+ document.getElementById("productExtrasPage")?.classList.remove("open");
+ document.body.classList.remove("store-view-checkout","store-view-product","store-view-products","checkout-page-active");
+ document.body.classList.add("store-view-cart","cart-page-active");
+ const cart=document.getElementById("cart"),checkout=document.getElementById("checkout");
+ checkout?.classList.remove("checkout-page-open");checkout?.setAttribute("aria-hidden","true");
+ cart?.classList.add("cart-page-open");cart?.setAttribute("aria-hidden","false");
+ renderOrderCart();
+ window.scrollTo({top:0,behavior:"auto"});
+};
+window.closeCartModal=function(){
+ document.getElementById("cart")?.classList.remove("cart-page-open");
+ document.getElementById("cart")?.setAttribute("aria-hidden","true");
+ document.body.classList.remove("store-view-cart","cart-page-active");
+ window.scrollTo({top:0,behavior:"auto"});
+};
+window.openCheckoutModal=function(){
+ if(!orderCart.size){
+  window.openCartModal();
+  const summary=document.getElementById("cartSummary");
+  if(summary)summary.textContent="السلة فاضية. اختاري منتجات الأول، وبعدها اضغطي متابعة لإدخال البيانات والدفع.";
+  return;
+ }
+ document.getElementById("productDetailsModal")?.classList.remove("open");
+ document.getElementById("productExtrasPage")?.classList.remove("open");
+ document.body.classList.remove("store-view-cart","cart-page-active","store-view-product","store-view-products");
+ document.body.classList.add("store-view-checkout","checkout-page-active");
+ const cart=document.getElementById("cart"),checkout=document.getElementById("checkout");
+ cart?.classList.remove("cart-page-open");cart?.setAttribute("aria-hidden","true");
+ checkout?.classList.add("checkout-page-open");checkout?.setAttribute("aria-hidden","false");
+ renderCheckoutOrderReview();
+ window.scrollTo({top:0,behavior:"auto"});
+};
+window.closeCheckoutModal=function(){
+ document.getElementById("checkout")?.classList.remove("checkout-page-open");
+ document.getElementById("checkout")?.setAttribute("aria-hidden","true");
+ document.body.classList.remove("store-view-checkout","checkout-page-active");
+ window.openCartModal();
+};
+document.getElementById("continueToCheckout")?.addEventListener("click",event=>{
+ event.preventDefault();event.stopImmediatePropagation();window.openCheckoutModal();
+},true);
+document.getElementById("backToCart")?.addEventListener("click",event=>{
+ event.preventDefault();event.stopImmediatePropagation();window.openCartModal();
+},true);
+document.querySelector("#checkout .checkout-close")?.addEventListener("click",event=>{
+ event.preventDefault();event.stopImmediatePropagation();window.openCartModal();
+},true);
+
 </script>
 
 
