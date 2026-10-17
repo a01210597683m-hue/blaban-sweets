@@ -649,6 +649,26 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
  body.store-view-cart #cart .cart-app,body.store-view-checkout #checkout .checkout-app{animation:none!important}
 }
 </style>
+<style id="blaban-compact-delivery-card">
+/* Compact delivery information card only; preserve the other contact cards. */
+.contact-card.delivery-card{
+  min-height:0; padding:13px 17px; border-radius:18px;
+  display:flex; align-items:center; justify-content:center; gap:13px;
+  text-align:right; box-shadow:0 4px 14px #0067c80d;
+}
+.delivery-card .contact-symbol{
+  flex:0 0 42px; width:42px; height:42px; margin:0;
+  border:1px solid #cdeaff; background:linear-gradient(145deg,#eaf8ff,#d6efff);
+  font-size:1.3rem; box-shadow:inset 0 1px 0 #fff;
+}
+.delivery-card .delivery-copy{min-width:0}
+.delivery-card h3{margin:0 0 2px; font-size:clamp(.88rem,2vw,1rem); line-height:1.5}
+.delivery-card p{margin:0; font-size:.8rem; line-height:1.5; color:#6484a2}
+@media(max-width:850px){
+ .contact-card.delivery-card{min-height:0; padding:11px 15px; justify-content:flex-start; border-radius:16px}
+ .delivery-card .contact-symbol{flex-basis:38px;width:38px;height:38px;font-size:1.2rem}
+}
+</style>
 </head>
 <body>
 
@@ -733,7 +753,7 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
 <section class="section wrap" id="story"><div class="story"><div class="story-photo"><img id="storyImage" loading="lazy" src="https://images.unsplash.com/photo-1551024506-0f1c6e5e6f1e?auto=format&fit=crop&w=900&q=80" alt="صورة حلو ب لبن"></div><div class="story-copy"><span class="eyebrow">مع حلو ب لبن</span><h2 id="storyTitle">حلى أيامك،<br>على طريقتك</h2><p id="storyDescription">بنجهّز تجربة إلكترونية تخليك تتصفح المنيو بسهولة، تشوف تفاصيل كل صنف، وتطلب لما نظام الطلبات يكون جاهز. دي البداية، ولسه هنضيف الصور الرسمية وباقي التفاصيل.</p><a class="btn" href="#contact">خلينا على تواصل</a></div></div></section>
 <section class="section wrap"><div class="section-title"><div><span class="eyebrow">تجربة بتتطور</span><h2>كل حاجة أوضح وأسهل</h2></div></div><div class="benefits"><article class="benefit"><div class="benefit-icon">✦</div><div><h3>تصميم مريح</h3><p>تصفح واضح ومناسب للموبايل والكمبيوتر.</p></div></article><article class="benefit"><div class="benefit-icon">▦</div><div><h3>منيو منظم</h3><p>الأصناف والوصف والأسعار هتظهر بعد إضافتها رسميًا.</p></div></article><article class="benefit"><div class="benefit-icon">♡</div><div><h3>تجربة على ذوقك</h3><p>هنطوّر الشكل حسب هوية البراند والصور الرسمية.</p></div></article></div></section>
 <section class="contact-panels wrap" id="contact">
-<article class="contact-card delivery-card"><span class="contact-symbol">🚚</span><h3>التوصيل لحد باب بيتك</h3><p>بأمان وسرعة</p><a href="#checkout">اطلبي دلوقتي ←</a></article>
+<article class="contact-card delivery-card" aria-label="معلومات التوصيل"><span class="contact-symbol" aria-hidden="true">🚚</span><div class="delivery-copy"><h3>التوصيل لحد باب بيتك</h3><p>بأمان وسرعة</p></div></article>
 <article class="contact-card whatsapp-card"><span class="contact-symbol">◉</span><h3>تواصل معانا</h3><p>اتواصلي معانا بالطريقة المناسبة ليكي.</p><div id="contactNumbers" class="contact-empty">سيتم إضافة أرقام التواصل هنا</div></article>
 <article class="contact-card socials-card"><h3>تابعينا على صفحاتنا</h3><p>فيسبوك · واتساب · تيك توك</p><div class="social-links" id="socialLinks"><span aria-label="فيسبوك">f</span><span aria-label="واتساب">◉</span><span aria-label="تيك توك">♪</span></div><small id="socialLinksHint">روابط الصفحات هتظهر بعد إضافتها.</small></article>
 </section>
