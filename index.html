@@ -650,23 +650,28 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
 }
 </style>
 <style id="blaban-compact-delivery-card">
-/* Compact delivery information card only; preserve the other contact cards. */
+/* A small, modern delivery note centered beneath the contact cards. */
 .contact-card.delivery-card{
-  min-height:0; padding:13px 17px; border-radius:18px;
-  display:flex; align-items:center; justify-content:center; gap:13px;
-  text-align:right; box-shadow:0 4px 14px #0067c80d;
+  grid-column:1 / -1; justify-self:center;
+  width:min(100%,390px); min-height:0; box-sizing:border-box;
+  padding:10px 15px; border-radius:17px;
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  text-align:right; border:1px solid #d7edff;
+  background:linear-gradient(120deg,#fff 0%,#f0f9ff 100%);
+  box-shadow:0 4px 14px #0067c80d;
 }
 .delivery-card .contact-symbol{
-  flex:0 0 42px; width:42px; height:42px; margin:0;
+  flex:0 0 38px; width:38px; height:38px; margin:0;
+  display:grid; place-items:center; border-radius:13px;
   border:1px solid #cdeaff; background:linear-gradient(145deg,#eaf8ff,#d6efff);
-  font-size:1.3rem; box-shadow:inset 0 1px 0 #fff;
+  font-size:1.2rem; box-shadow:inset 0 1px 0 #fff;
 }
 .delivery-card .delivery-copy{min-width:0}
-.delivery-card h3{margin:0 0 2px; font-size:clamp(.88rem,2vw,1rem); line-height:1.5}
-.delivery-card p{margin:0; font-size:.8rem; line-height:1.5; color:#6484a2}
+.delivery-card h3{margin:0 0 2px; font-size:clamp(.88rem,2vw,.98rem); line-height:1.45}
+.delivery-card p{margin:0; font-size:.8rem; line-height:1.45; color:#6484a2}
 @media(max-width:850px){
- .contact-card.delivery-card{min-height:0; padding:11px 15px; justify-content:flex-start; border-radius:16px}
- .delivery-card .contact-symbol{flex-basis:38px;width:38px;height:38px;font-size:1.2rem}
+ .contact-card.delivery-card{width:min(100%,360px); padding:9px 13px; justify-content:center; border-radius:15px}
+ .delivery-card .contact-symbol{flex-basis:36px;width:36px;height:36px;font-size:1.15rem}
 }
 </style>
 </head>
