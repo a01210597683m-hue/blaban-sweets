@@ -858,7 +858,7 @@ function renderBranchOptions(){
  select.innerHTML='<option value="">بدون تحديد فرع</option>'+storeBranches.map(b=>'<option value="'+esc(b.id)+'">'+esc([b.name,b.city,b.area].filter(Boolean).join(" - "))+'</option>').join("");
 }
 
-async function showProducts(){try{const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await loadStoreSettings(sb);await loadDeliveryOptions(sb);const categoryResult=await sb.from("store_categories").select("id,name,icon,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});if(categoryResult.error)throw categoryResult.error;storeCategories=categoryResult.data||[];renderQuickCategories();const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});if(error)throw error;availableProducts=data||[];const extrasResult=await sb.from("product_extras").select("id,product_id,name,price,is_available,sort_order").eq("is_available",true).order("sort_order",{ascending:true});if(extrasResult.error)console.warn("Optional extras could not be loaded",extrasResult.error);availableExtras=extrasResult.data||[];restoreOrderCart();renderOrderCart();const mainProducts=availableProducts.filter(p=>!p.parent_product_id);renderStoreCategoryFilters(mainProducts);if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';return}grid.innerHTML=mainProducts.map(p=>{const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));const chosen=variants[0]||p;const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));return '<article class="product-card product-circle-card" data-product-card="'+esc(p.id)+'" data-category="'+esc(p.category||"")+'"><button type="button" class="product-circle-open" data-open-product="'+esc(p.id)+'" aria-label="عرض تفاصيل وإضافات '+esc(p.name)+'"><span class="product-circle-image"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt=""></span><strong>'+esc(p.name)+'</strong><span class="product-circle-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><small>التفاصيل والإضافات الاختيارية</small></button></article>'}).join("");if(typeof filterStoreProducts==="function")filterStoreProducts();if(typeof renderStoreSearchResults==="function")renderStoreSearchResults();}catch(e){grid.innerHTML='<div class="empty">مش قادرين نحمل المنيو دلوقتي. حاولي تحديث الصفحة بعد شوية.</div>';console.error(e)}}
+async function showProducts(){try{const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await loadStoreSettings(sb);await loadDeliveryOptions(sb);try{const categoryResult=await sb.from("store_categories").select("id,name,icon,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});if(categoryResult.error)throw categoryResult.error;storeCategories=categoryResult.data||[];}catch(categoryError){storeCategories=[];console.warn("Category list unavailable; continuing to load products",categoryError)}renderQuickCategories();const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});if(error)throw error;availableProducts=data||[];const extrasResult=await sb.from("product_extras").select("id,product_id,name,price,is_available,sort_order").eq("is_available",true).order("sort_order",{ascending:true});if(extrasResult.error)console.warn("Optional extras could not be loaded",extrasResult.error);availableExtras=extrasResult.data||[];restoreOrderCart();renderOrderCart();const mainProducts=availableProducts.filter(p=>!p.parent_product_id);renderStoreCategoryFilters(mainProducts);if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';return}grid.innerHTML=mainProducts.map(p=>{const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));const chosen=variants[0]||p;const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));return '<article class="product-card product-circle-card" data-product-card="'+esc(p.id)+'" data-category="'+esc(p.category||"")+'"><button type="button" class="product-circle-open" data-open-product="'+esc(p.id)+'" aria-label="عرض تفاصيل وإضافات '+esc(p.name)+'"><span class="product-circle-image"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt=""></span><strong>'+esc(p.name)+'</strong><span class="product-circle-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><small>التفاصيل والإضافات الاختيارية</small></button></article>'}).join("");if(typeof filterStoreProducts==="function")filterStoreProducts();if(typeof renderStoreSearchResults==="function")renderStoreSearchResults();}catch(e){grid.innerHTML='<div class="empty">مش قادرين نحمل المنيو دلوقتي. حاولي تحديث الصفحة بعد شوية.</div>';console.error(e)}}
 
 // Extras stay optional; cart selections contain IDs only, and the server calculates all prices.
 const orderCart=new Map();
@@ -2183,6 +2183,79 @@ body.store-view-category #categories .categories{background:transparent!importan
   const r=launcher.getBoundingClientRect();
   if(launcher.style.top&&launcher.style.left)applyPosition(r.left,r.top,true);
  });
+})();
+</script>
+
+
+<script id="blaban-account-history-navigation">
+(()=> {
+ const account=document.getElementById("customerAccountView");
+ if(!account)return;
+ const key="blabanAccountPanel";
+ let restoring=false;
+ let lastPanel=null;
+ function statePanel(){return history.state&&history.state[key]||null}
+ function pushPanel(panel){
+  if(restoring)return;
+  const current=statePanel();
+  if(current===panel)return;
+  history.pushState({...history.state,[key]:panel},"",location.href);
+ }
+ // Keep browser/Android Back inside the account instead of leaving the storefront.
+ if(!history.state||!(key in history.state))history.replaceState({...history.state,[key]:null},"",location.href);
+ document.addEventListener("click",event=>{
+  const open=event.target.closest("[data-open-account],[data-open-account-page]");
+  if(open&&!restoring){
+   const panel=open.hasAttribute("data-open-account-page")?(open.dataset.openAccountPage||"home"):"home";
+   pushPanel(panel);lastPanel=panel;return;
+  }
+  const panelButton=event.target.closest("[data-account-page]");
+  if(panelButton&&!restoring&& !account.hidden){
+   pushPanel(panelButton.dataset.accountPage||"home");lastPanel=panelButton.dataset.accountPage||"home";return;
+  }
+  const close=event.target.closest("#closeCustomerAccount");
+  if(close&&!restoring&&!account.hidden){
+   event.preventDefault();event.stopImmediatePropagation();
+   if(statePanel()!==null)history.back();
+   else {account.hidden=true;account.setAttribute("aria-hidden","true");document.body.classList.remove("customer-account-open");}
+  }
+ },true);
+ window.addEventListener("popstate",()=>{
+  const panel=statePanel();
+  restoring=true;
+  try{
+   if(panel===null){
+    if(!account.hidden){
+     account.hidden=true;account.setAttribute("aria-hidden","true");document.body.classList.remove("customer-account-open");
+    }
+    lastPanel=null;
+   }else{
+    if(account.hidden){
+     const open=document.querySelector("[data-open-account]");
+     if(open)open.click();
+     else {account.hidden=false;account.setAttribute("aria-hidden","false");document.body.classList.add("customer-account-open");}
+    }
+    if(panel!=="home"){
+     const target=account.querySelector('[data-account-page="'+CSS.escape(panel)+'"]');
+     if(target)target.click();
+    }else{
+     const home=account.querySelector('[data-account-panel="home"]');
+     if(home){account.querySelectorAll("[data-account-panel]").forEach(el=>el.hidden=el!==home);}
+     const title=document.getElementById("accountPageTitle"),subtitle=document.getElementById("accountPageSubtitle");
+     if(title)title.textContent="حسابك";if(subtitle)subtitle.textContent="طلباتك وبياناتك وإعدادات تجربتك";
+    }
+    lastPanel=panel;
+   }
+  }finally{restoring=false}
+ });
+ // Hide Google OAuth while Supabase reports that the Google provider is disabled (HTTP 400).
+ const google=document.getElementById("customerGoogleSignIn");
+ if(google){google.hidden=true;google.setAttribute("aria-hidden","true");}
+ const social=document.querySelector(".customer-auth-social");
+ const facebook=document.getElementById("customerFacebookSignIn");
+ if(social&&facebook&&!facebook.hidden)social.style.gridTemplateColumns="1fr";
+ const separator=document.querySelector(".customer-auth-separator");
+ if(separator&&google&&!facebook){separator.hidden=true;social.hidden=true;}
 })();
 </script>
 
