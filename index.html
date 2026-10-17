@@ -1922,20 +1922,23 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(typeof renderOrderCart==="function")renderOrderCart();
  }
  function recoverCartFromVisibleSummary(){
-  // The cart UI can still contain rendered items if a competing page-flow handler has lost the in-memory map.
+  // Prefer the actual rendered cart when another page-flow handler has cleared the in-memory cart.
   if(typeof orderCart==="undefined"||orderCart.size)return;
-  const summary=$("cartSummary");if(!summary)return;
-  const rows=[...summary.querySelectorAll(".cart-item [data-remove]")];if(!rows.length)return;
+  const summary=document.getElementById("cartSummary");if(!summary)return;
+  const rows=[...summary.querySelectorAll(".cart-item")];if(!rows.length)return;
   const recovered=new Map();
-  for(const button of rows){
-   const id=String(button.getAttribute("data-remove")||"");
-   if(!id||!availableProducts.some(p=>String(p.id)===id))continue;
-   const row=button.closest(".cart-item");
-   const qtyNode=row?.querySelector(".cart-qty b");
+  for(const row of rows){
+   const button=row.querySelector("[data-remove]");
+   const id=String(button?.getAttribute("data-remove")||"").trim();
+   if(!id)continue;
+   const qtyNode=row.querySelector(".cart-qty b");
    const qty=Math.max(1,Math.min(20,Math.floor(Number(qtyNode?.textContent)||1)));
    recovered.set(id,qty);
   }
-  if(recovered.size){for(const [id,qty] of recovered)orderCart.set(id,qty);if(typeof persistOrderCart==="function")persistOrderCart();}
+  if(recovered.size){
+   for(const [id,qty] of recovered)orderCart.set(id,qty);
+   if(typeof persistOrderCart==="function")persistOrderCart();
+  }
  }
  function openCheckoutPage(){
   // Recover from the rendered cart first, then from local storage, before deciding it is empty.
