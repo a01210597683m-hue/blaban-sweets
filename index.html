@@ -1219,6 +1219,22 @@ function getStoreSearchMatches(){const query=normalizeStoreSearchText(storeSearc
 function renderStoreSearchResults(){const host=document.getElementById("storeSearchResults");if(!host)return;const query=String(storeSearchInput?.value||"").trim();if(!query){host.innerHTML='<p class="store-search-hint">اكتبي اسم المنتج، وهتظهر النتائج هنا فورًا.</p>';return}const matches=getStoreSearchMatches();if(!matches.length){host.innerHTML='<p class="store-search-hint">ملقيناش منتج بالاسم ده. جرّبي جزء تاني من الاسم.</p>';return}host.innerHTML=matches.slice(0,12).map(({product,variants})=>{const items=variants.length?variants:[product],price=Math.min(...items.map(x=>Number(x.price)||0));return '<button type="button" class="store-search-result" data-search-product="'+esc(product.id)+'"><img loading="lazy" src="'+esc(items[0].image_url||product.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=160&q=75")+'" alt=""><span><strong>'+esc(product.name)+'</strong><small>'+(variants.length?variants.length+" أصناف متاحة":"تفاصيل المنتج")+(product.category?" • "+esc(product.category):"")+'</small></span><b>'+(variants.length?"يبدأ من ":"")+money(price)+'</b></button>'}).join("");}
 function submitStoreSearch(){const matches=getStoreSearchMatches();if(matches.length){const exact=matches.find(x=>normalizeStoreSearchText(x.product.name)===normalizeStoreSearchText(storeSearchInput.value));const selected=exact||matches[0];if(typeof closeStoreSearchModal==="function")closeStoreSearchModal();else document.getElementById("storeSearchModal")?.classList.remove("open");openProductDetails(selected.product.id);return}if(storeSearchInput?.value.trim()){document.getElementById("categories")?.scrollIntoView({behavior:"smooth",block:"start"});document.getElementById("storeSearchModal")?.classList.remove("open");document.body.style.overflow="";}}
 document.addEventListener("click",event=>{const item=event.target.closest("[data-search-product]");if(!item)return;const id=item.dataset.searchProduct;document.getElementById("storeSearchModal")?.classList.remove("open");document.getElementById("storeSearchModal")?.setAttribute("aria-hidden","true");document.body.style.overflow="";openProductDetails(id);});
+
+/* Expose the module-owned storefront state to the legacy page-flow scripts below.
+   Those scripts run outside this module; without this bridge they see an empty cart
+   even while this module has rendered real cart rows. */
+window.orderCart=orderCart;
+window.cartExtras=cartExtras;
+Object.defineProperty(window,"availableProducts",{configurable:true,get:()=>availableProducts});
+Object.defineProperty(window,"availableExtras",{configurable:true,get:()=>availableExtras});
+window.restoreOrderCart=restoreOrderCart;
+window.persistOrderCart=persistOrderCart;
+window.renderOrderCart=renderOrderCart;
+window.renderCheckoutOrderReview=renderCheckoutOrderReview;
+window.closeProductDetails=closeProductDetails;
+window.openProductDetails=openProductDetails;
+window.renderStoreCategoryFilters=renderStoreCategoryFilters;
+window.filterStoreProducts=filterStoreProducts;
 </script>
 <script>
 if ("serviceWorker" in navigator) {
