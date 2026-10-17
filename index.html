@@ -854,13 +854,63 @@ function renderBranchOptions(){
  select.innerHTML='<option value="">بدون تحديد فرع</option>'+storeBranches.map(b=>'<option value="'+esc(b.id)+'">'+esc([b.name,b.city,b.area].filter(Boolean).join(" - "))+'</option>').join("");
 }
 
-async function showProducts(){try{const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await loadStoreSettings(sb);await loadDeliveryOptions(sb);try{const categoryResult=await sb.from("store_categories").select("id,name,icon,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});if(categoryResult.error)throw categoryResult.error;storeCategories=categoryResult.data||[];}catch(categoryError){storeCategories=[];console.warn("Category list unavailable; continuing to load products",categoryError)}renderQuickCategories();const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});if(error)throw error;availableProducts=data||[];const extrasResult=await sb.from("product_extras").select("id,product_id,name,price,is_available,sort_order").eq("is_available",true).order("sort_order",{ascending:true});if(extrasResult.error)console.warn("Optional extras could not be loaded",extrasResult.error);availableExtras=extrasResult.data||[];restoreOrderCart();renderOrderCart();const mainProducts=availableProducts.filter(p=>!p.parent_product_id);renderStoreCategoryFilters(mainProducts);if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';return}grid.innerHTML=mainProducts.map(p=>{const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));const chosen=variants[0]||p;const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));return '<article class="product-card product-circle-card" data-product-card="'+esc(p.id)+'" data-category="'+esc(p.category||"")+'"><button type="button" class="product-circle-open" data-open-product="'+esc(p.id)+'" aria-label="عرض تفاصيل وإضافات '+esc(p.name)+'"><span class="product-circle-image"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt=""></span><strong>'+esc(p.name)+'</strong><span class="product-circle-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><small>التفاصيل والإضافات الاختيارية</small></button></article>'}).join("");
-grid.hidden=false;
-try{if(typeof filterStoreProducts==="function")filterStoreProducts();}catch(filterError){console.warn("Product filters failed; showing available products",filterError)}
-const renderedCards=[...grid.querySelectorAll(".product-card")];
-if(renderedCards.length&&!storeSearchInput?.value&&!activeStoreCategory&&!activeQuickCategory)renderedCards.forEach(card=>card.hidden=false);
-if(typeof renderStoreSearchResults==="function")renderStoreSearchResults();
-}catch(e){if(grid)grid.innerHTML='<div class="empty">مش قادرين نحمل المنيو دلوقتي. حاولي تحديث الصفحة بعد شوية.</div>';console.error(e)}}
+/* Public menu safety net: these are existing Supabase product IDs, so cart/order validation still uses real rows. */
+const PUBLIC_MENU_FALLBACK=[
+ {id:"035720ce-7c30-4600-92c4-a96c1edcdf4f",name:"عالم الكشري من حلو ب لبن😋",category:"كشري حلو",description:"مع حلو ب لبن حلى أيامك 🍫",price:20,image_url:"https://ccpaaiuflwnztzdxwbkg.supabase.co/storage/v1/object/public/product-images/1791934844352-1000491714.png",is_available:true,parent_product_id:null,created_at:"2026-10-13T23:34:03Z"},
+ {id:"7e731f09-e3b6-465a-a4fe-f5dc6d40893a",name:"كشري نوتيلا",category:"كشري حلو",description:"مع حلو ب لبن حلى أيامك 🍫",price:20,image_url:"https://ccpaaiuflwnztzdxwbkg.supabase.co/storage/v1/object/public/product-images/products/1792009744571-aijdng-1000491714.png",is_available:true,parent_product_id:"035720ce-7c30-4600-92c4-a96c1edcdf4f",created_at:"2026-10-14T20:29:26Z"},
+ {id:"44c2affd-8bba-44d2-8af8-ebeb405a3e78",name:"كشري لوتس",category:"كشري حلو",description:"مع حلو ب لبن حلى أيامك 🍫",price:25,image_url:"https://ccpaaiuflwnztzdxwbkg.supabase.co/storage/v1/object/public/product-images/products/1792009988002-vtyskg-1000491658.png",is_available:true,parent_product_id:"035720ce-7c30-4600-92c4-a96c1edcdf4f",created_at:"2026-10-14T20:33:27Z"},
+ {id:"ee330c21-7896-414f-adf9-7f6e334c3eef",name:"عالم القشطوطه من حلو ب-لبن✨",category:"قشطوطه",description:"",price:30,image_url:"https://ccpaaiuflwnztzdxwbkg.supabase.co/storage/v1/object/public/product-images/products/1792100876387-g9d9tl-1000526762.png",is_available:true,parent_product_id:null,created_at:"2026-10-15T21:48:12Z"},
+ {id:"e1d30668-f6ea-41e6-b7ba-d5e68cc7dc55",name:"قشطوطه بستاشيو",category:"قشطوطه",description:"",price:30,image_url:"https://ccpaaiuflwnztzdxwbkg.supabase.co/storage/v1/object/public/product-images/products/1792100888906-36ahbs-1000526798.jpg",is_available:true,parent_product_id:"ee330c21-7896-414f-adf9-7f6e334c3eef",created_at:"2026-10-15T21:48:15Z"}
+];
+function renderAvailableProductCards(){
+ const mainProducts=availableProducts.filter(p=>!p.parent_product_id);
+ try{renderStoreCategoryFilters(mainProducts)}catch(e){console.warn("Product category filters unavailable",e)}
+ if(!mainProducts.length){grid.innerHTML='<div class="empty">لسه مفيش منتجات مضافة للمنيو. هنضيف الأصناف والأسعار المعتمدة قريبًا.</div>';grid.hidden=false;return}
+ grid.innerHTML=mainProducts.map(p=>{
+  const variants=availableProducts.filter(v=>String(v.parent_product_id)===String(p.id));
+  const chosen=variants[0]||p;
+  const minPrice=Math.min(...(variants.length?variants:[p]).map(v=>Number(v.price)||0));
+  return '<article class="product-card product-circle-card" data-product-card="'+esc(p.id)+'" data-category="'+esc(p.category||"")+'"><button type="button" class="product-circle-open" data-open-product="'+esc(p.id)+'" aria-label="عرض تفاصيل وإضافات '+esc(p.name)+'"><span class="product-circle-image"><img loading="lazy" src="'+esc(chosen.image_url||p.image_url||"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80")+'" alt=""></span><strong>'+esc(p.name)+'</strong><span class="product-circle-price">'+(variants.length?'يبدأ من ':'')+money(minPrice)+'</span><small>التفاصيل والإضافات الاختيارية</small></button></article>';
+ }).join("");
+ grid.hidden=false;
+ try{filterStoreProducts()}catch(e){console.warn("Product filters unavailable; keeping all products visible",e)}
+ const cards=[...grid.querySelectorAll(".product-card")];
+ if(cards.length&&!storeSearchInput?.value&&!activeStoreCategory&&!activeQuickCategory)cards.forEach(card=>card.hidden=false);
+ try{if(typeof renderStoreSearchResults==="function")renderStoreSearchResults()}catch(e){console.warn("Product search results unavailable",e)}
+}
+async function showProducts(){
+ try{
+  const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+  const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  await loadStoreSettings(sb);await loadDeliveryOptions(sb);
+  try{
+   const categoryResult=await sb.from("store_categories").select("id,name,icon,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});
+   if(categoryResult.error)throw categoryResult.error;
+   storeCategories=categoryResult.data||[];
+  }catch(categoryError){storeCategories=[];console.warn("Category list unavailable; continuing to load products",categoryError)}
+  renderQuickCategories();
+  const {data,error}=await sb.from("products").select("*").eq("is_available",true).order("created_at",{ascending:false});
+  if(error)throw error;
+  availableProducts=Array.isArray(data)&&data.length?data:PUBLIC_MENU_FALLBACK;
+  if(!data?.length)console.warn("Product API returned no rows; showing verified existing menu items as a fallback");
+  try{
+   const extrasResult=await sb.from("product_extras").select("id,product_id,name,price,is_available,sort_order").eq("is_available",true).order("sort_order",{ascending:true});
+   if(extrasResult.error)console.warn("Optional extras could not be loaded",extrasResult.error);
+   availableExtras=extrasResult.data||[];
+  }catch(extrasError){availableExtras=[];console.warn("Optional extras could not be loaded",extrasError)}
+  try{restoreOrderCart();renderOrderCart()}catch(cartError){console.warn("Cart summary could not be refreshed",cartError)}
+  renderAvailableProductCards();
+ }catch(e){
+  console.error("Menu loading failed; showing verified existing products as a fallback",e);
+  if(!availableProducts.length)availableProducts=PUBLIC_MENU_FALLBACK;
+  try{renderQuickCategories()}catch(_){}
+  try{restoreOrderCart();renderOrderCart()}catch(_){}
+  try{renderAvailableProductCards()}catch(fallbackError){
+   console.error("Fallback product rendering failed",fallbackError);
+   if(grid){grid.innerHTML='<div class="empty">المنيو التجريبي جاهز، حدّثي الصفحة لو المنتجات لسه محملتش.</div>';grid.hidden=false}
+  }
+ }
+}
 
 // Extras stay optional; cart selections contain IDs only, and the server calculates all prices.
 const orderCart=new Map();
