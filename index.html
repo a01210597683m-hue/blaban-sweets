@@ -1997,66 +1997,35 @@ body.store-view-category #categories .categories{background:transparent!importan
 </style>
 
 <script id="blaban-single-checkout-entry">
-/* One early interception point for checkout. It runs before legacy document/button handlers. */
+/* Delegate to the store's canonical page-flow controller so all required classes/styles stay in sync. */
 (function(){
- function restoreExtrasWithoutDiscardingCurrent(){
-  if(typeof cartExtras==="undefined"||cartExtras.size)return;
-  try{
-   const saved=JSON.parse(localStorage.getItem("blaban-cart-extras-v1")||"[]");
-   if(Array.isArray(saved))for(const pair of saved){
-    if(Array.isArray(pair)&&pair.length>1&&Array.isArray(pair[1]))cartExtras.set(String(pair[0]),pair[1].map(String));
-   }
-  }catch(error){console.warn("Could not restore saved extras",error)}
- }
- function recoverCheckoutCart(){
-  if(typeof orderCart==="undefined")return false;
-  if(!orderCart.size){
-   const summary=document.getElementById("cartSummary");
-   const rows=summary?[...summary.querySelectorAll(".cart-item")]:[];
-   for(const row of rows){
-    const id=String(row.querySelector("[data-remove]")?.getAttribute("data-remove")||"").trim();
-    const qty=Math.max(1,Math.min(20,Math.floor(Number(row.querySelector(".cart-qty b")?.textContent)||1)));
-    if(id)orderCart.set(id,qty);
-   }
-  }
-  if(!orderCart.size){
-   try{
-    const saved=JSON.parse(localStorage.getItem("blaban-cart-v1")||"[]");
-    if(Array.isArray(saved))for(const pair of saved){
-     if(!Array.isArray(pair)||pair.length<2)continue;
-     const id=String(pair[0]).trim();
-     const qty=Math.max(1,Math.min(20,Math.floor(Number(pair[1])||1)));
-     if(id)orderCart.set(id,qty);
-    }
-   }catch(error){console.warn("Could not restore saved cart for checkout",error)}
-  }
-  restoreExtrasWithoutDiscardingCurrent();
-  return orderCart.size>0;
- }
- function showCheckout(){
-  if(!recoverCheckoutCart()){
-   const cart=document.getElementById("cart"),summary=document.getElementById("cartSummary");
-   document.body.classList.remove("store-view-checkout","checkout-page-active");
-   document.body.classList.add("store-view-cart","cart-page-active");
-   cart?.classList.add("cart-page-open");cart?.setAttribute("aria-hidden","false");
-   const msg="مش قادرين نقرأ الأصناف المحفوظة حاليًا. ما تقفليش الصفحة؛ جرّبي فتح السلة مرة واحدة.";
-   if(summary&&!summary.querySelector(".cart-item"))summary.textContent=msg;
-   return;
-  }
-  try{if(typeof persistOrderCart==="function")persistOrderCart()}catch(error){console.warn(error)}
-  const cart=document.getElementById("cart"),checkout=document.getElementById("checkout");
-  document.body.classList.remove("store-view-cart","cart-page-active","store-view-product","store-view-products","store-view-extras");
-  document.body.classList.add("store-view-checkout","checkout-page-active");
-  cart?.classList.remove("cart-page-open");cart?.setAttribute("aria-hidden","true");
-  checkout?.classList.add("checkout-page-open");checkout?.setAttribute("aria-hidden","false");
-  if(typeof renderCheckoutOrderReview==="function")renderCheckoutOrderReview();
-  window.scrollTo({top:0,behavior:"auto"});
- }
  window.addEventListener("click",function(event){
   const button=event.target instanceof Element?event.target.closest("#continueToCheckout"):null;
   if(!button)return;
-  event.preventDefault();event.stopImmediatePropagation();
-  showCheckout();
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  try{
+   if(typeof window.openCheckoutModal==="function"){
+    window.openCheckoutModal();
+    return;
+   }
+   throw new Error("Checkout controller is unavailable");
+  }catch(error){
+   console.error("Checkout navigation failed; using canonical view fallback",error);
+   try{
+    if(typeof recoverCartFromVisibleSummary==="function")recoverCartFromVisibleSummary();
+    if(typeof recoverCartIfMemoryIsEmpty==="function")recoverCartIfMemoryIsEmpty();
+    if(typeof orderCart!=="undefined"&&orderCart.size&&typeof setStoreFlowView==="function"){
+     if(typeof persistOrderCart==="function")persistOrderCart();
+     if(typeof renderOrderCart==="function")renderOrderCart();
+     setStoreFlowView("checkout");
+     if(typeof renderCheckoutOrderReview==="function")renderCheckoutOrderReview();
+    }else{
+     const summary=document.getElementById("cartSummary");
+     if(summary)summary.insertAdjacentHTML("beforeend",'<p role="status" style="margin-top:12px;color:#9b1c1c">مش قادرين نفتح خطوة الدفع دلوقتي. اختياراتك محفوظة؛ جرّبي مرة تانية بعد تحديث الصفحة.</p>');
+    }
+   }catch(fallbackError){console.error("Checkout fallback failed",fallbackError)}
+  }
  },true);
 })();
 </script>
