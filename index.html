@@ -2055,31 +2055,38 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
    || /لا أستطيع|لا يمكنني|مش قادر أساعد|محتاج متابعة من فريق|تواصل مع فريق المتجر|تواصل مع خدمة العملاء|contact the store|human support|customer support team/.test(a);
  }
  $("storeSupportForm").addEventListener("submit",async e=>{
-  e.preventDefault();const input=$("storeSupportInput"),q=input.value.trim();if(!q)return;
-  addSupportMessage(q,"user");input.value="";const submit=e.submitter;if(submit)submit.disabled=true;
+  e.preventDefault();const input=$("storeSupportInput"),form=$("storeSupportForm"),q=input.value.trim();if(!q||form.dataset.busy==="true")return;
+  addSupportMessage(q,"user");input.value="";
+  const submit=form.querySelector('button[type="submit"]');form.dataset.busy="true";form.setAttribute("aria-busy","true");if(submit){submit.disabled=true;submit.dataset.originalLabel=submit.textContent;submit.textContent="جاري الرد…"}
+  let reply="",aiAvailable=false;
   try{
-   await saveSupportMessage("customer",q);
-   const c=client();if(!c)throw new Error("support service unavailable");
-   let reply="",aiAvailable=true;
-   try{
-    const {data,error}=await c.functions.invoke("ai-store-support",{body:{message:q}});
-    if(error)throw error;
-    if(typeof data?.reply!=="string"||!data.reply.trim())throw new Error("no AI response");
-    reply=data.reply.trim();
-   }catch(error){
-    aiAvailable=false;reply=guidedAnswer(q)+"\n\nمحتاجين نراجع استفسارك مع فريق المتجر، فهحوّل المحادثة لخدمة العملاء.";
-    console.warn("AI support unavailable; preparing human handoff",error);
+   // Never let a database/history write prevent the AI request from running.
+   const c=client();
+   if(c){
+    try{
+     const {data,error}=await c.functions.invoke("ai-store-support",{body:{message:q}});
+     if(error)throw error;
+     if(typeof data?.reply!=="string"||!data.reply.trim())throw new Error("AI returned an empty response");
+     reply=data.reply.trim();aiAvailable=true;
+    }catch(error){console.warn("AI support unavailable; using guided fallback",error)}
    }
+   if(!aiAvailable)reply=guidedAnswer(q)+"\n\nلو محتاجة متابعة من فريق المتجر، استخدمي «تواصل معنا»؛ ولو حفظ المحادثة متاح هنحاول تسجيل طلب متابعة.";
    addSupportMessage(reply,"assistant");
+   // History persistence is best-effort and must not block customer assistance.
+   try{await saveSupportMessage("customer",q)}catch(error){console.error("Customer support message could not be saved",error)}
    try{await saveSupportMessage("assistant",reply,{ai_available:aiAvailable})}catch(error){console.error("Support reply could not be saved",error)}
    if(!aiAvailable||shouldEscalateSupport(q,reply)){
     const reason=!aiAvailable?"تعذّر على المساعد تقديم رد آلي؛ يلزم تدخل فريق خدمة العملاء.":"المحادثة تتضمن شكوى أو تحتاج مراجعة بشرية.";
-    try{await requestHumanSupport(reason)}catch(error){addSupportMessage("لو سمحتي تواصلي مع المتجر مباشرة؛ تعذر تسجيل طلب التحويل تلقائيًا في الوقت الحالي.","assistant");console.error("Human handoff could not be saved",error)}
+    try{await requestHumanSupport(reason)}catch(error){addSupportMessage("معلش، تعذر تسجيل طلب المتابعة تلقائيًا. تقدري تتواصلي مع فريق المتجر مباشرة من «تواصل معنا».","assistant");console.error("Human handoff could not be saved",error)}
    }
   }catch(error){
-   addSupportMessage("تعذر حفظ المحادثة الآن. حاولي مرة أخرى بعد قليل أو تواصلي مع المتجر مباشرة.","assistant");
-   console.error("Support conversation could not be persisted",error);
-  }finally{if(submit)submit.disabled=false}
+   // Keep a useful response visible even if an unexpected client-side error occurs.
+   if(!reply){reply=guidedAnswer(q);addSupportMessage(reply,"assistant")}
+   console.error("Unexpected support flow error",error);
+  }finally{
+   form.dataset.busy="false";form.removeAttribute("aria-busy");
+   if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalLabel||"إرسال";delete submit.dataset.originalLabel}
+  }
  });
  const savedLanguage=localStorage.getItem("blaban-store-language");if(savedLanguage)applyStoreLanguage(savedLanguage);
  // One authoritative checkout transition: catch clicks before older listeners can interfere.
