@@ -1250,9 +1250,20 @@ document.getElementById("customerAuthSwitch").addEventListener("click",()=>setCu
 document.getElementById("customerForgotPassword").addEventListener("click",()=>setCustomerAuthMode("reset"));
 async function customerSocialSignIn(provider){
  if(!customerAuthClient){customerAuthMessage("ثواني بنجهّز تسجيل الدخول، حاولي مرة تانية.");return}
+ const button=document.getElementById(provider==="google"?"customerGoogleSignIn":"customerFacebookSignIn");
+ if(button)button.disabled=true;
  customerAuthMessage("جاري تحويلك إلى "+(provider==="google"?"Google":"Facebook")+"...");
- const {error}=await customerAuthClient.auth.signInWithOAuth({provider,options:{redirectTo:CUSTOMER_AUTH_REDIRECT}});
- if(error)customerAuthMessage(provider==="google"?"تعذر تسجيل الدخول بجوجل. قد يحتاج مزوّد Google إلى التفعيل في إعدادات المتجر. "+error.message:"تعذر تسجيل الدخول بفيسبوك. قد يحتاج مزوّد Facebook إلى التفعيل في إعدادات المتجر. "+error.message);
+ try{
+  const {data,error}=await customerAuthClient.auth.signInWithOAuth({provider,options:{redirectTo:CUSTOMER_AUTH_REDIRECT,skipBrowserRedirect:false}});
+  if(error)throw error;
+  if(data?.url&&!data?.provider)window.location.assign(data.url);
+ }catch(error){
+  const message=String(error?.message||"");
+  const providerName=provider==="google"?"Google":"Facebook";
+  if(/provider is not enabled|unsupported provider|validation_failed/i.test(message))customerAuthMessage("تسجيل الدخول بـ"+(provider==="google"?"Google":"Facebook")+" لسه محتاج تفعيل المزوّد وإضافة بيانات التطبيق في إعدادات Supabase.");
+  else customerAuthMessage("تعذر تسجيل الدخول بـ"+providerName+" حاليًا. "+(message||"حاولي مرة تانية."));
+  if(button)button.disabled=false;
+ }
 }
 document.getElementById("customerGoogleSignIn")?.addEventListener("click",()=>customerSocialSignIn("google"));
 document.getElementById("customerFacebookSignIn")?.addEventListener("click",()=>customerSocialSignIn("facebook"));
@@ -1980,15 +1991,63 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   return "أقدر أوجّهك حاليًا في الطلبات والتوصيل والدفع والحساب. لو المشكلة مستمرة، استخدمي «تواصل معنا» في المتجر ليتابعها فريق الدعم. هذا الرد الإرشادي لا يزال يعمل دون اتصال بخدمة ذكاء اصطناعي خارجية.";
  }
  function addSupportMessage(text,type){const host=$("storeSupportMessages"),div=document.createElement("div");div.className="support-message "+type;div.textContent=text;host.appendChild(div);host.scrollTop=host.scrollHeight}
- $("storeSupportForm").addEventListener("submit",async e=>{e.preventDefault();const input=$("storeSupportInput"),q=input.value.trim();if(!q)return;addSupportMessage(q,"user");input.value="";const submit=e.submitter;if(submit)submit.disabled=true;
+ const SUPPORT_CONVERSATION_KEY="blaban-support-conversation-v1";
+ let supportConversationId=localStorage.getItem(SUPPORT_CONVERSATION_KEY)||"";
+ async function ensureSupportConversation(){
+  const c=client();if(!c)throw new Error("support service unavailable");
+  if(supportConversationId)return supportConversationId;
+  let user=null;
+  try{if(typeof customerAuthClient!=="undefined"&&customerAuthClient){const result=await customerAuthClient.auth.getUser();user=result.data?.user||null}}catch{}
+  const id=crypto.randomUUID();
+  const {error}=await c.from("support_conversations").insert({id,customer_user_id:user?.id||null,customer_email:user?.email||null,customer_name:user?.user_metadata?.full_name||user?.user_metadata?.name||null,status:"open"});
+  if(error)throw error;
+  supportConversationId=id;localStorage.setItem(SUPPORT_CONVERSATION_KEY,id);return id;
+ }
+ async function saveSupportMessage(senderType,message,metadata={}){
+  const c=client(),conversationId=await ensureSupportConversation();
+  const {error}=await c.from("support_messages").insert({conversation_id:conversationId,sender_type:senderType,message:String(message).slice(0,4000),metadata});
+  if(error)throw error;
+  return conversationId;
+ }
+ async function requestHumanSupport(reason){
+  const c=client(),conversationId=await ensureSupportConversation();
+  const {error}=await c.from("support_handoffs").insert({conversation_id:conversationId,reason:String(reason||"المساعد يحتاج متابعة من فريق خدمة العملاء").slice(0,1000)});
+  if(error)throw error;
+  const note="حوّلنا محادثتك لممثل خدمة العملاء عشان يراجعها فريق المتجر. احتفظي بالمحادثة دي، والفريق هيشوف تفاصيلها في لوحة الإدارة 💙";
+  try{await saveSupportMessage("system",note,{handoff:true})}catch(error){console.error("Support handoff note could not be saved",error)}
+  addSupportMessage(note,"assistant");
+ }
+ function shouldEscalateSupport(question,reply){
+  const q=String(question||"").toLowerCase(),a=String(reply||"").toLowerCase();
+  return /شكوى|اشتك|مشكلة كبيرة|خصم غلط|اتخصم|فلوسي|سرقة|نصب|طلبى ضاع|طلب ضاع|مش قادر|مش عارف احل|عايز موظف|عايزة موظف|خدمة العملاء|كلموا حد|ممثل خدمة|complaint|refund|charged twice|fraud|speak to (a )?human|human agent|customer service/.test(q)
+   || /لا أستطيع|لا يمكنني|مش قادر أساعد|محتاج متابعة من فريق|تواصل مع فريق المتجر|تواصل مع خدمة العملاء|contact the store|human support|customer support team/.test(a);
+ }
+ $("storeSupportForm").addEventListener("submit",async e=>{
+  e.preventDefault();const input=$("storeSupportInput"),q=input.value.trim();if(!q)return;
+  addSupportMessage(q,"user");input.value="";const submit=e.submitter;if(submit)submit.disabled=true;
   try{
+   await saveSupportMessage("customer",q);
    const c=client();if(!c)throw new Error("support service unavailable");
-   const {data,error}=await c.functions.invoke("ai-store-support",{body:{message:q}});
-   if(error)throw error;
-   if(data?.reply){addSupportMessage(data.reply,"assistant");if(submit)submit.disabled=false;return}
-   throw new Error("no AI response");
-  }catch(error){addSupportMessage(guidedAnswer(q)+"\n\n(مساعدة إرشادية مؤقتة؛ خدمة الذكاء الاصطناعي غير متاحة حاليًا.)","assistant");}
-  finally{if(submit)submit.disabled=false}
+   let reply="",aiAvailable=true;
+   try{
+    const {data,error}=await c.functions.invoke("ai-store-support",{body:{message:q}});
+    if(error)throw error;
+    if(typeof data?.reply!=="string"||!data.reply.trim())throw new Error("no AI response");
+    reply=data.reply.trim();
+   }catch(error){
+    aiAvailable=false;reply=guidedAnswer(q)+"\n\nمحتاجين نراجع استفسارك مع فريق المتجر، فهحوّل المحادثة لخدمة العملاء.";
+    console.warn("AI support unavailable; preparing human handoff",error);
+   }
+   addSupportMessage(reply,"assistant");
+   try{await saveSupportMessage("assistant",reply,{ai_available:aiAvailable})}catch(error){console.error("Support reply could not be saved",error)}
+   if(!aiAvailable||shouldEscalateSupport(q,reply)){
+    const reason=!aiAvailable?"تعذّر على المساعد تقديم رد آلي؛ يلزم تدخل فريق خدمة العملاء.":"المحادثة تتضمن شكوى أو تحتاج مراجعة بشرية.";
+    try{await requestHumanSupport(reason)}catch(error){addSupportMessage("لو سمحتي تواصلي مع المتجر مباشرة؛ تعذر تسجيل طلب التحويل تلقائيًا في الوقت الحالي.","assistant");console.error("Human handoff could not be saved",error)}
+   }
+  }catch(error){
+   addSupportMessage("تعذر حفظ المحادثة الآن. حاولي مرة أخرى بعد قليل أو تواصلي مع المتجر مباشرة.","assistant");
+   console.error("Support conversation could not be persisted",error);
+  }finally{if(submit)submit.disabled=false}
  });
  const savedLanguage=localStorage.getItem("blaban-store-language");if(savedLanguage)applyStoreLanguage(savedLanguage);
  // One authoritative checkout transition: catch clicks before older listeners can interfere.
