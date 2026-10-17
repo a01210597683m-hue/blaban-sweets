@@ -67,13 +67,14 @@ jobs:
           }
           const storefront = fs.readFileSync('index.html', 'utf8');
           const admin = fs.readFileSync('admin.html', 'utf8');
-          if (!/rpc\(["']create_store_order["']/.test(storefront)) {
-            throw new Error('Checkout must submit orders through the validated create_store_order RPC');
+          const rpcMatch = storefront.match(/rpc\(["']create_store_order(?:_with_extras)?["']/);
+          if (!rpcMatch) {
+            throw new Error('Checkout must submit orders through a validated server-side order RPC');
           }
-          const rpcStart = storefront.indexOf('rpc("create_store_order"');
-          const rpcEnd = rpcStart >= 0 ? storefront.indexOf('});', rpcStart) : -1;
+          const rpcStart = rpcMatch.index;
+          const rpcEnd = storefront.indexOf('});', rpcStart);
           if (rpcStart < 0 || rpcEnd < 0) {
-            throw new Error('Could not verify create_store_order arguments in checkout');
+            throw new Error('Could not verify server-side order RPC arguments in checkout');
           }
           const rpcCall = storefront.slice(rpcStart, rpcEnd);
           if (/p_(?:price|subtotal|total_amount|delivery_fee)\s*:/.test(rpcCall)) {
