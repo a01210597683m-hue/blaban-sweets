@@ -1731,7 +1731,12 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(panel==="orders")loadCustomerOrders();if(panel==="profile")loadCustomerProfile();if(panel==="addresses")loadCustomerAddresses();if(panel==="notifications")renderNotificationStatus();if(panel==="language")loadCustomerLocale();
  }
  function openAccount(panel="home"){
-  // Open the requested page consistently; account-specific data/actions remain tied to authentication.
+  // Public shopping stays open; request sign-in only when a visitor opens account pages.
+  if(!activeUser){
+   const gate=$("customerAuthGate");
+   if(gate){gate.hidden=false;document.body.classList.add("customer-auth-required");}
+   return;
+  }
   account.hidden=false;account.setAttribute("aria-hidden","false");document.body.classList.add("customer-account-open");setAccountPanel(panel);window.scrollTo({top:0,behavior:"auto"});
  }
  function closeAccount(){account.hidden=true;account.setAttribute("aria-hidden","true");document.body.classList.remove("customer-account-open")}
@@ -2218,6 +2223,8 @@ body.store-view-category #categories .categories{background:transparent!importan
  document.addEventListener("click",event=>{
   const open=event.target.closest("[data-open-account],[data-open-account-page]");
   if(open&&!restoring){
+   // Don't create an account-history entry for a guest who is being sent to sign-in.
+   if(document.getElementById("customerAccountPill")?.hidden)return;
    const panel=open.hasAttribute("data-open-account-page")?(open.dataset.openAccountPage||"home"):"home";
    pushPanel(panel);lastPanel=panel;return;
   }
