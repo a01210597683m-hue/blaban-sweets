@@ -1166,8 +1166,8 @@ async function customerSocialSignIn(provider){
  const {error}=await customerAuthClient.auth.signInWithOAuth({provider,options:{redirectTo:CUSTOMER_AUTH_REDIRECT}});
  if(error)customerAuthMessage(provider==="google"?"تعذر تسجيل الدخول بجوجل. قد يحتاج مزوّد Google إلى التفعيل في إعدادات المتجر. "+error.message:"تعذر تسجيل الدخول بفيسبوك. قد يحتاج مزوّد Facebook إلى التفعيل في إعدادات المتجر. "+error.message);
 }
-document.getElementById("customerGoogleSignIn").addEventListener("click",()=>customerSocialSignIn("google"));
-document.getElementById("customerFacebookSignIn").addEventListener("click",()=>customerSocialSignIn("facebook"));
+document.getElementById("customerGoogleSignIn")?.addEventListener("click",()=>customerSocialSignIn("google"));
+document.getElementById("customerFacebookSignIn")?.addEventListener("click",()=>customerSocialSignIn("facebook"));
 document.getElementById("customerSignOut").addEventListener("click",async()=>{
  if(!customerAuthClient)return;
  const button=document.getElementById("customerSignOut");button.disabled=true;
