@@ -693,7 +693,12 @@ body.store-view-checkout #checkout .checkout-close{position:sticky!important;top
    <div class="customer-auth-field" id="customerPasswordField"><label for="customerPassword">كلمة المرور</label><input id="customerPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 أحرف على الأقل"></div>
    <button id="customerAuthSubmit" type="submit">تسجيل الدخول</button>
   </form>
-  <p class="customer-auth-social-note">تسجيل الدخول بحسابات Google وFacebook غير مفعّل حاليًا؛ استخدمي البريد الإلكتروني وكلمة المرور.</p>
+  <div id="customerAuthSocialSeparator" class="customer-auth-separator" hidden>أو سجّلي الدخول باستخدام</div>
+  <div id="customerAuthSocial" class="customer-auth-social" hidden>
+   <button id="customerGoogleSignIn" type="button"><span class="google-g" aria-hidden="true">G</span> Google</button>
+   <button id="customerFacebookSignIn" type="button"><span class="facebook-f" aria-hidden="true">f</span> Facebook</button>
+  </div>
+  <p id="customerAuthSocialNote" class="customer-auth-social-note">تسجيل Google وFacebook هيظهر تلقائيًا بعد تفعيل بيانات المزوّد في إعدادات Supabase.</p>
   <p id="customerAuthMessage" role="status" aria-live="polite"></p>
   <div class="customer-auth-switch"><span id="customerAuthSwitchText">لسه معندكيش حساب؟</span><button class="customer-auth-link" id="customerAuthSwitch" type="button">إنشاء حساب جديد</button></div>
   <div class="customer-auth-switch"><button class="customer-auth-link" id="customerForgotPassword" type="button">نسيتِ كلمة المرور؟</button></div>
@@ -1267,6 +1272,25 @@ async function customerSocialSignIn(provider){
 }
 document.getElementById("customerGoogleSignIn")?.addEventListener("click",()=>customerSocialSignIn("google"));
 document.getElementById("customerFacebookSignIn")?.addEventListener("click",()=>customerSocialSignIn("facebook"));
+
+async function refreshCustomerSocialProviders(){
+ const social=document.getElementById("customerAuthSocial"),separator=document.getElementById("customerAuthSocialSeparator"),note=document.getElementById("customerAuthSocialNote");
+ const googleButton=document.getElementById("customerGoogleSignIn"),facebookButton=document.getElementById("customerFacebookSignIn");
+ try{
+  const response=await fetch(SUPABASE_URL+"/auth/v1/settings",{headers:{apikey:SUPABASE_ANON_KEY}});
+  if(!response.ok)throw new Error("Auth provider settings unavailable");
+  const settings=await response.json(),external=settings?.external||{};
+  const googleEnabled=external.google===true,facebookEnabled=external.facebook===true;
+  googleButton.hidden=!googleEnabled;facebookButton.hidden=!facebookEnabled;
+  const anyEnabled=googleEnabled||facebookEnabled;
+  social.hidden=!anyEnabled;separator.hidden=!anyEnabled;note.hidden=anyEnabled;
+  if(!anyEnabled)note.textContent="تسجيل Google وFacebook هيظهر تلقائيًا بعد تفعيل بيانات المزوّد في إعدادات Supabase.";
+ }catch(error){
+  googleButton.hidden=true;facebookButton.hidden=true;social.hidden=true;separator.hidden=true;note.hidden=false;
+  note.textContent="تسجيل Google وFacebook لسه مستني تفعيل المزوّدين في إعدادات Supabase؛ تسجيل البريد الإلكتروني شغال بشكل مستقل.";
+ }
+}
+
 document.getElementById("customerSignOut").addEventListener("click",async()=>{
  if(!customerAuthClient)return;
  const button=document.getElementById("customerSignOut");button.disabled=true;
@@ -1998,7 +2022,7 @@ body.store-view-cart #cart.cart-page-open:before,body.store-view-checkout #check
   if(supportConversationId)return supportConversationId;
   let user=null;
   try{if(typeof customerAuthClient!=="undefined"&&customerAuthClient){const result=await customerAuthClient.auth.getUser();user=result.data?.user||null}}catch{}
-  const id=crypto.randomUUID();
+  const id=globalThis.crypto?.randomUUID?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16)});
   const {error}=await c.from("support_conversations").insert({id,customer_user_id:user?.id||null,customer_email:user?.email||null,customer_name:user?.user_metadata?.full_name||user?.user_metadata?.name||null,status:"open"});
   if(error)throw error;
   supportConversationId=id;localStorage.setItem(SUPPORT_CONVERSATION_KEY,id);return id;
@@ -2414,12 +2438,8 @@ body.store-view-category #categories .categories{background:transparent!importan
    }
   }finally{restoring=false}
  });
- // Hide Google OAuth while Supabase reports that the Google provider is disabled (HTTP 400).
- const social=document.querySelector(".customer-auth-social");
- const separator=document.querySelector(".customer-auth-separator");
- // Both OAuth providers return HTTP 400 because they are not enabled in Supabase; keep email/password auth available.
- if(social)social.hidden=true;
- if(separator)separator.hidden=true;
+ // Social buttons appear only for providers that Supabase confirms are enabled.
+ refreshCustomerSocialProviders();
 })();
 </script>
 
