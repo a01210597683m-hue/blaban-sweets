@@ -2084,7 +2084,9 @@ body.store-view-category #categories .categories{background:transparent!importan
   const link=event.target instanceof Element?event.target.closest('a[href="#orderTracking"],a[data-store-page="tracking"]'):null;
   if(!link)return;
   event.preventDefault();
-  event.stopImmediatePropagation();
+  /* Keep the order-confirmation CTA own click handler alive so it can also
+     prefill and run the order lookup after the tracking page opens. */
+  if(!link.textContent.includes("تابعي حالة طلبك خطوة بخطوة"))event.stopImmediatePropagation();
   document.getElementById("storeDrawer")?.classList.remove("open");
   document.querySelector(".store-drawer")?.classList.remove("open","active");
   document.body.classList.remove("store-view-cart","store-view-checkout","store-view-product","store-view-products","store-page-categories","store-page-story","store-page-cart","cart-page-active","checkout-page-active","store-view-extras");
