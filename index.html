@@ -1371,6 +1371,9 @@ window.closeProductDetails=closeProductDetails;
 window.openProductDetails=openProductDetails;
 window.renderStoreCategoryFilters=renderStoreCategoryFilters;
 window.filterStoreProducts=filterStoreProducts;
+/* Bridge module-scoped customer auth into the legacy account/support scripts below. */
+Object.defineProperty(window,"customerAuthClient",{configurable:true,get:()=>customerAuthClient,set:value=>{customerAuthClient=value;}});
+window.startCustomerAuth=startCustomerAuth;
 </script>
 <script>
 if ("serviceWorker" in navigator) {
